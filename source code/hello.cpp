@@ -18,8 +18,8 @@
 
 
 int x = 250, y = 200;
-
-bool game_over = false;
+int jump_count = -1;
+bool game_over = false, attack = false;
 
 
 
@@ -56,8 +56,11 @@ public:
 	move_source = source(-32, 0, 32, 32),
 	jump_source = source(-32, 0, 32, 32),
 	fall_source = source(-32, 0, 32, 32),
-	attack_source = source(-32, 0, 32, 32),
-	*player_source = &idle_source;
+	player_attack_source = source(-32, 0, 32, 32),
+	*player_source = &idle_source,
+	
+	wind_bullet_source = source(-64, 0, 64, 32),
+	*attack_source = &wind_bullet_source;
 
 
 
@@ -72,6 +75,8 @@ int main(int argc, char* argv[]) {
 	al_init_image_addon();
 	al_install_keyboard();
 
+
+
 	ALLEGRO_DISPLAY* window = NULL;
 	ALLEGRO_EVENT_QUEUE* queue = NULL;
 	ALLEGRO_TIMER* timer = NULL;
@@ -80,6 +85,8 @@ int main(int argc, char* argv[]) {
 	timer = al_create_timer(1.0f / FPS);
 
 	ALLEGRO_KEYBOARD_STATE key;
+
+
 
 	ALLEGRO_BITMAP* kil = al_load_bitmap("../sprites/Klonoa Idle Left.png");
 	ALLEGRO_BITMAP* kir = al_load_bitmap("../sprites/Klonoa Idle Right.png");
@@ -93,10 +100,11 @@ int main(int argc, char* argv[]) {
 	ALLEGRO_BITMAP* kwbr = al_load_bitmap("../sprites/Klonoa Wind Bullet Right.png");
 	ALLEGRO_BITMAP** player_sprite = &kir;
 
-
 	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Wind Bullet Left.png");
 	ALLEGRO_BITMAP* wbr = al_load_bitmap("../sprites/Wind Bullet Right.png");
-	ALLEGRO_BITMAP** attack_sprite;
+	ALLEGRO_BITMAP** attack_sprite = &wbr;
+
+
 
 	al_register_event_source(queue, al_get_display_event_source(window));
 	al_register_event_source(queue, al_get_timer_event_source(timer));
@@ -106,17 +114,24 @@ int main(int argc, char* argv[]) {
 
 
 
-	int jump_count = -1;
-
-
-
 	enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE, action3 = IDLE;
 	enum { LEFT, RIGHT } dir = RIGHT;
 	enum { NORMAL, SAMURAI } klonoa_mode;
 
 
 
-	auto update_dir_actions_and_source = [&] () -> void {
+	auto update_attack_source = [&] () -> void {
+		if (actual_character == KLONOA) {
+			if (klonoa_mode == NORMAL)
+				attack_source = &wind_bullet_source;
+
+		} else {
+
+		}
+
+	};
+
+	auto update_dir_actions_and_sources = [&] () -> void {
 		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < 9) {
 			action1 = JUMP;
 			
@@ -163,12 +178,16 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_X)) {
-			action3 = ATTACK;
+		if (al_key_down(&key, ALLEGRO_KEY_X) || attack) {
+			attack = true;
 			
-			if (player_source == &idle_source)
-				player_source = &attack_source;
+			if (player_source == &idle_source || attack) {
+				player_source = &player_attack_source;
+				action3 = ATTACK;
+
+			}
 			
+			update_attack_source();
 			PRINT("attack\n")
 		
 		} else
@@ -222,8 +241,28 @@ int main(int argc, char* argv[]) {
 
 	};
 
-	auto update_source_pos = [&] () -> void {
-		if (action1 == FALL) {
+	auto update_attack_source_pos = [&] () -> void {
+		if (attack_source->get_sx() / 64 < 10)
+			attack_source->add_sx(64);
+
+		else
+			attack = false;
+	
+	};
+
+	auto update_sources_pos = [&] () -> void {
+		if (attack)
+			update_attack_source_pos();
+
+
+		if (action3 == ATTACK && action1 == IDLE && action2 == IDLE) {
+			if (player_source->get_sx() / 32 < 10)
+				player_source->add_sx(32);
+
+			else
+				player_source->set_sx(0);
+
+		} else if (action1 == FALL) {
 			if (player_source->get_sx() / 32 < 4)
 				player_source->add_sx(32);
 
@@ -244,10 +283,6 @@ int main(int argc, char* argv[]) {
 			else
 				player_source->set_sx(0);
 
-		} else if (action3 == ATTACK) {
-			if (player_source->get_sx() / 64 < 10)
-				player_source->add_sx(64);
-
 		} else {
 			if (player_source->get_sx() / 32 < 21)
 				player_source->add_sx(32);
@@ -259,8 +294,38 @@ int main(int argc, char* argv[]) {
 
 	};
 
+	auto update_attack_sprite = [&] () -> void {
+		if (actual_character == KLONOA) {
+			if (klonoa_mode == NORMAL) {
+				if (dir == LEFT)
+					attack_sprite = &wbl;
+
+				else
+					attack_sprite = &wbr;
+
+			} else {
+
+			}
+
+		} else {
+
+		}
+
+		al_convert_mask_to_alpha(*attack_sprite, COLOR(0, 255, 0));
+	};
+
 	auto update_klonoa_sprite = [&] () -> void {
-		if (action1 == FALL) {
+		if (attack)
+			update_attack_sprite();
+
+		if (action3 == ATTACK && action1 == IDLE && action2 == IDLE) {
+			if (dir == LEFT)
+				player_sprite = &kwbl;
+
+			else
+				player_sprite = &kwbr;
+
+		} else if (action1 == FALL) {
 			if (dir == LEFT)
 				player_sprite = &kfl;
 
@@ -281,13 +346,6 @@ int main(int argc, char* argv[]) {
 			else
 				player_sprite = &kwr;
 
-		} else if (action3 == ATTACK) {
-			if (dir == LEFT)
-				player_sprite = &kwbl;
-
-			else
-				player_sprite = &kwbr;
-
 		} else {
 			if (dir == LEFT)
 				player_sprite = &kil;
@@ -300,7 +358,9 @@ int main(int argc, char* argv[]) {
 		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
 	};
 
-	al_start_timer(timer);
+
+
+al_start_timer(timer);
 
 	while (!game_over) {
 
@@ -310,15 +370,13 @@ int main(int argc, char* argv[]) {
 		if (event.type == ALLEGRO_EVENT_TIMER) {
 			al_get_keyboard_state(&key);
 			
-			update_dir_actions_and_source();
+			update_dir_actions_and_sources();
 			update_pos();
-			update_source_pos();
+			update_sources_pos();
 			reset_sources();
 
 			if (actual_character == KLONOA)
 				update_klonoa_sprite();
-	
-
 
 			if (al_key_down(&key, ALLEGRO_KEY_ESCAPE))
 				game_over = true;
@@ -327,7 +385,14 @@ int main(int argc, char* argv[]) {
 			game_over = true;
 
 		al_clear_to_color(COLOR(12, 24, 52));
+		if (attack && dir == LEFT)
+			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
+
 		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
+
+		if (attack && dir == RIGHT)
+al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
+
 		al_flip_display();
 	
 	}
@@ -361,6 +426,13 @@ int main(int argc, char* argv[]) {
 
 
 void reset_sources() {
+	if (!attack) {
+		wind_bullet_source.set_sx(-32);
+		wind_bullet_source.set_sy(0);
+	}
+
+
+
 	if (player_source == &move_source) {
 		idle_source.set_sx(-32);
 		idle_source.set_sy(0);
@@ -371,8 +443,8 @@ void reset_sources() {
 		fall_source.set_sx(-32);
 		fall_source.set_sy(0);
 		
-		attack_source.set_sx(-32);
-		attack_source.set_sy(0);
+		player_attack_source.set_sx(-32);
+		player_attack_source.set_sy(0);
 
 	} else if (player_source == &jump_source) {
 		idle_source.set_sx(-32);
@@ -384,8 +456,8 @@ void reset_sources() {
 		fall_source.set_sx(-32);
 		fall_source.set_sy(0);
 		
-		attack_source.set_sx(-32);
-		attack_source.set_sy(0);
+		player_attack_source.set_sx(-32);
+		player_attack_source.set_sy(0);
 
 	} else if (player_source == &fall_source) {
 		idle_source.set_sx(-32);
@@ -397,10 +469,10 @@ void reset_sources() {
 		jump_source.set_sx(-32);
 		jump_source.set_sy(0);
 		
-		attack_source.set_sx(-32);
-		attack_source.set_sy(0);
+		player_attack_source.set_sx(-32);
+		player_attack_source.set_sy(0);
 
-	} else if (player_source == &attack_source) {
+	} else if (player_source == &player_attack_source) {
 		idle_source.set_sx(-32);
 		idle_source.set_sy(0);
 		
@@ -423,8 +495,8 @@ void reset_sources() {
 		fall_source.set_sx(-32);
 		fall_source.set_sy(0);
 		
-		attack_source.set_sx(-32);
-		attack_source.set_sy(0);
+		player_attack_source.set_sx(-32);
+		player_attack_source.set_sy(0);
 	
 	}
 
