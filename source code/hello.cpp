@@ -56,7 +56,7 @@ public:
 	move_source = source(-32, 0, 32, 32),
 	jump_source = source(-32, 0, 32, 32),
 	fall_source = source(-32, 0, 32, 32),
-	attack_source = source(-64, 0, 64, 32),
+	attack_source = source(-32, 0, 32, 32),
 	*actual_source = &fall_source;
 
 
@@ -91,9 +91,12 @@ int main(int argc, char* argv[]) {
 	ALLEGRO_BITMAP* kfr = al_load_bitmap("../sprites/Klonoa Fall Right.png");
 	ALLEGRO_BITMAP* kwbl = al_load_bitmap("../sprites/Klonoa Wind Bullet Left.png");
 	ALLEGRO_BITMAP* kwbr = al_load_bitmap("../sprites/Klonoa Wind Bullet Right.png");
+	ALLEGRO_BITMAP** player_sprite = &kir;
+
+
 	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Wind Bullet Left.png");
 	ALLEGRO_BITMAP* wbr = al_load_bitmap("../sprites/Wind Bullet Right.png");
-	ALLEGRO_BITMAP** actual_sprite = &kir;
+	ALLEGRO_BITMAP** attack_sprite;
 
 	al_register_event_source(queue, al_get_display_event_source(window));
 	al_register_event_source(queue, al_get_timer_event_source(timer));
@@ -259,45 +262,42 @@ int main(int argc, char* argv[]) {
 	auto update_klonoa_sprite = [&] () -> void {
 		if (action1 == FALL) {
 			if (dir == LEFT)
-				actual_sprite = &kfl;
+				player_sprite = &kfl;
 
 			else
-				actual_sprite = &kfr;
+				player_sprite = &kfr;
 		
 		} else if (action1 == JUMP) {
 			if (dir == LEFT)
-				actual_sprite = &kjl;
+				player_sprite = &kjl;
 
 			else
-				actual_sprite = &kjr;
+				player_sprite = &kjr;
 
 		} else if (action2 == MOVE) {
 			if (dir == LEFT)
-				actual_sprite = &kwl;
+				player_sprite = &kwl;
 
 			else
-				actual_sprite = &kwr;
+				player_sprite = &kwr;
 
 		} else if (action3 == ATTACK) {
 			if (dir == LEFT)
-				actual_sprite = &kwbl;
+				player_sprite = &kwbl;
 
 			else
-				actual_sprite = &kwbr;
+				player_sprite = &kwbr;
 
 		} else {
 			if (dir == LEFT)
-				actual_sprite = &kil;
+				player_sprite = &kil;
 
 			else
-				actual_sprite = &kir;
+				player_sprite = &kir;
 
 		}
 
-		al_convert_mask_to_alpha(*actual_sprite, COLOR(0, 255, 0));
-	};
-
-
+		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
 
 	al_start_timer(timer);
 
