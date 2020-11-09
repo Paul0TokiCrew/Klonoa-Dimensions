@@ -57,7 +57,7 @@ public:
 	jump_source = source(-32, 0, 32, 32),
 	fall_source = source(-32, 0, 32, 32),
 	attack_source = source(-32, 0, 32, 32),
-	*actual_source = &fall_source;
+	*player_source = &idle_source;
 
 
 
@@ -120,8 +120,8 @@ int main(int argc, char* argv[]) {
 		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < 9) {
 			action1 = JUMP;
 			
-			if (actual_source == &idle_source)
-				actual_source = &jump_source;
+			if (player_source == &idle_source)
+				player_source = &jump_source;
 			
 			jump_count++;
 			PRINT("jump\n")
@@ -130,8 +130,8 @@ int main(int argc, char* argv[]) {
 			action1 = FALL;
 			jump_count--;
 			
-			if (actual_source == &jump_source)
-				actual_source = &fall_source;
+			if (player_source == &jump_source)
+				player_source = &fall_source;
 
 			PRINT("fall\n")
 
@@ -144,8 +144,8 @@ int main(int argc, char* argv[]) {
 			dir = LEFT;
 			action2 = MOVE;
 			
-			if (actual_source == &idle_source)
-				actual_source = &move_source;
+			if (player_source == &idle_source)
+				player_source = &move_source;
 			
 			PRINT("move left\n")
 
@@ -153,8 +153,8 @@ int main(int argc, char* argv[]) {
 			dir = RIGHT;
 			action2 = MOVE;
 			
-			if (actual_source == &idle_source)
-				actual_source = &move_source;
+			if (player_source == &idle_source)
+				player_source = &move_source;
 			
 			PRINT("move right\n")
 
@@ -166,8 +166,8 @@ int main(int argc, char* argv[]) {
 		if (al_key_down(&key, ALLEGRO_KEY_X)) {
 			action3 = ATTACK;
 			
-			if (actual_source == &idle_source)
-				actual_source = &attack_source;
+			if (player_source == &idle_source)
+				player_source = &attack_source;
 			
 			PRINT("attack\n")
 		
@@ -200,7 +200,7 @@ int main(int argc, char* argv[]) {
 
 
 		if (action1 == IDLE && action2 == IDLE && action3 == IDLE)
-			actual_source = &idle_source;
+			player_source = &idle_source;
 
 	};
 
@@ -224,36 +224,36 @@ int main(int argc, char* argv[]) {
 
 	auto update_source_pos = [&] () -> void {
 		if (action1 == FALL) {
-			if (actual_source->get_sx() / 32 < 4)
-				actual_source->add_sx(32);
+			if (player_source->get_sx() / 32 < 4)
+				player_source->add_sx(32);
 
 			else if (actual_source->get_sx() / 32 > 4)
-				actual_source->set_sx(0);
+				player_source->set_sx(0);
 
 		} else if (action1 == JUMP) {
-			if (actual_source->get_sx() / 32 < 5)
-				actual_source->add_sx(32);
+			if (player_source->get_sx() / 32 < 5)
+				player_source->add_sx(32);
 
 			else if (actual_source->get_sx() / 32 > 5)
-				actual_source->set_sx(0);
+				player_source->set_sx(0);
 
 		} else if (action2 == MOVE) {
-			if (actual_source->get_sx() / 32 < 3)
-				actual_source->add_sx(32);
+			if (player_source->get_sx() / 32 < 3)
+				player_source->add_sx(32);
 
 			else
-				actual_source->set_sx(0);
+				player_source->set_sx(0);
 
 		} else if (action3 == ATTACK) {
-			if (actual_source->get_sx() / 64 < 10)
-				actual_source->add_sx(64);
+			if (player_source->get_sx() / 64 < 10)
+				player_source->add_sx(64);
 
 		} else {
-			if (actual_source->get_sx() / 32 < 21)
-				actual_source->add_sx(32);
+			if (player_source->get_sx() / 32 < 21)
+				player_source->add_sx(32);
 
 			else
-				actual_source->set_sx(0);
+				player_source->set_sx(0);
 
 		}
 
@@ -298,6 +298,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
+	};
 
 	al_start_timer(timer);
 
@@ -326,7 +327,7 @@ int main(int argc, char* argv[]) {
 			game_over = true;
 
 		al_clear_to_color(COLOR(12, 24, 52));
-		al_draw_bitmap_region(*actual_sprite, actual_source->get_sx(), actual_source->get_sy(), actual_source->get_sw(), actual_source->get_sh(), x, y, 0);
+		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
 		al_flip_display();
 	
 	}
@@ -360,7 +361,7 @@ int main(int argc, char* argv[]) {
 
 
 void reset_sources() {
-	if (actual_source == &move_source) {
+	if (player_source == &move_source) {
 		idle_source.set_sx(-32);
 		idle_source.set_sy(0);
 		
@@ -373,7 +374,7 @@ void reset_sources() {
 		attack_source.set_sx(-32);
 		attack_source.set_sy(0);
 
-	} else if (actual_source == &jump_source) {
+	} else if (player_source == &jump_source) {
 		idle_source.set_sx(-32);
 		idle_source.set_sy(0);
 		
@@ -386,7 +387,7 @@ void reset_sources() {
 		attack_source.set_sx(-32);
 		attack_source.set_sy(0);
 
-	} else if (actual_source == &fall_source) {
+	} else if (player_source == &fall_source) {
 		idle_source.set_sx(-32);
 		idle_source.set_sy(-32);
 		
@@ -399,7 +400,7 @@ void reset_sources() {
 		attack_source.set_sx(-32);
 		attack_source.set_sy(0);
 
-	} else if (actual_source == &attack_source) {
+	} else if (player_source == &attack_source) {
 		idle_source.set_sx(-32);
 		idle_source.set_sy(0);
 		
