@@ -227,14 +227,14 @@ int main(int argc, char* argv[]) {
 			if (player_source->get_sx() / 32 < 4)
 				player_source->add_sx(32);
 
-			else if (actual_source->get_sx() / 32 > 4)
+			else if (player_source->get_sx() / 32 > 4)
 				player_source->set_sx(0);
 
 		} else if (action1 == JUMP) {
 			if (player_source->get_sx() / 32 < 5)
 				player_source->add_sx(32);
 
-			else if (actual_source->get_sx() / 32 > 5)
+			else if (player_source->get_sx() / 32 > 5)
 				player_source->set_sx(0);
 
 		} else if (action2 == MOVE) {
