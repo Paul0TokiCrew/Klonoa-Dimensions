@@ -1,7 +1,6 @@
-// comand g++ hello.cpp -o hello $(pkg-config allegro-5 allegro_image-5 --libs --cflags)
+// compiler comand: g++ hello.cpp -o hello $(pkg-config allegro-5 allegro_image-5 --libs --cflags)
 
 #include <iostream>
-#include <cstring>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 
@@ -82,18 +81,18 @@ int main(int argc, char* argv[]) {
 
 	ALLEGRO_KEYBOARD_STATE key;
 
-	ALLEGRO_BITMAP* kil = al_load_bitmap("Klonoa Idle Left.png");
-	ALLEGRO_BITMAP* kir = al_load_bitmap("Klonoa Idle Right.png");
-	ALLEGRO_BITMAP* kwl = al_load_bitmap("Klonoa Walk Left.png");
-	ALLEGRO_BITMAP* kwr = al_load_bitmap("Klonoa Walk Right.png");
-	ALLEGRO_BITMAP* kjl = al_load_bitmap("Klonoa Jump Left.png");
-	ALLEGRO_BITMAP* kjr = al_load_bitmap("Klonoa Jump Right.png");
-	ALLEGRO_BITMAP* kfl = al_load_bitmap("Klonoa Fall Left.png");
-	ALLEGRO_BITMAP* kfr = al_load_bitmap("Klonoa Fall Right.png");
-	ALLEGRO_BITMAP* kwbl = al_load_bitmap("Klonoa Wind Bullet Left.png");
-	ALLEGRO_BITMAP* kwbr = al_load_bitmap("Klonoa Wind Bullet Right.png");
-	ALLEGRO_BITMAP* wbl = al_load_bitmap("Wind Bullet Left.png");
-	ALLEGRO_BITMAP* wbr = al_load_bitmap("Wind Bullet Right.png");
+	ALLEGRO_BITMAP* kil = al_load_bitmap("../sprites/Klonoa Idle Left.png");
+	ALLEGRO_BITMAP* kir = al_load_bitmap("../sprites/Klonoa Idle Right.png");
+	ALLEGRO_BITMAP* kwl = al_load_bitmap("../sprites/Klonoa Walk Left.png");
+	ALLEGRO_BITMAP* kwr = al_load_bitmap("../sprites/Klonoa Walk Right.png");
+	ALLEGRO_BITMAP* kjl = al_load_bitmap("../sprites/Klonoa Jump Left.png");
+	ALLEGRO_BITMAP* kjr = al_load_bitmap("../sprites/Klonoa Jump Right.png");
+	ALLEGRO_BITMAP* kfl = al_load_bitmap("../sprites/Klonoa Fall Left.png");
+	ALLEGRO_BITMAP* kfr = al_load_bitmap("../sprites/Klonoa Fall Right.png");
+	ALLEGRO_BITMAP* kwbl = al_load_bitmap("../sprites/Klonoa Wind Bullet Left.png");
+	ALLEGRO_BITMAP* kwbr = al_load_bitmap("../sprites/Klonoa Wind Bullet Right.png");
+	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Wind Bullet Left.png");
+	ALLEGRO_BITMAP* wbr = al_load_bitmap("../sprites/Wind Bullet Right.png");
 	ALLEGRO_BITMAP** actual_sprite = &kir;
 
 	al_register_event_source(queue, al_get_display_event_source(window));
@@ -296,9 +295,6 @@ int main(int argc, char* argv[]) {
 		}
 
 		al_convert_mask_to_alpha(*actual_sprite, COLOR(0, 255, 0));
-		al_convert_mask_to_alpha(*actual_sprite, COLOR(0, 254, 0));
-		al_convert_mask_to_alpha(*actual_sprite, COLOR(0, 254, 1));
-
 	};
 
 
