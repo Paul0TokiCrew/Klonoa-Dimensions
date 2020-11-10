@@ -1,10 +1,16 @@
-// compiler comand: g++ hello.cpp -o hello $(pkg-config allegro-5 allegro_image-5 --libs --cflags)
+// Compiler comand: g++ hello.cpp -o hello $(pkg-config allegro-5 allegro_image-5 --libs --cflags)
+
+// Headers -----------------------
 
 #include <iostream>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_image.h>
 
+// -------------------------------
 
+
+
+// Macros ------------------------
 
 #define W 500
 #define H 500
@@ -15,22 +21,38 @@
 
 #define FPS 15.0f
 
+// -------------------------------
 
+
+
+// Global variables --------------
 
 int x = 250, y = 200;
 int jump_count = -1;
 bool game_over = false, attack = false;
 
+// -------------------------------
 
+
+
+// Global enums ------------------
 
 enum { KLONOA, VANDA } actual_character = KLONOA;
 
+// -------------------------------
 
+
+
+// Functions declaration ---------
 
 void reset_sources();
 void switch_character();
 
+// -------------------------------
 
+
+
+// Classes -----------------------
 
 class source {
 private:
@@ -62,21 +84,30 @@ public:
 	wind_bullet_source = source(-64, 0, 64, 32),
 	*attack_source = &wind_bullet_source;
 
+// -------------------------------
 
 
-//--------------------------------------------------------------------
+
+// main function --------------------------------------------------------------------
 
 
 
 int main(int argc, char* argv[]) {
+
+	// Game start ----------------------
+
 	PRINT("--- starting game ---\n\n")
 
 	al_init();
 	al_init_image_addon();
 	al_install_keyboard();
 
+	// ---------------------------------
 
 
+
+	// Game pointers -------------------
+	
 	ALLEGRO_DISPLAY* window = NULL;
 	ALLEGRO_EVENT_QUEUE* queue = NULL;
 	ALLEGRO_TIMER* timer = NULL;
@@ -84,10 +115,20 @@ int main(int argc, char* argv[]) {
 	queue = al_create_event_queue();
 	timer = al_create_timer(1.0f / FPS);
 
+	// ---------------------------------
+
+
+
+	// Keyboard state variable ---------
+
 	ALLEGRO_KEYBOARD_STATE key;
 
+	// ---------------------------------
 
 
+
+	// Sprites -------------------------
+	
 	ALLEGRO_BITMAP* kil = al_load_bitmap("../sprites/Klonoa Idle Left.png");
 	ALLEGRO_BITMAP* kir = al_load_bitmap("../sprites/Klonoa Idle Right.png");
 	ALLEGRO_BITMAP* kwl = al_load_bitmap("../sprites/Klonoa Walk Left.png");
@@ -108,22 +149,40 @@ int main(int argc, char* argv[]) {
 	ALLEGRO_BITMAP* wsr = al_load_bitmap("../sprites/Wind Sword Right.png");
 	ALLEGRO_BITMAP** sword_sprite = &wsr;
 
+	// ---------------------------------
 
+
+
+	// Event sources register ----------
 
 	al_register_event_source(queue, al_get_display_event_source(window));
 	al_register_event_source(queue, al_get_timer_event_source(timer));
 	al_register_event_source(queue, al_get_keyboard_event_source());
 
+	// ---------------------------------
+
+
+
+	// Window title --------------------
+
 	al_set_window_title(window, "Klonoa Dimensions - Cheesai Island");
 
+	// ---------------------------------
 
+
+
+	// Local enums ---------------------
 
 	enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE, action3 = IDLE;
 	enum { LEFT, RIGHT } dir = RIGHT;
 	enum { NORMAL, SAMURAI } klonoa_mode;
 
+	// ---------------------------------
 
 
+
+	// Sources update ------------------
+	
 	auto update_attack_source = [&] () -> void {
 		if (actual_character == KLONOA) {
 			if (klonoa_mode == NORMAL)
@@ -227,6 +286,12 @@ int main(int argc, char* argv[]) {
 
 	};
 
+	// ---------------------------------
+
+
+
+	// Position update -----------------
+	
 	auto update_pos = [&] () -> void {
 		if (action1 == FALL)
 			y += 10;
@@ -246,6 +311,12 @@ int main(int argc, char* argv[]) {
 		}
 
 	};
+
+	// ---------------------------------
+
+
+
+	// Sources position updates --------
 
 	auto update_attack_source_pos = [&] () -> void {
 		if (attack) {
@@ -299,6 +370,12 @@ int main(int argc, char* argv[]) {
 
 		update_attack_source_pos();
 	};
+
+	// ---------------------------------
+
+	
+
+	// Sprites updates -----------------
 
 	auto update_attack_sprite = [&] () -> void {
 		if (attack) {
@@ -386,7 +463,46 @@ int main(int argc, char* argv[]) {
 		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
 	};
 
+	// ---------------------------------
 
+
+
+	// Drawing -------------------------
+
+	auto draw = [&] () -> void {
+		al_set_target_bitmap(al_get_backbuffer(window));
+		al_clear_to_color(COLOR(12, 24, 52));
+
+		if (attack && dir == LEFT)
+			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
+
+		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == LEFT) {
+			al_draw_bitmap(*sword_sprite, x - 9, y, 0);
+		}
+
+		
+
+		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
+		
+
+
+		if (attack && dir == RIGHT)
+			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
+
+		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == RIGHT) {
+			if (action2 == IDLE)
+				al_draw_bitmap(*sword_sprite, x, y, 0);
+
+			else if (action2 == MOVE && action2) { }
+		}
+	
+	};
+
+	// ---------------------------------
+
+
+
+	// Game loop -----------------------
 
 	al_start_timer(timer);
 
@@ -412,31 +528,16 @@ int main(int argc, char* argv[]) {
 		} else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 			game_over = true;
 
-		al_clear_to_color(COLOR(12, 24, 52));
-		
-		if (attack && dir == LEFT)
-			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
-
-		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == LEFT)
-			al_draw_bitmap(*sword_sprite, x - 10, y, 0);
-
-		
-
-		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
-		
-
-
-		if (attack && dir == RIGHT)
-			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
-
-		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == RIGHT)
-			al_draw_bitmap(*sword_sprite, x, y, 0);
-
+		draw();
 		al_flip_display();
 	
 	}
 
+	// ---------------------------------
 
+
+
+	// Game end ------------------------
 
 	al_destroy_display(window);
 	al_destroy_event_queue(queue);
@@ -456,13 +557,18 @@ int main(int argc, char* argv[]) {
 
 	PRINT("\n--- game over ---\n\n")
 	return 0;
+
+	// ---------------------------------
+
 }
 
 
 
-//--------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 
 
+
+// Functions definition ----------
 
 void reset_sources() {
 	if (!attack) {
@@ -549,3 +655,5 @@ void switch_character() {
 		actual_character = KLONOA;
 
 }
+
+// -------------------------------
