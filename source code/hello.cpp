@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
 
 	enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE, action3 = IDLE;
 	enum { LEFT, RIGHT } dir = RIGHT;
-	enum { NORMAL, SAMURAI } klonoa_mode;
+	enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
 
 	// ---------------------------------
 
