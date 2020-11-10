@@ -511,7 +511,14 @@ int main(int argc, char* argv[]) {
 			else if (action1 == JUMP)
 				al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x - 9, y, 0);
 
-			else
+			else if (action2 == MOVE) {
+				if (player_source->get_sx() / 32 < 2)
+					al_draw_bitmap(*sword_sprite, x - 9, y, 0);
+
+				else
+					al_draw_bitmap(*sword_sprite, x - 9 - 2, y, 0);
+
+			} else
 				al_draw_bitmap(*sword_sprite, x - 9, y, 0);
 
 		}
@@ -528,10 +535,18 @@ int main(int argc, char* argv[]) {
 		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == RIGHT) {
 			if (action1 == FALL)
 				al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
+			
 			else if (action1 == JUMP)
 				al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
 
-			else
+			else if (action2 == MOVE) {
+				if (player_source->get_sx() / 32 < 2)
+					al_draw_bitmap(*sword_sprite, x, y, 0);
+
+				else
+					al_draw_bitmap(*sword_sprite, x - 2, y, 0);
+
+			} else
 				al_draw_bitmap(*sword_sprite, x, y, 0);
 
 		}
