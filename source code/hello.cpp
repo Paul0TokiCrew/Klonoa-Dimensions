@@ -147,6 +147,8 @@ int main(int argc, char* argv[]) {
 
 	ALLEGRO_BITMAP* wsl = al_load_bitmap("../sprites/Wind Sword Left.png");
 	ALLEGRO_BITMAP* wsr = al_load_bitmap("../sprites/Wind Sword Right.png");
+	ALLEGRO_BITMAP* wsjl = al_load_bitmap("../sprites/Wind Sword Jump Left.png");
+	ALLEGRO_BITMAP* wsjr = al_load_bitmap("../sprites/Wind Sword Jump Right.png");
 	ALLEGRO_BITMAP** sword_sprite = &wsr;
 
 	// ---------------------------------
@@ -368,7 +370,10 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		update_attack_source_pos();
+
+		if (attack)
+			update_attack_source_pos();
+	
 	};
 
 	// ---------------------------------
@@ -402,19 +407,32 @@ int main(int argc, char* argv[]) {
 
 	auto update_sword_sprite = [&] () -> void {
 		if (actual_character == KLONOA) {
-			if (klonoa_mode == SAMURAI)
-				if (dir == LEFT)
-					sword_sprite = &wsl;
+			if (klonoa_mode == SAMURAI) {
+				if (action1 == JUMP) {
+					if (dir == LEFT)
+						sword_sprite = &wsjl;
 
-				else
-					sword_sprite = &wsr;
+					else
+						sword_sprite = &wsjr;
+
+
+				} else if (action3 == IDLE) {
+					if (dir == LEFT)
+						sword_sprite = &wsl;
+
+					else
+						sword_sprite = &wsr;
+
+				}
+
+			}
 
 		}
 
 		al_convert_mask_to_alpha(*sword_sprite, COLOR(0, 255, 0));	
 	};
 
-	auto update_klonoa_sprite = [&] () -> void {
+	auto update_sprites = [&] () -> void {
 		if (actual_character == KLONOA) {
 			if (action3 == ATTACK && action1 == IDLE && action2 == IDLE) {
 				if (dir == LEFT)
@@ -452,14 +470,16 @@ int main(int argc, char* argv[]) {
 					player_sprite = &kir;
 			}
 
-
-
 			if (klonoa_mode == SAMURAI)
 				update_sword_sprite();
 
+		} else {
+
 		}
 
-		update_attack_sprite();
+		if (attack)
+			update_attack_sprite();
+	
 		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
 	};
 
@@ -477,7 +497,12 @@ int main(int argc, char* argv[]) {
 			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
 
 		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == LEFT) {
-			al_draw_bitmap(*sword_sprite, x - 9, y, 0);
+			if (action1 == JUMP)
+				al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x - 9, y, 0);
+
+			else if (action3 == IDLE)
+				al_draw_bitmap(*sword_sprite, x - 9, y, 0);
+
 		}
 
 		
@@ -490,12 +515,14 @@ int main(int argc, char* argv[]) {
 			al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
 
 		if (actual_character == KLONOA && klonoa_mode == SAMURAI && dir == RIGHT) {
-			if (action2 == IDLE)
+			if (action1 == JUMP)
+				al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
+
+			else if (action3 == IDLE)
 				al_draw_bitmap(*sword_sprite, x, y, 0);
 
-			else if (action2 == MOVE && action2) { }
 		}
-	
+
 	};
 
 	// ---------------------------------
@@ -518,9 +545,7 @@ int main(int argc, char* argv[]) {
 			update_pos();
 			update_sources_pos();
 			reset_sources();
-
-			if (actual_character == KLONOA)
-				update_klonoa_sprite();
+			update_sprites();
 
 			if (al_key_down(&key, ALLEGRO_KEY_ESCAPE))
 				game_over = true;
