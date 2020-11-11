@@ -130,32 +130,32 @@ int main(int argc, char* argv[]) {
 
 	// Sprites -------------------------
 	
-	ALLEGRO_BITMAP* kil = al_load_bitmap("../sprites/Klonoa Idle Left.png");
-	ALLEGRO_BITMAP* kir = al_load_bitmap("../sprites/Klonoa Idle Right.png");
-	ALLEGRO_BITMAP* kwl = al_load_bitmap("../sprites/Klonoa Walk Left.png");
-	ALLEGRO_BITMAP* kwr = al_load_bitmap("../sprites/Klonoa Walk Right.png");
-	ALLEGRO_BITMAP* kjl = al_load_bitmap("../sprites/Klonoa Jump Left.png");
-	ALLEGRO_BITMAP* kjr = al_load_bitmap("../sprites/Klonoa Jump Right.png");
-	ALLEGRO_BITMAP* kfl = al_load_bitmap("../sprites/Klonoa Fall Left.png");
-	ALLEGRO_BITMAP* kfr = al_load_bitmap("../sprites/Klonoa Fall Right.png");
-	ALLEGRO_BITMAP* kwbl = al_load_bitmap("../sprites/Klonoa Wind Bullet Left.png");
-	ALLEGRO_BITMAP* kwbr = al_load_bitmap("../sprites/Klonoa Wind Bullet Right.png");
-	ALLEGRO_BITMAP* kwcl = al_load_bitmap("../sprites/Klonoa Wind Cut Left.png");
-	ALLEGRO_BITMAP* kwcr = al_load_bitmap("../sprites/Klonoa Wind Cut Right.png");
+	ALLEGRO_BITMAP* kil = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Idle Left.png");
+	ALLEGRO_BITMAP* kir = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Idle Right.png");
+	ALLEGRO_BITMAP* kwl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Walk Left.png");
+	ALLEGRO_BITMAP* kwr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Walk Right.png");
+	ALLEGRO_BITMAP* kjl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Jump Left.png");
+	ALLEGRO_BITMAP* kjr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Jump Right.png");
+	ALLEGRO_BITMAP* kfl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Fall Left.png");
+	ALLEGRO_BITMAP* kfr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Fall Right.png");
+	ALLEGRO_BITMAP* kwbl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Bullet Left.png");
+	ALLEGRO_BITMAP* kwbr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Bullet Right.png");
+	ALLEGRO_BITMAP* kwcl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Cut Left.png");
+	ALLEGRO_BITMAP* kwcr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Cut Right.png");
 	ALLEGRO_BITMAP** player_sprite = &kir;
 
-	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Wind Bullet Left.png");
-	ALLEGRO_BITMAP* wbr = al_load_bitmap("../sprites/Wind Bullet Right.png");
-	ALLEGRO_BITMAP* wcl = al_load_bitmap("../sprites/Wind Cut Left.png");
-	ALLEGRO_BITMAP* wcr = al_load_bitmap("../sprites/Wind Cut Right.png");
+	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Left.png");
+	ALLEGRO_BITMAP* wbr = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Right.png");
+	ALLEGRO_BITMAP* wcl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Cut Left.png");
+	ALLEGRO_BITMAP* wcr = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Cut Right.png");
 	ALLEGRO_BITMAP** attack_sprite = &wbr;
 
-	ALLEGRO_BITMAP* wsl = al_load_bitmap("../sprites/Wind Sword Left.png");
-	ALLEGRO_BITMAP* wsr = al_load_bitmap("../sprites/Wind Sword Right.png");
-	ALLEGRO_BITMAP* wsjl = al_load_bitmap("../sprites/Wind Sword Jump Left.png");
-	ALLEGRO_BITMAP* wsjr = al_load_bitmap("../sprites/Wind Sword Jump Right.png");
-	ALLEGRO_BITMAP* wsfl = al_load_bitmap("../sprites/Wind Sword Fall Left.png");
-	ALLEGRO_BITMAP* wsfr = al_load_bitmap("../sprites/Wind Sword Fall Right.png");
+	ALLEGRO_BITMAP* wsl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Left.png");
+	ALLEGRO_BITMAP* wsr = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Right.png");
+	ALLEGRO_BITMAP* wsjl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Jump Left.png");
+	ALLEGRO_BITMAP* wsjr = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Jump Right.png");
+	ALLEGRO_BITMAP* wsfl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Fall Left.png");
+	ALLEGRO_BITMAP* wsfr = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Fall Right.png");
 	ALLEGRO_BITMAP** sword_sprite = &wsr;
 
 	// ---------------------------------
