@@ -29,7 +29,7 @@
 
 int x = 250, y = 200;
 int jump_count = -1;
-bool game_over = false, attack = false;
+bool game_over = false, attack = false, fly = true;
 
 // -------------------------------
 
@@ -142,6 +142,10 @@ int main(int argc, char* argv[]) {
 	ALLEGRO_BITMAP* kwbr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Bullet Right.png");
 	ALLEGRO_BITMAP* kwcl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Cut Left.png");
 	ALLEGRO_BITMAP* kwcr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Cut Right.png");
+	ALLEGRO_BITMAP* vil = al_load_bitmap("../sprites/Vanda/Character/Vanda Idle Left.png");
+	ALLEGRO_BITMAP* vir = al_load_bitmap("../sprites/Vanda/Character/Vanda Idle Right.png");
+	ALLEGRO_BITMAP* vwl = al_load_bitmap("../sprites/Vanda/Character/Vanda Walk Left.png");
+	ALLEGRO_BITMAP* vwr = al_load_bitmap("../sprites/Vanda/Character/Vanda Walk Right.png");
 	ALLEGRO_BITMAP** player_sprite = &kir;
 
 	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Left.png");
@@ -209,13 +213,17 @@ int main(int argc, char* argv[]) {
 
 	auto update_dir_actions_and_sources = [&] () -> void {
 		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < 9) {
-			action1 = JUMP;
+
+			if (action1 != FALL || fly) {
+				action1 = JUMP;
 			
-			if (player_source == &idle_source)
-				player_source = &jump_source;
+				if (player_source == &idle_source)
+					player_source = &jump_source;
 			
-			jump_count++;
-			PRINT("jump\n")
+				jump_count++;
+				PRINT("jump\n")
+
+			}
 		
 		} else if (jump_count > -1) {
 			action1 = FALL;
@@ -268,7 +276,7 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_S) && !attack) {
+		if (al_key_down(&key, ALLEGRO_KEY_S) && actual_character == KLONOA && !attack) {
 			
 			if (klonoa_mode == NORMAL) {
 				klonoa_mode = SAMURAI;
@@ -333,21 +341,27 @@ int main(int argc, char* argv[]) {
 	auto update_attack_source_pos = [&] () -> void {
 		if (attack) {
 
-			if (klonoa_mode == NORMAL) {
-			
-				if (attack_source->get_sx() / 64 < 10)
-					attack_source->add_sx(64);
+			if (actual_character == KLONOA) {
 
-				else
-					attack = false;
+				if (klonoa_mode == NORMAL) {
+			
+					if (attack_source->get_sx() / 64 < 10)
+						attack_source->add_sx(64);
+
+					else
+						attack = false;
+
+				} else {
+			
+					if (attack_source->get_sx() / 32 < 4)
+						attack_source->add_sx(32);
+
+					else
+						attack = false;
+
+				}
 
 			} else {
-			
-				if (attack_source->get_sx() / 32 < 4)
-					attack_source->add_sx(32);
-
-				else
-					attack = false;
 
 			}
 	
@@ -357,22 +371,26 @@ int main(int argc, char* argv[]) {
 
 	auto update_sources_pos = [&] () -> void {
 		if (attack && action1 == IDLE && action2 == IDLE) {
+
+			if (actual_character == KLONOA) {
 			
-			if (klonoa_mode == NORMAL) {
+				if (klonoa_mode == NORMAL) {
 				
-				if (player_source->get_sx() / 32 < 10)
-					player_source->add_sx(32);
+					if (player_source->get_sx() / 32 < 10)
+						player_source->add_sx(32);
 
-				else
-					player_source->set_sx(0);
+					else
+						player_source->set_sx(0);
 
-			}  else {
+				}  else {
 				
-				if (player_source->get_sx() / 32 < 4)
-					player_source->add_sx(32);
+					if (player_source->get_sx() / 32 < 4)
+						player_source->add_sx(32);
 
-				else
-					player_source->set_sx(0);
+					else
+						player_source->set_sx(0);
+
+				}
 
 			}
 
@@ -549,6 +567,22 @@ int main(int argc, char* argv[]) {
 				update_sword_sprite();
 
 		} else {
+
+			if (action2 == MOVE) {
+				if (dir == LEFT)
+					player_sprite = &vwl;
+
+				else
+					player_sprite = &vwr;
+
+			} else {
+				if (dir == LEFT)
+					player_sprite = &vil;
+
+				else
+					player_sprite = &vir;
+
+			}
 
 		}
 
@@ -825,11 +859,15 @@ void reset_sources() {
 }
 
 void switch_character() {
-	if (actual_character == KLONOA)
+	if (actual_character == KLONOA) {
 		actual_character = VANDA;
+		fly = false;
 
-	else
+	} else {
 		actual_character = KLONOA;
+		fly = true;
+
+	}
 
 }
 
