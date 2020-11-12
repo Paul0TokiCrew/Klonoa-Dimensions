@@ -27,16 +27,21 @@
 
 // Global variables --------------
 
-int x = 250, y = 200;
-int jump_count = -1;
-bool game_over = false, attack = false, fly = true;
+int x = 250, y = 200,
+	jump_count = -1;
+
+bool game_over = false,
+	attack = false,
+	fly = true;
 
 // -------------------------------
 
 
 
 // Global enums ------------------
-
+enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE;
+enum { LEFT, RIGHT } dir = RIGHT;
+enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
 enum { KLONOA, VANDA } actual_character = KLONOA;
 
 // -------------------------------
@@ -44,6 +49,9 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 
 
 // Functions declaration ---------
+
+void update_fall();
+void update_jump();
 
 void reset_sources();
 void switch_character();
@@ -184,16 +192,6 @@ int main(int argc, char* argv[]) {
 
 
 
-	// Local enums ---------------------
-
-	enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE;
-	enum { LEFT, RIGHT } dir = RIGHT;
-	enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
-
-	// ---------------------------------
-
-
-
 	// Sources update ------------------
 	
 	auto update_attack_source = [&] () -> void {
@@ -212,29 +210,13 @@ int main(int argc, char* argv[]) {
 	};
 
 	auto update_dir_actions_and_sources = [&] () -> void {
-		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < 9) {
+		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < 9 && (action1 != FALL || fly))
+			update_jump();
 
-			if (action1 != FALL || fly) {
-				action1 = JUMP;
+		else if (jump_count > -1)
+			update_fall();
 			
-				if (player_source == &idle_source)
-					player_source = &jump_source;
-			
-				jump_count++;
-				PRINT("jump\n")
-
-			}
-		
-		} else if (jump_count > -1) {
-			action1 = FALL;
-			jump_count--;
-			
-			if (player_source == &jump_source)
-				player_source = &fall_source;
-
-			PRINT("fall\n")
-
-		} else
+		else
 			action1 = IDLE;
 
 
@@ -777,6 +759,37 @@ int main(int argc, char* argv[]) {
 
 
 // Functions definition ----------
+
+void update_fall() {
+	if (jump_count > -1) {
+		action1 = FALL;
+			
+		if (player_source == &jump_source)
+			player_source = &fall_source;
+
+		jump_count--;
+		PRINT("fall\n")
+	
+	}
+
+}
+
+void update_jump() {
+	if (jump_count < 9 && (action1 != FALL || fly)) {
+		action1 = JUMP;
+			
+		if (player_source == &idle_source)
+			player_source = &jump_source;
+			
+		jump_count++;
+		PRINT("jump\n")
+
+	} else
+		action1 = FALL;
+
+}
+
+
 
 void reset_sources() {
 	if (!attack) {
