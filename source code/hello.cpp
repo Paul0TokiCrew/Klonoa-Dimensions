@@ -28,17 +28,20 @@
 // Global variables --------------
 
 int x = 250, y = 200,
-	jump_count = -1;
+	jump_count = -1,
+	jump_height = 9,
+	speed = 5;
 
 bool game_over = false,
 	attack = false,
-	fly = true;
+	jump_many_times = true;
 
 // -------------------------------
 
 
 
 // Global enums ------------------
+
 enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE;
 enum { LEFT, RIGHT } dir = RIGHT;
 enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
@@ -154,6 +157,10 @@ int main(int argc, char* argv[]) {
 	ALLEGRO_BITMAP* vir = al_load_bitmap("../sprites/Vanda/Character/Vanda Idle Right.png");
 	ALLEGRO_BITMAP* vwl = al_load_bitmap("../sprites/Vanda/Character/Vanda Walk Left.png");
 	ALLEGRO_BITMAP* vwr = al_load_bitmap("../sprites/Vanda/Character/Vanda Walk Right.png");
+	ALLEGRO_BITMAP* vjl = al_load_bitmap("../sprites/Vanda/Character/Vanda Jump Left.png");
+	ALLEGRO_BITMAP* vjr = al_load_bitmap("../sprites/Vanda/Character/Vanda Jump Right.png");
+	ALLEGRO_BITMAP* vfl = al_load_bitmap("../sprites/Vanda/Character/Vanda Fall Left.png");
+	ALLEGRO_BITMAP* vfr = al_load_bitmap("../sprites/Vanda/Character/Vanda Fall Right.png");
 	ALLEGRO_BITMAP** player_sprite = &kir;
 
 	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Left.png");
@@ -210,7 +217,7 @@ int main(int argc, char* argv[]) {
 	};
 
 	auto update_dir_actions_and_sources = [&] () -> void {
-		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < 9 && (action1 != FALL || fly))
+		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < jump_height && (action1 != FALL || jump_many_times))
 			update_jump();
 
 		else if (jump_count > -1)
@@ -305,10 +312,10 @@ int main(int argc, char* argv[]) {
 		if (action2 == MOVE)  {
 			
 			if (dir == LEFT)
-				x -= 5;
+				x -= speed;
 
 			else
-				x += 5;
+				x += speed;
 
 		}
 
@@ -381,16 +388,16 @@ int main(int argc, char* argv[]) {
 			if (player_source->get_sx() / 32 < 4)
 				player_source->add_sx(32);
 
-			else if (player_source->get_sx() / 32 > 4)
-				player_source->set_sx(0);
+			else
+				PRINT("asda\n")
 
 		} else if (action1 == JUMP) {
 
 			if (player_source->get_sx() / 32 < 5)
 				player_source->add_sx(32);
 
-			else if (player_source->get_sx() / 32 > 5)
-				player_source->set_sx(0);
+			else
+				player_source->set_sx(5 * 32);
 
 		} else if (action2 == MOVE) {
 
@@ -524,6 +531,7 @@ int main(int argc, char* argv[]) {
 					player_sprite = &kfr;
 		
 			} else if (action1 == JUMP) {
+				
 				if (dir == LEFT)
 					player_sprite = &kjl;
 
@@ -531,6 +539,7 @@ int main(int argc, char* argv[]) {
 					player_sprite = &kjr;
 
 			} else if (action2 == MOVE) {
+
 				if (dir == LEFT)
 					player_sprite = &kwl;
 
@@ -538,6 +547,7 @@ int main(int argc, char* argv[]) {
 					player_sprite = &kwr;
 
 			} else {
+
 				if (dir == LEFT)
 					player_sprite = &kil;
 
@@ -550,7 +560,24 @@ int main(int argc, char* argv[]) {
 
 		} else {
 
-			if (action2 == MOVE) {
+			if (action1 == FALL) {
+
+				if (dir == LEFT)
+					player_sprite = &vfl;
+
+				else
+					player_sprite = &vfr;
+
+			} else if (action1 == JUMP) {
+				
+				if (dir == LEFT)
+					player_sprite = &vjl;
+
+				else
+					player_sprite = &vjr;
+				
+			} else if (action2 == MOVE) {
+				
 				if (dir == LEFT)
 					player_sprite = &vwl;
 
@@ -558,6 +585,7 @@ int main(int argc, char* argv[]) {
 					player_sprite = &vwr;
 
 			} else {
+				
 				if (dir == LEFT)
 					player_sprite = &vil;
 
@@ -580,7 +608,7 @@ int main(int argc, char* argv[]) {
 
 	// Drawing -------------------------
 
-	auto draw_attack= [&] () -> void {
+	auto draw_attack = [&] () -> void {
 		al_set_target_bitmap(al_get_backbuffer(window));
 
 		if (attack) {
@@ -775,7 +803,7 @@ void update_fall() {
 }
 
 void update_jump() {
-	if (jump_count < 9 && (action1 != FALL || fly)) {
+	if (jump_count < jump_height && (action1 != FALL || jump_many_times)) {
 		action1 = JUMP;
 			
 		if (player_source == &idle_source)
@@ -874,11 +902,15 @@ void reset_sources() {
 void switch_character() {
 	if (actual_character == KLONOA) {
 		actual_character = VANDA;
-		fly = false;
+		jump_height = 5;
+		jump_many_times = false;
+		speed = 7;
 
 	} else {
 		actual_character = KLONOA;
-		fly = true;
+		jump_height = 12;
+		jump_many_times = true;
+		speed = 5;
 
 	}
 
