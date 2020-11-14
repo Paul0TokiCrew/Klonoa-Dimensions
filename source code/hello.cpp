@@ -55,6 +55,8 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 
 void update_fall();
 void update_jump();
+void update_move_left();
+void update_move_right();
 
 void reset_sources();
 void switch_character();
@@ -94,6 +96,7 @@ public:
 	
 	wind_bullet_source = source(-64, 0, 64, 32),
 	wind_cut_source = source(-32, 0, 32, 32),
+	kick_source = source(-64, 0, 64, 32),
 	*attack_source = &wind_bullet_source;
 
 // -------------------------------
@@ -161,12 +164,16 @@ int main(int argc, char* argv[]) {
 	ALLEGRO_BITMAP* vjr = al_load_bitmap("../sprites/Vanda/Character/Vanda Jump Right.png");
 	ALLEGRO_BITMAP* vfl = al_load_bitmap("../sprites/Vanda/Character/Vanda Fall Left.png");
 	ALLEGRO_BITMAP* vfr = al_load_bitmap("../sprites/Vanda/Character/Vanda Fall Right.png");
+	ALLEGRO_BITMAP* vkl = al_load_bitmap("../sprites/Vanda/Character/Vanda Kick Left.png");
+	ALLEGRO_BITMAP* vkr = al_load_bitmap("../sprites/Vanda/Character/Vanda Kick Right.png");
 	ALLEGRO_BITMAP** player_sprite = &kir;
 
 	ALLEGRO_BITMAP* wbl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Left.png");
 	ALLEGRO_BITMAP* wbr = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Right.png");
 	ALLEGRO_BITMAP* wcl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Cut Left.png");
 	ALLEGRO_BITMAP* wcr = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Cut Right.png");
+	ALLEGRO_BITMAP* kl = al_load_bitmap("../sprites/Vanda/Attacks/Kick Left.png");
+	ALLEGRO_BITMAP* kr = al_load_bitmap("../sprites/Vanda/Attacks/Kick Right.png");
 	ALLEGRO_BITMAP** attack_sprite = &wbr;
 
 	ALLEGRO_BITMAP* wsl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Left.png");
@@ -210,9 +217,8 @@ int main(int argc, char* argv[]) {
 			else
 				attack_source = &wind_cut_source;
 
-		} else {
-
-		}
+		} else
+			attack_source = &kick_source;
 
 	};
 
@@ -228,25 +234,13 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_LEFT)) {
-			dir = LEFT;
-			action2 = MOVE;
-			
-			if (player_source == &idle_source)
-				player_source = &move_source;
-			
-			PRINT("move left\n")
+		if (al_key_down(&key, ALLEGRO_KEY_LEFT))
+			update_move_left();
 
-		} else if (al_key_down(&key, ALLEGRO_KEY_RIGHT)) {
-			dir = RIGHT;
-			action2 = MOVE;
-			
-			if (player_source == &idle_source)
-				player_source = &move_source;
-			
-			PRINT("move right\n")
+		else if (al_key_down(&key, ALLEGRO_KEY_RIGHT))
+			update_move_right();
 
-		} else
+		else
 			action2 = IDLE;
 
 
@@ -352,6 +346,12 @@ int main(int argc, char* argv[]) {
 
 			} else {
 
+				if (attack_source->get_sx() / 64 < 7)
+					attack_source->add_sx(64);
+
+				else
+					attack = false;
+
 			}
 	
 		}
@@ -381,6 +381,14 @@ int main(int argc, char* argv[]) {
 
 				}
 
+			} else {
+
+				if (player_source->get_sx() / 32 < 3)
+					player_source->add_sx(32);
+
+				else
+					player_source->set_sx(0);
+
 			}
 
 		} else if (action1 == FALL) {
@@ -388,16 +396,16 @@ int main(int argc, char* argv[]) {
 			if (player_source->get_sx() / 32 < 4)
 				player_source->add_sx(32);
 
-			else
-				PRINT("asda\n")
+			else if (player_source->get_sx() / 32 > 4)
+				player_source->set_sx(0);
 
 		} else if (action1 == JUMP) {
 
 			if (player_source->get_sx() / 32 < 5)
 				player_source->add_sx(32);
 
-			else
-				player_source->set_sx(5 * 32);
+			else if (player_source->get_sx() / 32 > 5)
+				player_source->set_sx(0);
 
 		} else if (action2 == MOVE) {
 
@@ -453,8 +461,14 @@ int main(int argc, char* argv[]) {
 
 			} else {
 
-			}
+				if (dir == LEFT)
+					attack_sprite = &kl;
 
+				else
+					attack_sprite = &kr;
+
+			}
+		
 		}
 
 		al_convert_mask_to_alpha(*attack_sprite, COLOR(0, 255, 0));
@@ -560,7 +574,15 @@ int main(int argc, char* argv[]) {
 
 		} else {
 
-			if (action1 == FALL) {
+			if (attack && action1 == IDLE && action2 == IDLE) {
+
+				if (dir == LEFT)
+					player_sprite = &vkl;
+				
+				else
+					player_sprite = &vkr;
+
+			} else if (action1 == FALL) {
 
 				if (dir == LEFT)
 					player_sprite = &vfl;
@@ -635,9 +657,16 @@ int main(int argc, char* argv[]) {
 			
 			} else {
 
+				if (dir == LEFT)
+					al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
+
+				else
+					al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
+
 			}
 
 		}
+
 	};
 
 	auto draw_sword = [&] () -> void {
@@ -791,30 +820,45 @@ int main(int argc, char* argv[]) {
 void update_fall() {
 	if (jump_count > -1) {
 		action1 = FALL;
-			
-		if (player_source == &jump_source)
-			player_source = &fall_source;
-
+		player_source = &fall_source;
 		jump_count--;
 		PRINT("fall\n")
 	
-	}
+	} else
+		action1 = IDLE;
 
 }
 
 void update_jump() {
 	if (jump_count < jump_height && (action1 != FALL || jump_many_times)) {
 		action1 = JUMP;
-			
-		if (player_source == &idle_source)
-			player_source = &jump_source;
-			
+		player_source = &jump_source;	
 		jump_count++;
 		PRINT("jump\n")
 
 	} else
 		action1 = FALL;
 
+}
+
+void update_move_left() {
+	dir = LEFT;
+	action2 = MOVE;
+
+	if (player_source == &idle_source)
+		player_source = &move_source;
+			
+	PRINT("move left\n")
+}
+
+void update_move_right() {
+	dir = RIGHT;
+		action2 = MOVE;
+			
+	if (player_source == &idle_source)
+		player_source = &move_source;
+			
+	PRINT("move right\n")
 }
 
 
@@ -826,7 +870,10 @@ void reset_sources() {
 
 		wind_cut_source.set_sx(-32);
 		wind_cut_source.set_sy(0);
-	}
+
+		kick_source.set_sx(-32);
+		kick_source.set_sy(0);
+}
 
 
 
