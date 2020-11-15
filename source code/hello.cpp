@@ -105,18 +105,23 @@ class _player_source {
 private:
 	mutable int sx, sy;
 	const int sw, sh,
+		sx_lim, sy_lim,
 		action,
 		character;
 
 public:
-	_player_source(const int sx, const int sy, const int sw, const int sh, const int action, const int character = 2) :
-	sx(sx), sy(sy), sw(sw), sh(sh), action(action), character(character) { }
+	_player_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const int character = 2) :
+	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), character(character) { }
 	~_player_source() { delete this; }
 	
 	const int get_sx_index() const { return this->sx / this->sw; }
 	const int get_sy_index() const { return this->sy / this->sh; }
+	
 	const bool check_actual_character() const;
 	const bool check_actual_action(int) const;
+
+	const void update_sx(int) const;
+	const void update_sy(int) const;
 
 };
 
@@ -794,8 +799,6 @@ int main(int argc, char* argv[]) {
 		else if (klonoa_mode == SAMURAI && dir == RIGHT)
 			draw_sword();
 
-		
-
 		al_flip_display();
 	
 	}
@@ -998,8 +1001,8 @@ const bool _player_source::check_actual_character() const {
 
 }
 
-const bool _player_source::check_actual_action(int n) const {
-	if (n == 1) {
+const bool _player_source::check_actual_action(int action_n) const {
+	if (action_n == 1) {
 
 		if (action1 == this->action)
 			return true;
@@ -1014,6 +1017,32 @@ const bool _player_source::check_actual_action(int n) const {
 
 		else
 			return false;
+	
+	}
+
+}
+
+const void _player_source::update_sx(int action_n) const {
+	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
+
+		if (this->get_sx_index() < this->sx_lim)
+			this->sx += this->sw;
+
+		else
+			this->sx = 0;
+	
+	}
+
+}
+
+const void _player_source::update_sy(int action_n) const {
+	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
+
+		if (this->get_sx_index() < this->sy_lim)
+			this->sx += this->sw;
+
+		else
+			this->sx = 0;
 	
 	}
 
