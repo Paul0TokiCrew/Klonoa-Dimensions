@@ -114,6 +114,15 @@ public:
 	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), character(character) { }
 	~_player_source() { delete this; }
 	
+	const int get_sx() const { return this->sx; }
+	const int get_sy() const { return this->sy; }
+	const int get_sw() const { return this->sw; }
+	const int get_sh() const { return this->sh; }
+	const int get_sx_lim() const { return this->sx_lim; }
+	const int get_sy_lim() const { return this->sy_lim; }
+	const int get_action() const { return this->action; }
+	const int get_character() const { return this->character; }
+
 	const int get_sx_index() const { return this->sx / this->sw; }
 	const int get_sy_index() const { return this->sy / this->sh; }
 	
@@ -1039,10 +1048,10 @@ const void _player_source::update_sy(int action_n) const {
 	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
 
 		if (this->get_sx_index() < this->sy_lim)
-			this->sx += this->sw;
+			this->sy += this->sh;
 
 		else
-			this->sx = 0;
+			this->sy = 0;
 	
 	}
 
