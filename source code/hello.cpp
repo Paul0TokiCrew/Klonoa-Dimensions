@@ -99,7 +99,7 @@ public:
 	kick_source = source(-64, 0, 64, 32),
 	*attack_source = &wind_bullet_source;
 
-class player_source {
+class _player_source {
 private:
 	mutable int sx, sy;
 	const int sw, sh,
@@ -107,10 +107,12 @@ private:
 		character;
 
 public:
-	player_source(const int sx, const int sy, const int sw, const int sh, const int action, const int character = 2) :
+	_player_source(const int sx, const int sy, const int sw, const int sh, const int action, const int character = 2) :
 	sx(sx), sy(sy), sw(sw), sh(sh), action(action), character(character) { }
-	~player_source() { delete this; }
+	~_player_source() { delete this; }
 	
+	const bool get_actual_character() const;
+
 };
 
 // -------------------------------
@@ -122,7 +124,6 @@ public:
 
 
 int main(int argc, char* argv[]) {
-
 	// Game start ----------------------
 
 	PRINT("--- starting game ---\n\n")
@@ -974,6 +975,21 @@ void switch_character() {
 		speed = 5;
 
 	}
+
+}
+
+// -------------------------------
+
+
+
+// Methods definition ------------
+
+const bool _player_source::get_actual_character() const {
+	if (actual_character == this->character)
+		return true;
+
+	else
+		return false;
 
 }
 
