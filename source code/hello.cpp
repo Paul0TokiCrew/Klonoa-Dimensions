@@ -99,6 +99,8 @@ public:
 	kick_source = source(-64, 0, 64, 32),
 	*attack_source = &wind_bullet_source;
 
+
+
 class _player_source {
 private:
 	mutable int sx, sy;
@@ -111,7 +113,10 @@ public:
 	sx(sx), sy(sy), sw(sw), sh(sh), action(action), character(character) { }
 	~_player_source() { delete this; }
 	
-	const bool get_actual_character() const;
+	const int get_sx_index() const { return this->sx / this->sw; }
+	const int get_sy_index() const { return this->sy / this->sh; }
+	const bool check_actual_character() const;
+	const bool check_actual_action(int) const;
 
 };
 
@@ -984,12 +989,33 @@ void switch_character() {
 
 // Methods definition ------------
 
-const bool _player_source::get_actual_character() const {
+const bool _player_source::check_actual_character() const {
 	if (actual_character == this->character)
 		return true;
 
 	else
 		return false;
+
+}
+
+const bool _player_source::check_actual_action(int n) const {
+	if (n == 1) {
+
+		if (action1 == this->action)
+			return true;
+
+		else
+			return false;
+
+	} else {
+
+		if (action2 == this->action)
+			return true;
+
+		else
+			return false;
+	
+	}
 
 }
 
