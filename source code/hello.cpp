@@ -99,6 +99,20 @@ public:
 	kick_source = source(-64, 0, 64, 32),
 	*attack_source = &wind_bullet_source;
 
+class player_source {
+private:
+	mutable int sx, sy;
+	const int sw, sh,
+		action,
+		character;
+
+public:
+	player_source(const int sx, const int sy, const int sw, const int sh, const int action, const int character = 2) :
+	sx(sx), sy(sy), sw(sw), sh(sh), action(action), character(character) { }
+	~player_source() { delete this; }
+	
+};
+
 // -------------------------------
 
 
