@@ -21,6 +21,8 @@
 
 #define FPS 15.0f
 
+#define ATTACK -1
+
 // -------------------------------
 
 
@@ -108,11 +110,12 @@ private:
 		sx_lim, sy_lim,
 		action,
 		set_to_0,
-		character;
+		character,
+		is_attack;
 
 public:
-	_player_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2) :
-	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character) { }
+	_player_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2, const int is_attack = false) :
+	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character), is_attack(is_attack) { }
 	~_player_source() { delete this; }
 
 	const int get_sx() const { return this->sx; }
@@ -139,6 +142,9 @@ public:
 	move = _player_source(-32, 0, 4, 1, 32, 32, MOVE),
 	fall = _player_source(-32, 0, 5, 1, 32, 32, FALL, false),
 	jump = _player_source(-32, 0, 6, 1, 32, 32, JUMP, false),
+	klonoa_wb = _player_source(-32, 0, 11, 1, 32, 32, ATTACK, false, KLONOA, true),
+	klonoa_wc = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
+	vanda_k = _player_source(-32, 0, 4, 1, 32, 32, ATTACK, false, KLONOA, true),
 	*player = &idle;
 
 // -------------------------------
@@ -683,13 +689,26 @@ int main(int argc, char* argv[]) {
 		else if (action2 == MOVE)
 			player = &move;
 
-		else
+		else if (attack) {
+			if (actual_character == VANDA)
+				player = &vanda_k;
+
+			else if (klonoa_mode == NORMAL)
+				player = &klonoa_wb;
+
+			else
+				player = &klonoa_wc;
+
+		} else
 			player = &idle;
 
 		idle.update_sx(1, 2);
 		move.update_sx(2);
-		jump.update_sx(1);
 		fall.update_sx(1);
+		jump.update_sx(1);
+		klonoa_wb.update_sx(0);
+		klonoa_wc.update_sx(0);
+		vanda_k.update_sx(0);
 
 		if (dir == LEFT)
 			al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x + 32, y + 32, 0);
@@ -1052,7 +1071,7 @@ const bool _player_source::check_actual_character() const {
 const bool _player_source::check_actual_action(const int action_n) const {
 	if (action_n == 1) {
 
-		if (action1 == this->action)
+		if (action1 == this->action && this->is_attack == attack)
 			return true;
 
 		else
@@ -1060,7 +1079,7 @@ const bool _player_source::check_actual_action(const int action_n) const {
 
 	} else {
 
-		if (action2 == this->action)
+		if (action2 == this->action && this->is_attack == attack)
 			return true;
 
 		else
@@ -1071,7 +1090,7 @@ const bool _player_source::check_actual_action(const int action_n) const {
 }
 
 const void _player_source::update_sx(const int action_n) const {
-	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
+	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sx_lim)
 			this->sx += this->sw;
@@ -1085,7 +1104,7 @@ const void _player_source::update_sx(const int action_n) const {
 }
 
 const void _player_source::update_sy(const int action_n) const {
-	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
+	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sy_lim)
 			this->sy += this->sh;
@@ -1099,7 +1118,7 @@ const void _player_source::update_sy(const int action_n) const {
 }
 
 const void _player_source::update_sx(const int action_n1, const int action_n2) const {
-	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2)) {
+	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sx_lim)
 			this->sx += this->sw;
@@ -1113,7 +1132,7 @@ const void _player_source::update_sx(const int action_n1, const int action_n2) c
 }
 
 const void _player_source::update_sy(const int action_n1, const int action_n2) const {
-	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2)) {
+	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sy_lim)
 			this->sy += this->sh;
