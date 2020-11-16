@@ -42,7 +42,7 @@ bool game_over = false,
 
 // Global enums ------------------
 
-enum { IDLE, MOVE, JUMP, FALL, ATTACK } action1 = IDLE, action2 = IDLE;
+enum { IDLE, MOVE, JUMP, FALL } action1 = IDLE, action2 = IDLE;
 enum { LEFT, RIGHT } dir = RIGHT;
 enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
 enum { KLONOA, VANDA } actual_character = KLONOA;
@@ -107,11 +107,12 @@ private:
 	const int sw, sh,
 		sx_lim, sy_lim,
 		action,
+		set_to_0,
 		character;
 
 public:
-	_player_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const int character = 2) :
-	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), character(character) { }
+	_player_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2) :
+	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character) { }
 	~_player_source() { delete this; }
 
 	const int get_sx() const { return this->sx; }
@@ -127,13 +128,17 @@ public:
 	const int get_sy_index() const { return this->sy / this->sh; }
 
 	const bool check_actual_character() const;
-	const bool check_actual_action(int) const;
+	const bool check_actual_action(const int) const;
 
-	const void update_sx(int) const;
-	const void update_sy(int) const;
+	const void update_sx(const int) const;
+	const void update_sy(const int) const;
+	const void update_sx(const int, const int) const;
+	const void update_sy(const int, const int) const;
 
-}	idle = _player_source(-32, 0, 22, 0, 32, 32, IDLE),
-	move = _player_source(-32, 0, 4, 0, 32, 32, MOVE),
+}	idle = _player_source(-32, 0, 22, 1, 32, 32, IDLE),
+	move = _player_source(-32, 0, 4, 1, 32, 32, MOVE),
+	fall = _player_source(-32, 0, 5, 1, 32, 32, FALL, false),
+	jump = _player_source(-32, 0, 6, 1, 32, 32, JUMP, false),
 	*player = &idle;
 
 // -------------------------------
@@ -669,14 +674,22 @@ int main(int argc, char* argv[]) {
 	auto draw_test = [&] () -> void {
 		al_set_target_bitmap(al_get_backbuffer(window));
 
-		if (action2 == MOVE)
+		if (action1 == FALL)
+			player = &fall;
+
+		else if (action1 == JUMP)
+			player = &jump;
+
+		else if (action2 == MOVE)
 			player = &move;
 
 		else
 			player = &idle;
 
-		idle.update_sx(2);
+		idle.update_sx(1, 2);
 		move.update_sx(2);
+		jump.update_sx(1);
+		fall.update_sx(1);
 
 		if (dir == LEFT)
 			al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x + 32, y + 32, 0);
@@ -1036,7 +1049,7 @@ const bool _player_source::check_actual_character() const {
 
 }
 
-const bool _player_source::check_actual_action(int action_n) const {
+const bool _player_source::check_actual_action(const int action_n) const {
 	if (action_n == 1) {
 
 		if (action1 == this->action)
@@ -1057,13 +1070,13 @@ const bool _player_source::check_actual_action(int action_n) const {
 
 }
 
-const void _player_source::update_sx(int action_n) const {
+const void _player_source::update_sx(const int action_n) const {
 	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
 
 		if (this->get_sx_index() < this->sx_lim)
 			this->sx += this->sw;
 
-		else
+		else if (this->set_to_0)
 			this->sx = 0;
 	
 	} else
@@ -1071,13 +1084,41 @@ const void _player_source::update_sx(int action_n) const {
 
 }
 
-const void _player_source::update_sy(int action_n) const {
+const void _player_source::update_sy(const int action_n) const {
 	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n)) {
 
 		if (this->get_sx_index() < this->sy_lim)
 			this->sy += this->sh;
 
-		else
+		else if (this->set_to_0)
+			this->sy = 0;
+	
+	} else
+		this->sy = -(this->sh);
+
+}
+
+const void _player_source::update_sx(const int action_n1, const int action_n2) const {
+	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2)) {
+
+		if (this->get_sx_index() < this->sx_lim)
+			this->sx += this->sw;
+
+		else if (this->set_to_0)
+			this->sx = 0;
+	
+	} else
+		this->sx = -(this->sw);
+
+}
+
+const void _player_source::update_sy(const int action_n1, const int action_n2) const {
+	if ((this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2)) {
+
+		if (this->get_sx_index() < this->sy_lim)
+			this->sy += this->sh;
+
+		else if (this->set_to_0)
 			this->sy = 0;
 	
 	} else
