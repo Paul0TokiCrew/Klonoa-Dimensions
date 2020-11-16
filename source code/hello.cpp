@@ -144,8 +144,13 @@ public:
 	jump = _player_source(-32, 0, 6, 1, 32, 32, JUMP, false),
 	klonoa_wb = _player_source(-32, 0, 11, 1, 32, 32, ATTACK, false, KLONOA, true),
 	klonoa_wc = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
-	vanda_k = _player_source(-32, 0, 4, 1, 32, 32, ATTACK, false, KLONOA, true),
-	*player = &idle;
+	vanda_k = _player_source(-32, 0, 4, 1, 32, 32, ATTACK, false, VANDA, true),
+	*player = &idle,
+
+	wind_bullet = _player_source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
+	wind_cut = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
+	kick = _player_source(-64, 0, 4, 1, 64, 32, ATTACK, false, VANDA, true),
+	*_attack = &wind_bullet;
 
 // -------------------------------
 
@@ -393,7 +398,7 @@ int main(int argc, char* argv[]) {
 
 			} else {
 
-				if (attack_source->get_sx() / 64 < 7)
+				if (attack_source->get_sx() / 64 < 3)
 					attack_source->add_sx(64);
 
 				else
@@ -690,14 +695,19 @@ int main(int argc, char* argv[]) {
 			player = &move;
 
 		else if (attack) {
-			if (actual_character == VANDA)
+			if (actual_character == VANDA) {
 				player = &vanda_k;
+				_attack = &kick;
 
-			else if (klonoa_mode == NORMAL)
+			} else if (klonoa_mode == NORMAL) {
 				player = &klonoa_wb;
+				_attack = &wind_bullet;
 
-			else
+			} else {
 				player = &klonoa_wc;
+				_attack = &wind_cut;
+
+			}
 
 		} else
 			player = &idle;
@@ -709,12 +719,17 @@ int main(int argc, char* argv[]) {
 		klonoa_wb.update_sx(0);
 		klonoa_wc.update_sx(0);
 		vanda_k.update_sx(0);
+		wind_bullet.update_sx(0);
+		wind_cut.update_sx(0);
+		kick.update_sx(0);
 
-		if (dir == LEFT)
-			al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x + 32, y + 32, 0);
+		if (attack && dir == LEFT)
+			al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 - 9, y + 32, 0);
 
-		else
-			al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x + 32, y + 32, 0);
+		al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x + 32, y + 32, 0);
+
+		if (attack && dir == RIGHT)
+			al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32, y + 32, 0);
 
 		PRINT(player->get_sx_index() << std::endl)
 	
@@ -1071,7 +1086,7 @@ const bool _player_source::check_actual_character() const {
 const bool _player_source::check_actual_action(const int action_n) const {
 	if (action_n == 1) {
 
-		if (action1 == this->action && this->is_attack == attack)
+		if (action1 == this->action || this->is_attack == attack)
 			return true;
 
 		else
@@ -1079,7 +1094,7 @@ const bool _player_source::check_actual_action(const int action_n) const {
 
 	} else {
 
-		if (action2 == this->action && this->is_attack == attack)
+		if (action2 == this->action || this->is_attack == attack)
 			return true;
 
 		else
