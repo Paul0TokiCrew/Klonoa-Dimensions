@@ -149,7 +149,7 @@ public:
 
 	wind_bullet = _player_source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
 	wind_cut = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
-	kick = _player_source(-64, 0, 4, 1, 64, 32, ATTACK, false, VANDA, true),
+	kick = _player_source(-64, 0, 8, 1, 64, 32, ATTACK, false, VANDA, true),
 	*_attack = &wind_bullet;
 
 class ws_source : public _player_source {
@@ -163,7 +163,10 @@ public:
 	const void update_sx(const int, const int) const override;
 	const void update_sy(const int, const int) const override;
 
-}	wind_sword = ws_source(0, 0, 1, 1, 32, 32, IDLE);
+}	ws_wind_cut = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
+	ws_fall = ws_source(-32, 0, 5, 1, 32, 32, FALL, false),
+	ws_jump = ws_source(-32, 0, 6, 1, 32, 32, JUMP, false),
+	*ws = &ws_jump;
 
 // -------------------------------
 
@@ -411,11 +414,10 @@ int main(int argc, char* argv[]) {
 
 			} else {
 
-				if (attack_source->get_sx() / 64 < 3)
+				if (attack_source->get_sx() / 64 < 7)
 					attack_source->add_sx(64);
 
-				else
-					attack = false;
+			
 
 			}
 	
@@ -698,13 +700,15 @@ int main(int argc, char* argv[]) {
 	auto draw_test = [&] () -> void {
 		al_set_target_bitmap(al_get_backbuffer(window));
 
-		if (action1 == FALL)
+		if (action1 == FALL) {
 			player = &fall;
+			ws = &ws_fall;
 
-		else if (action1 == JUMP)
+		} else if (action1 == JUMP) {
 			player = &jump;
-
-		else if (action2 == MOVE)
+			ws = &ws_jump;
+		
+		} else if (action2 == MOVE)
 			player = &move;
 
 		else if (attack) {
@@ -720,6 +724,7 @@ int main(int argc, char* argv[]) {
 			} else {
 				player = &klonoa_wc;
 				_attack = &wind_cut;
+				ws = &ws_wind_cut;
 
 			}
 
@@ -736,34 +741,57 @@ int main(int argc, char* argv[]) {
 		wind_bullet.update_sx(0);
 		wind_cut.update_sx(0);
 		kick.update_sx(0);
+		ws_wind_cut.update_sx(0);
+		ws_fall.update_sx(1);
+		ws_jump.update_sx(1);
 
 		if (dir == LEFT) {
 			
-			if (attack)
-				al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 - 9, y + 32, 0);
+			if (attack) {
+				
+				if (actual_character == KLONOA && klonoa_mode == SAMURAI)
+					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 - 9 - 4, y + 32, 0);
 
-			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
+				else
+					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 - 9, y + 32, 0);
+	
+			} else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
 
-				if (action2 == MOVE && move.get_sx_index() > 1)
+				if (action1 == FALL || action1 == JUMP)
+					al_draw_bitmap_region(*sword_sprite, ws->get_sx(), ws->get_sy(), ws->get_sw(), ws->get_sh(), x + 32 - 9, y + 32, 0);
+				
+				else if (action2 == MOVE && move.get_sx_index() > 1)
 					al_draw_bitmap(*sword_sprite, x + 32 - 9 - 2, y + 32, 0);
 
-				else	
+				else
 					al_draw_bitmap(*sword_sprite, x + 32 - 9, y + 32, 0);
 			
 			}
 
 		}
 
+
+
 		al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x + 32, y + 32, 0);
+
+
 
 		if (dir == RIGHT) {
 			
-			if (attack)
-				al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32, y + 32, 0);
+			if (attack) {
 
-			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
-				
-				if (action2 == MOVE && move.get_sx_index() > 1)
+				if (actual_character == KLONOA && klonoa_mode == SAMURAI)
+					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 + 4, y + 32, 0);
+
+				else
+					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32, y + 32, 0);
+
+			} else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
+
+				if (action1 == FALL || action1 == JUMP)
+					al_draw_bitmap_region(*sword_sprite, ws->get_sx(), ws->get_sy(), ws->get_sw(), ws->get_sh(), x + 32, y + 32, 0);
+								
+				else if (action2 == MOVE && move.get_sx_index() > 1)
 					al_draw_bitmap(*sword_sprite, x + 32 - 2, y + 32, 0);
 
 				else	
@@ -1128,7 +1156,7 @@ const bool _player_source::check_actual_character() const {
 const bool _player_source::check_actual_action(const int action_n) const {
 	if (action_n == 1) {
 
-		if (action1 == this->action || this->is_attack == attack)
+		if (action1 == this->action)
 			return true;
 
 		else
@@ -1136,7 +1164,7 @@ const bool _player_source::check_actual_action(const int action_n) const {
 
 	} else {
 
-		if (action2 == this->action || this->is_attack == attack)
+		if (action2 == this->action)
 			return true;
 
 		else
