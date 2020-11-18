@@ -32,7 +32,8 @@
 int x = 250, y = 200,
 	jump_count = -1,
 	jump_height = 9,
-	speed = 5;
+	speed = 5,
+	switch_count = 0;
 
 bool game_over = false,
 	attack = false,
@@ -144,7 +145,7 @@ public:
 	jump = _player_source(-32, 0, 6, 1, 32, 32, JUMP, false),
 	klonoa_wb = _player_source(-32, 0, 11, 1, 32, 32, ATTACK, false, KLONOA, true),
 	klonoa_wc = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
-	vanda_k = _player_source(-32, 0, 4, 1, 32, 32, ATTACK, false, VANDA, true),
+	vanda_k = _player_source(-32, 0, 8, 1, 32, 32, ATTACK, false, VANDA, true),
 	*player = &idle,
 
 	wind_bullet = _player_source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
@@ -329,8 +330,9 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_S) && actual_character == KLONOA && !attack) {
-			
+		if (!switch_count && al_key_down(&key, ALLEGRO_KEY_S) && actual_character == KLONOA && !attack) {
+			switch_count = 5;
+
 			if (klonoa_mode == NORMAL) {
 				klonoa_mode = SAMURAI;
 				PRINT("mode: samurai\n")
@@ -345,7 +347,8 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_C) && !attack) {
+		if (!switch_count && al_key_down(&key, ALLEGRO_KEY_C) && !attack) {
+			switch_count = 5;
 			switch_character();
 			PRINT("character swicthed\n")
 
@@ -355,6 +358,11 @@ int main(int argc, char* argv[]) {
 
 		if (action1 == IDLE && action2 == IDLE && !attack)
 			player_source = &idle_source;
+
+
+
+		if (switch_count)
+			switch_count--;
 
 	};
 
@@ -419,7 +427,8 @@ int main(int argc, char* argv[]) {
 				if (attack_source->get_sx() / 64 < 7)
 					attack_source->add_sx(64);
 
-			
+				else
+					attack = false;			
 
 			}
 	
