@@ -409,16 +409,14 @@ int main(int argc, char* argv[]) {
 					if (attack_source->get_sx() / 64 < 10)
 						attack_source->add_sx(64);
 
-					else
-						attack = false;
+					else { }
 
 				} else {
 			
 					if (attack_source->get_sx() / 32 < 4)
 						attack_source->add_sx(32);
 
-					else
-						attack = false;
+					else { }
 
 				}
 
@@ -427,8 +425,7 @@ int main(int argc, char* argv[]) {
 				if (attack_source->get_sx() / 64 < 7)
 					attack_source->add_sx(64);
 
-				else
-					attack = false;			
+				else { }		
 
 			}
 	
@@ -1155,7 +1152,12 @@ const bool _player_source::check_actual_character() const {
 }
 
 const bool _player_source::check_actual_action(const int action_n) const {
-	if (action_n == 1) {
+	if (action_n == 0){
+
+		if (player == this && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
+			attack = false;
+
+	} else if (action_n == 1) {
 
 		if (action1 == this->action)
 			return true;
