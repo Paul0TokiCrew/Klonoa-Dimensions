@@ -148,9 +148,11 @@ public:
 	*player = &idle,
 
 	wind_bullet = _player_source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
-	wind_cut = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
+	wind_cut = _player_source(-64, 0, 5, 1, 64, 32, ATTACK, false, KLONOA, true),
 	kick = _player_source(-64, 0, 8, 1, 64, 32, ATTACK, false, VANDA, true),
 	*_attack = &wind_bullet;
+
+
 
 class ws_source : public _player_source {
 public:
@@ -747,15 +749,10 @@ int main(int argc, char* argv[]) {
 
 		if (dir == LEFT) {
 			
-			if (attack) {
-				
-				if (actual_character == KLONOA && klonoa_mode == SAMURAI)
-					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 - 9 - 4, y + 32, 0);
-
-				else
-					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 - 9, y + 32, 0);
+			if (attack)
+				al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x - 9, y + 32, 0);
 	
-			} else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
+			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
 
 				if (action1 == FALL || action1 == JUMP)
 					al_draw_bitmap_region(*sword_sprite, ws->get_sx(), ws->get_sy(), ws->get_sw(), ws->get_sh(), x + 32 - 9, y + 32, 0);
@@ -778,19 +775,14 @@ int main(int argc, char* argv[]) {
 
 		if (dir == RIGHT) {
 			
-			if (attack) {
+			if (attack)
+				al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32, y + 32, 0);
 
-				if (actual_character == KLONOA && klonoa_mode == SAMURAI)
-					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32 + 4, y + 32, 0);
-
-				else
-					al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x + 32, y + 32, 0);
-
-			} else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
+			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
 
 				if (action1 == FALL || action1 == JUMP)
 					al_draw_bitmap_region(*sword_sprite, ws->get_sx(), ws->get_sy(), ws->get_sw(), ws->get_sh(), x + 32, y + 32, 0);
-								
+
 				else if (action2 == MOVE && move.get_sx_index() > 1)
 					al_draw_bitmap(*sword_sprite, x + 32 - 2, y + 32, 0);
 
