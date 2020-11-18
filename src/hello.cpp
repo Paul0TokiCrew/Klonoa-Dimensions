@@ -56,12 +56,6 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 
 // Functions declaration ---------
 
-void update_fall();
-void update_jump();
-void update_move_left();
-void update_move_right();
-
-void reset_sources();
 void switch_character();
 
 // -------------------------------
@@ -69,40 +63,6 @@ void switch_character();
 
 
 // Classes -----------------------
-
-class source {
-private:
-	mutable int sx, sy;
-	const int sw, sh;
-
-public:
-	source(int sx, int sy, int sw, int sh) : sx(sx), sy(sy), sw(sw), sh(sh) { }
-	~source() { delete this; }
-
-	void set_sx(int sx) const { this->sx = sx; }
-	void set_sy(int sy) const { this->sx = sy; }
-
-	int get_sx() const { return this->sx; }
-	int get_sy() const { return this->sy; }
-	int get_sw() const { return this->sw; }
-	int get_sh() const { return this->sh; }
-
-	void add_sx(int add) const { this->sx += add; }
-	void add_sy(int add) const { this->sy += add; }
-	
-}	idle_source = source(-32, 0, 32, 32),
-	move_source = source(-32, 0, 32, 32),
-	jump_source = source(-32, 0, 32, 32),
-	fall_source = source(-32, 0, 32, 32),
-	player_attack_source = source(-32, 0, 32, 32),
-	*player_source = &idle_source,
-	
-	wind_bullet_source = source(-64, 0, 64, 32),
-	wind_cut_source = source(-32, 0, 32, 32),
-	kick_source = source(-64, 0, 64, 32),
-	*attack_source = &wind_bullet_source;
-
-
 
 class _player_source {
 protected:
@@ -279,50 +239,39 @@ int main(int argc, char* argv[]) {
 
 	// Sources update ------------------
 	
-	auto update_attack_source = [&] () -> void {
-		if (actual_character == KLONOA) {
+	auto update_dir_and_actions = [&] () -> void {
+		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < jump_height && (action1 != FALL || jump_many_times)) {
+			action1 = JUMP;
+			jump_count++;
+			PRINT("jump\n")
 
-			if (klonoa_mode == NORMAL)
-				attack_source = &wind_bullet_source;
-
-			else
-				attack_source = &wind_cut_source;
+		} else if (jump_count > -1) {
+			action1 = FALL;
+			jump_count--;
+			PRINT("fall\n")
 
 		} else
-			attack_source = &kick_source;
-
-	};
-
-	auto update_dir_actions_and_sources = [&] () -> void {
-		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < jump_height && (action1 != FALL || jump_many_times))
-			update_jump();
-
-		else if (jump_count > -1)
-			update_fall();
-			
-		else
 			action1 = IDLE;
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_LEFT))
-			update_move_left();
+		if (al_key_down(&key, ALLEGRO_KEY_LEFT)) {
+			dir = LEFT;
+			action2 = MOVE;
+			PRINT("move left\n")
+		
+		} else if (al_key_down(&key, ALLEGRO_KEY_RIGHT)) {
+			dir = RIGHT;
+			action2 = MOVE;
+			PRINT("move right\n")
 
-		else if (al_key_down(&key, ALLEGRO_KEY_RIGHT))
-			update_move_right();
-
-		else
+		} else
 			action2 = IDLE;
 
 
 
 		if (al_key_down(&key, ALLEGRO_KEY_X) || attack) {
 			attack = true;
-			
-			if (player_source == &idle_source || attack)
-				player_source = &player_attack_source;
-			
-			update_attack_source();
 			PRINT("attack\n")
 		
 		} else
@@ -356,13 +305,63 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (action1 == IDLE && action2 == IDLE && !attack)
-			player_source = &idle_source;
-
-
-
 		if (switch_count)
 			switch_count--;
+
+	};
+
+	auto update_sources = [&] () -> void {
+		if (action1 == FALL) {
+			player = &fall;
+			ws = &ws_fall;
+
+		} else if (action1 == JUMP) {
+			player = &jump;
+			ws = &ws_jump;
+		
+		} else if (action2 == MOVE)
+			player = &move;
+
+		else
+			player = &idle;
+		
+
+
+		if (attack) {
+
+			if (actual_character == VANDA) {
+				_attack = &kick;
+				if (player == &idle)
+					player = &vanda_k;
+
+			} else if (klonoa_mode == NORMAL) {
+				_attack = &wind_bullet;
+				if (player == &idle)
+					player = &klonoa_wb;
+
+			} else {
+				_attack = &wind_cut;
+				ws = &ws_wind_cut;
+				if (player == &idle)
+					player = &klonoa_wc;
+
+			}
+
+		}
+
+		idle.update_sx(1, 2);
+		move.update_sx(2);
+		fall.update_sx(1);
+		jump.update_sx(1);
+		klonoa_wb.update_sx(0);
+		klonoa_wc.update_sx(0);
+		vanda_k.update_sx(0);
+		wind_bullet.update_sx(0);
+		wind_cut.update_sx(0);
+		kick.update_sx(0);
+		ws_wind_cut.update_sx(0);
+		ws_fall.update_sx(1);
+		ws_jump.update_sx(1);
 
 	};
 
@@ -396,118 +395,6 @@ int main(int argc, char* argv[]) {
 	// ---------------------------------
 
 
-
-	// Sources position updates --------
-
-	auto update_attack_source_pos = [&] () -> void {
-		if (attack) {
-
-			if (actual_character == KLONOA) {
-
-				if (klonoa_mode == NORMAL) {
-			
-					if (attack_source->get_sx() / 64 < 10)
-						attack_source->add_sx(64);
-
-					else { }
-
-				} else {
-			
-					if (attack_source->get_sx() / 32 < 4)
-						attack_source->add_sx(32);
-
-					else { }
-
-				}
-
-			} else {
-
-				if (attack_source->get_sx() / 64 < 7)
-					attack_source->add_sx(64);
-
-				else { }		
-
-			}
-	
-		}
-
-	};
-
-	auto update_sources_pos = [&] () -> void {
-		if (attack && action1 == IDLE && action2 == IDLE) {
-
-			if (actual_character == KLONOA) {
-			
-				if (klonoa_mode == NORMAL) {
-				
-					if (player_source->get_sx() / 32 < 10)
-						player_source->add_sx(32);
-
-					else
-						player_source->set_sx(0);
-
-				}  else {
-				
-					if (player_source->get_sx() / 32 < 4)
-						player_source->add_sx(32);
-
-					else
-						player_source->set_sx(0);
-
-				}
-
-			} else {
-
-				if (player_source->get_sx() / 32 < 3)
-					player_source->add_sx(32);
-
-				else
-					player_source->set_sx(0);
-
-			}
-
-		} else if (action1 == FALL) {
-
-			if (player_source->get_sx() / 32 < 4)
-				player_source->add_sx(32);
-
-			else if (player_source->get_sx() / 32 > 4)
-				player_source->set_sx(0);
-
-		} else if (action1 == JUMP) {
-
-			if (player_source->get_sx() / 32 < 5)
-				player_source->add_sx(32);
-
-			else if (player_source->get_sx() / 32 > 5)
-				player_source->set_sx(0);
-
-		} else if (action2 == MOVE) {
-
-			if (player_source->get_sx() / 32 < 3)
-				player_source->add_sx(32);
-
-			else
-				player_source->set_sx(0);
-
-		} else {
-
-			if (player_source->get_sx() / 32 < 21)
-				player_source->add_sx(32);
-
-			else
-				player_source->set_sx(0);
-
-		}
-
-		if (attack)
-			update_attack_source_pos();
-	
-	};
-
-	// ---------------------------------
-
-	
 
 	// Sprites updates -----------------
 
@@ -705,53 +592,8 @@ int main(int argc, char* argv[]) {
 
 	// Drawing -------------------------
 
-	auto draw_test = [&] () -> void {
+	auto draw = [&] () -> void {
 		al_set_target_bitmap(al_get_backbuffer(window));
-
-		if (action1 == FALL) {
-			player = &fall;
-			ws = &ws_fall;
-
-		} else if (action1 == JUMP) {
-			player = &jump;
-			ws = &ws_jump;
-		
-		} else if (action2 == MOVE)
-			player = &move;
-
-		else if (attack) {
-
-			if (actual_character == VANDA) {
-				player = &vanda_k;
-				_attack = &kick;
-
-			} else if (klonoa_mode == NORMAL) {
-				player = &klonoa_wb;
-				_attack = &wind_bullet;
-
-			} else {
-				player = &klonoa_wc;
-				_attack = &wind_cut;
-				ws = &ws_wind_cut;
-
-			}
-
-		} else
-			player = &idle;
-
-		idle.update_sx(1, 2);
-		move.update_sx(2);
-		fall.update_sx(1);
-		jump.update_sx(1);
-		klonoa_wb.update_sx(0);
-		klonoa_wc.update_sx(0);
-		vanda_k.update_sx(0);
-		wind_bullet.update_sx(0);
-		wind_cut.update_sx(0);
-		kick.update_sx(0);
-		ws_wind_cut.update_sx(0);
-		ws_fall.update_sx(1);
-		ws_jump.update_sx(1);
 
 		if (dir == LEFT) {
 			
@@ -803,100 +645,6 @@ int main(int argc, char* argv[]) {
 	
 	};
 
-	auto draw_attack = [&] () -> void {
-		al_set_target_bitmap(al_get_backbuffer(window));
-
-		if (attack) {
-
-			if (actual_character == KLONOA) {
-
-				if (klonoa_mode == NORMAL) {
-
-					if (dir == LEFT)
-						al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
-
-					else
-						al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
-
-				} else {
-
-					if (dir == LEFT)
-						al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 9 - 4, y, 0);
-
-					else
-						al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x + 4, y, 0);
-
-				}
-			
-			} else {
-
-				if (dir == LEFT)
-					al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32, y, 0);
-
-				else
-					al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
-
-			}
-
-		}
-
-	};
-
-	auto draw_sword = [&] () -> void {
-		al_set_target_bitmap(al_get_backbuffer(window));
-
-		if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
-
-			if (action1 == FALL) {
-
-				if (dir == LEFT)
-					al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x - 9, y, 0);
-
-				else
-					al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
-
-			} else if (action1 == JUMP) {
-				
-				if (dir == LEFT)
-					al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x - 9, y, 0);
-				
-				else
-					al_draw_bitmap_region(*sword_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
-
-			} else if (action2 == MOVE) {
-
-				if (dir == LEFT) {
-		
-					if (player_source->get_sx() / 32 < 2)
-						al_draw_bitmap(*sword_sprite, x - 9, y, 0);
-
-					else
-						al_draw_bitmap(*sword_sprite, x - 9 - 2, y, 0);
-
-				} else {
-			
-					if (player_source->get_sx() / 32 < 2)
-						al_draw_bitmap(*sword_sprite, x, y, 0);
-
-					else
-						al_draw_bitmap(*sword_sprite, x - 2, y, 0);
-
-				}
-
-			} else {
-
-				if (dir == LEFT)
-					al_draw_bitmap(*sword_sprite, x - 9, y, 0);
-
-				else
-					al_draw_bitmap(*sword_sprite, x, y, 0);
-
-			}
-
-		}
-
-	};
-
 	// ---------------------------------
 
 
@@ -913,10 +661,9 @@ int main(int argc, char* argv[]) {
 		if (event.type == ALLEGRO_EVENT_TIMER) {
 			al_get_keyboard_state(&key);
 			
-			update_dir_actions_and_sources();
+			update_dir_and_actions();
+			update_sources();
 			update_pos();
-			update_sources_pos();
-			reset_sources();
 			update_sprites();
 
 			if (al_key_down(&key, ALLEGRO_KEY_ESCAPE))
@@ -926,29 +673,7 @@ int main(int argc, char* argv[]) {
 			game_over = true;
 
 		al_clear_to_color(COLOR(12, 24, 52));
-
-		
-
-		if (attack && dir == LEFT)
-			draw_attack();
-
-		else if (klonoa_mode == SAMURAI && dir == LEFT)
-			draw_sword();
-
-
-
-		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
-		
-
-
-		if (attack && dir == RIGHT)
-			draw_attack();
-
-		else if (klonoa_mode == SAMURAI && dir == RIGHT)
-			draw_sword();
-
-		draw_test();
-
+		draw();
 		al_flip_display();
 	
 	}
@@ -962,6 +687,7 @@ int main(int argc, char* argv[]) {
 	al_destroy_display(window);
 	al_destroy_event_queue(queue);
 	al_destroy_timer(timer);
+
 	al_destroy_bitmap(kil);
 	al_destroy_bitmap(kir);
 	al_destroy_bitmap(kwl);
@@ -972,8 +698,32 @@ int main(int argc, char* argv[]) {
 	al_destroy_bitmap(kfr);
 	al_destroy_bitmap(kwbl);
 	al_destroy_bitmap(kwbr);
+	al_destroy_bitmap(kwcl);
+	al_destroy_bitmap(kwcr);
+	al_destroy_bitmap(vil);
+	al_destroy_bitmap(vir);
+	al_destroy_bitmap(vwl);
+	al_destroy_bitmap(vwr);
+	al_destroy_bitmap(vjl);
+	al_destroy_bitmap(vjr);
+	al_destroy_bitmap(vfl);
+	al_destroy_bitmap(vfr);
+	al_destroy_bitmap(vkl);
+	al_destroy_bitmap(vkr);
+
 	al_destroy_bitmap(wbl);
 	al_destroy_bitmap(wbr);
+	al_destroy_bitmap(wcl);
+	al_destroy_bitmap(wcr);
+	al_destroy_bitmap(kl);
+	al_destroy_bitmap(kr);
+
+	al_destroy_bitmap(wsl);
+	al_destroy_bitmap(wsr);
+	al_destroy_bitmap(wsfl);
+	al_destroy_bitmap(wsfr);
+	al_destroy_bitmap(wsjl);
+	al_destroy_bitmap(wsjr);
 
 	PRINT("\n--- game over ---\n\n")
 	return 0;
@@ -989,135 +739,6 @@ int main(int argc, char* argv[]) {
 
 
 // Functions definition ----------
-
-void update_fall() {
-	if (jump_count > -1) {
-		action1 = FALL;
-		player_source = &fall_source;
-		jump_count--;
-		PRINT("fall\n")
-	
-	} else
-		action1 = IDLE;
-
-}
-
-void update_jump() {
-	if (jump_count < jump_height && (action1 != FALL || jump_many_times)) {
-		action1 = JUMP;
-		player_source = &jump_source;	
-		jump_count++;
-		PRINT("jump\n")
-
-	} else
-		action1 = FALL;
-
-}
-
-void update_move_left() {
-	dir = LEFT;
-	action2 = MOVE;
-
-	if (player_source == &idle_source)
-		player_source = &move_source;
-			
-	PRINT("move left\n")
-}
-
-void update_move_right() {
-	dir = RIGHT;
-		action2 = MOVE;
-			
-	if (player_source == &idle_source)
-		player_source = &move_source;
-			
-	PRINT("move right\n")
-}
-
-
-
-void reset_sources() {
-	if (!attack) {
-		wind_bullet_source.set_sx(-32);
-		wind_bullet_source.set_sy(0);
-
-		wind_cut_source.set_sx(-32);
-		wind_cut_source.set_sy(0);
-
-		kick_source.set_sx(-32);
-		kick_source.set_sy(0);
-}
-
-
-
-	if (player_source == &move_source) {
-		idle_source.set_sx(-32);
-		idle_source.set_sy(0);
-		
-		jump_source.set_sx(-32);
-		jump_source.set_sy(0);
-		
-		fall_source.set_sx(-32);
-		fall_source.set_sy(0);
-		
-		player_attack_source.set_sx(-32);
-		player_attack_source.set_sy(0);
-
-	} else if (player_source == &jump_source) {
-		idle_source.set_sx(-32);
-		idle_source.set_sy(0);
-		
-		move_source.set_sx(-32);
-		move_source.set_sy(0);
-		
-		fall_source.set_sx(-32);
-		fall_source.set_sy(0);
-		
-		player_attack_source.set_sx(-32);
-		player_attack_source.set_sy(0);
-
-	} else if (player_source == &fall_source) {
-		idle_source.set_sx(-32);
-		idle_source.set_sy(-32);
-		
-		move_source.set_sx(-32);
-		move_source.set_sy(0);
-		
-		jump_source.set_sx(-32);
-		jump_source.set_sy(0);
-		
-		player_attack_source.set_sx(-32);
-		player_attack_source.set_sy(0);
-
-	} else if (player_source == &player_attack_source) {
-		idle_source.set_sx(-32);
-		idle_source.set_sy(0);
-		
-		move_source.set_sx(-32);
-		move_source.set_sy(0);
-
-		jump_source.set_sx(-32);
-		jump_source.set_sy(0);
-		
-		fall_source.set_sx(-32);
-		fall_source.set_sy(0);
-
-	} else {
-		move_source.set_sx(-32);
-		move_source.set_sy(0);
-		
-		jump_source.set_sx(-32);
-		jump_source.set_sy(0);
-		
-		fall_source.set_sx(-32);
-		fall_source.set_sy(0);
-		
-		player_attack_source.set_sx(-32);
-		player_attack_source.set_sy(0);
-	
-	}
-
-}
 
 void switch_character() {
 	if (actual_character == KLONOA) {
@@ -1154,7 +775,7 @@ const bool _player_source::check_actual_character() const {
 const bool _player_source::check_actual_action(const int action_n) const {
 	if (action_n == 0){
 
-		if (player == this && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
+		if ( (player == this || _attack == this) && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
 			attack = false;
 
 	} else if (action_n == 1) {
