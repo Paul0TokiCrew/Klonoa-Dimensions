@@ -65,7 +65,7 @@ void switch_character();
 
 // Classes -----------------------
 
-class _player_source {
+class source {
 protected:
 	mutable int sx, sy;
 	const int sw, sh,
@@ -76,9 +76,9 @@ protected:
 		is_attack;
 
 public:
-	_player_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2, const int is_attack = false) :
+	source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2, const int is_attack = false) :
 	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character), is_attack(is_attack) { }
-	~_player_source() { delete this; }
+	~source() { delete this; }
 
 	const int get_sx() const { return this->sx; }
 	const int get_sy() const { return this->sy; }
@@ -100,26 +100,26 @@ public:
 	virtual const void update_sx(const int, const int) const;
 	virtual const void update_sy(const int, const int) const;
 
-}	idle = _player_source(-32, 0, 22, 1, 32, 32, IDLE),
-	move = _player_source(-32, 0, 4, 1, 32, 32, MOVE),
-	fall = _player_source(-32, 0, 5, 1, 32, 32, FALL, false),
-	jump = _player_source(-32, 0, 6, 1, 32, 32, JUMP, false),
-	klonoa_wb = _player_source(-32, 0, 11, 1, 32, 32, ATTACK, false, KLONOA, true),
-	klonoa_wc = _player_source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
-	vanda_k = _player_source(-32, 0, 8, 1, 32, 32, ATTACK, false, VANDA, true),
-	*player = &idle,
+}	idle_source = source(-32, 0, 22, 1, 32, 32, IDLE),
+	move_source = source(-32, 0, 4, 1, 32, 32, MOVE),
+	fall_source = source(-32, 0, 5, 1, 32, 32, FALL, false),
+	jump_source = source(-32, 0, 6, 1, 32, 32, JUMP, false),
+	klonoa_wb_source = source(-32, 0, 11, 1, 32, 32, ATTACK, false, KLONOA, true),
+	klonoa_wc_source = source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
+	vanda_k_source = source(-32, 0, 8, 1, 32, 32, ATTACK, false, VANDA, true),
+	*player_source = &idle_source,
 
-	wind_bullet = _player_source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
-	wind_cut = _player_source(-64, 0, 5, 1, 64, 32, ATTACK, false, KLONOA, true),
-	kick = _player_source(-64, 0, 8, 1, 64, 32, ATTACK, false, VANDA, true),
-	*_attack = &wind_bullet;
+	wind_bullet_source = source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
+	wind_cut_source = source(-64, 0, 5, 1, 64, 32, ATTACK, false, KLONOA, true),
+	kick_source = source(-64, 0, 8, 1, 64, 32, ATTACK, false, VANDA, true),
+	*attack_source = &wind_bullet_source;
 
 
 
-class ws_source : public _player_source {
+class ws_source : public source {
 public:
 	ws_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int is_attack = false) :
-	_player_source(sx, sy, sx_lim, sy_lim, sw, sh, action, set_to_0, KLONOA, is_attack) { }
+	source(sx, sy, sx_lim, sy_lim, sw, sh, action, set_to_0, KLONOA, is_attack) { }
 	~ws_source() { delete this; }
 
 	const void update_sx(const int) const override;
@@ -127,10 +127,10 @@ public:
 	const void update_sx(const int, const int) const override;
 	const void update_sy(const int, const int) const override;
 
-}	ws_wind_cut = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
-	ws_fall = ws_source(-32, 0, 5, 1, 32, 32, FALL, false),
-	ws_jump = ws_source(-32, 0, 6, 1, 32, 32, JUMP, false),
-	*ws = &ws_jump;
+}	ws_wind_cut_source = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
+	ws_fall_source = ws_source(-32, 0, 5, 1, 32, 32, FALL, false),
+	ws_jump_source = ws_source(-32, 0, 6, 1, 32, 32, JUMP, false),
+	*ws_source = &ws_jump_source;
 
 // -------------------------------
 
@@ -324,8 +324,8 @@ int main(int argc, char* argv[]) {
 
 	auto update_sources_and_sprites = [&] () -> void {
 		if (action1 == FALL) {
-			player = &fall;
-			ws = &ws_fall;
+			player_source = &fall_source;
+			ws_source = &ws_fall_source;
 			sword_sprite = def_sprite(wsfl, wsfr);
 
 			if (actual_character == VANDA)
@@ -336,8 +336,8 @@ int main(int argc, char* argv[]) {
 
 
 		} else if (action1 == JUMP) {
-			player = &jump;
-			ws = &ws_jump;
+			player_source = &jump_source;
+			ws_source = &ws_jump_source;
 			sword_sprite = def_sprite(wsjl, wsjr);
 
 			if (actual_character == VANDA)
@@ -348,7 +348,7 @@ int main(int argc, char* argv[]) {
 
 		
 		} else if (action2 == MOVE) {
-			player = &move;
+			player_source = &move_source;
 			sword_sprite = def_sprite(wsl, wsr);
 
 			if (actual_character == VANDA)
@@ -359,7 +359,7 @@ int main(int argc, char* argv[]) {
 
 
 		} else {
-			player = &idle;
+			player_source = &idle_source;
 			sword_sprite = def_sprite(wsl, wsr);
 
 			if (actual_character == VANDA)
@@ -376,32 +376,32 @@ int main(int argc, char* argv[]) {
 		if (attack) {
 
 			if (actual_character == VANDA) {
-				_attack = &kick;
+				attack_source = &kick_source;
 				attack_sprite = def_sprite(kl, kr);
 				
-				if (player == &idle) {
-					player = &vanda_k;
+				if (player_source == &idle_source) {
+					player_source = &vanda_k_source;
 					player_sprite = def_sprite(vkl, vkr);
 
 				}
 
 			} else if (klonoa_mode == NORMAL) {
-				_attack = &wind_bullet;
+				attack_source = &wind_bullet_source;
 				attack_sprite = def_sprite(wbl, wbr);
 				
-				if (player == &idle) {
-					player = &klonoa_wb;
+				if (player_source == &idle_source) {
+					player_source = &klonoa_wb_source;
 					player_sprite = def_sprite(kwbl, kwbr);
 
 				}
 
 			} else {
-				_attack = &wind_cut;
+				attack_source = &wind_cut_source;
 				attack_sprite = def_sprite(wcl, wcr);
-				ws = &ws_wind_cut;
+				ws_source = &ws_wind_cut_source;
 				
-				if (player == &idle) {
-					player = &klonoa_wc;
+				if (player_source == &idle_source) {
+					player_source = &klonoa_wc_source;
 					player_sprite = def_sprite(kwcl, kwcr);
 
 				}
@@ -410,19 +410,19 @@ int main(int argc, char* argv[]) {
 
 		}
 
-		idle.update_sx(1, 2);
-		move.update_sx(2);
-		fall.update_sx(1);
-		jump.update_sx(1);
-		klonoa_wb.update_sx(0);
-		klonoa_wc.update_sx(0);
-		vanda_k.update_sx(0);
-		wind_bullet.update_sx(0);
-		wind_cut.update_sx(0);
-		kick.update_sx(0);
-		ws_wind_cut.update_sx(0);
-		ws_fall.update_sx(1);
-		ws_jump.update_sx(1);
+		idle_source.update_sx(1, 2);
+		move_source.update_sx(2);
+		fall_source.update_sx(1);
+		jump_source.update_sx(1);
+		klonoa_wb_source.update_sx(0);
+		klonoa_wc_source.update_sx(0);
+		vanda_k_source.update_sx(0);
+		wind_bullet_source.update_sx(0);
+		wind_cut_source.update_sx(0);
+		kick_source.update_sx(0);
+		ws_wind_cut_source.update_sx(0);
+		ws_fall_source.update_sx(1);
+		ws_jump_source.update_sx(1);
 
 		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
 		al_convert_mask_to_alpha(*attack_sprite, COLOR(0, 255, 0));
@@ -469,14 +469,14 @@ int main(int argc, char* argv[]) {
 		if (dir == LEFT) {
 			
 			if (attack)
-				al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x - 32 - 9, y, 0);
+				al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32 - 9, y, 0);
 	
 			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
 
 				if (action1 == FALL || action1 == JUMP)
-					al_draw_bitmap_region(*sword_sprite, ws->get_sx(), ws->get_sy(), ws->get_sw(), ws->get_sh(), x - 9, y, 0);
+					al_draw_bitmap_region(*sword_sprite, ws_source->get_sx(), ws_source->get_sy(), ws_source->get_sw(), ws_source->get_sh(), x - 9, y, 0);
 				
-				else if (action2 == MOVE && move.get_sx_index() > 1)
+				else if (action2 == MOVE && move_source.get_sx_index() > 1)
 					al_draw_bitmap(*sword_sprite, x - 9 - 2, y, 0);
 
 				else
@@ -488,21 +488,21 @@ int main(int argc, char* argv[]) {
 
 
 
-		al_draw_bitmap_region(*player_sprite, player->get_sx(), player->get_sy(), player->get_sw(), player->get_sh(), x, y, 0);
+		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
 
 
 
 		if (dir == RIGHT) {
 			
 			if (attack)
-				al_draw_bitmap_region(*attack_sprite, _attack->get_sx(), _attack->get_sy(), _attack->get_sw(), _attack->get_sh(), x, y, 0);
+				al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
 
 			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
 
 				if (action1 == FALL || action1 == JUMP)
-					al_draw_bitmap_region(*sword_sprite, ws->get_sx(), ws->get_sy(), ws->get_sw(), ws->get_sh(), x, y, 0);
+					al_draw_bitmap_region(*sword_sprite, ws_source->get_sx(), ws_source->get_sy(), ws_source->get_sw(), ws_source->get_sh(), x, y, 0);
 
-				else if (action2 == MOVE && move.get_sx_index() > 1)
+				else if (action2 == MOVE && move_source.get_sx_index() > 1)
 					al_draw_bitmap(*sword_sprite, x - 2, y, 0);
 
 				else	
@@ -633,7 +633,7 @@ void switch_character() {
 
 // Methods definition ------------
 
-const bool _player_source::check_actual_character() const {
+const bool source::check_actual_character() const {
 	if (actual_character == this->character)
 		return true;
 
@@ -642,10 +642,10 @@ const bool _player_source::check_actual_character() const {
 
 }
 
-const bool _player_source::check_actual_action(const int action_n) const {
+const bool source::check_actual_action(const int action_n) const {
 	if (action_n == 0){
 
-		if ( (player == this || _attack == this) && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
+		if ( (player_source == this || attack_source == this) && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
 			attack = false;
 
 	} else if (action_n == 1) {
@@ -668,7 +668,7 @@ const bool _player_source::check_actual_action(const int action_n) const {
 
 }
 
-const void _player_source::update_sx(const int action_n) const {
+const void source::update_sx(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sx_lim)
@@ -682,7 +682,7 @@ const void _player_source::update_sx(const int action_n) const {
 
 }
 
-const void _player_source::update_sy(const int action_n) const {
+const void source::update_sy(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sy_lim)
@@ -696,7 +696,7 @@ const void _player_source::update_sy(const int action_n) const {
 
 }
 
-const void _player_source::update_sx(const int action_n1, const int action_n2) const {
+const void source::update_sx(const int action_n1, const int action_n2) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sx_lim)
@@ -710,7 +710,7 @@ const void _player_source::update_sx(const int action_n1, const int action_n2) c
 
 }
 
-const void _player_source::update_sy(const int action_n1, const int action_n2) const {
+const void source::update_sy(const int action_n1, const int action_n2) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sy_lim)
