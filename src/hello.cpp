@@ -57,13 +57,29 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 
 // Prototypes --------------------
 
-void switch_character();
+const void switch_character();
 
 // -------------------------------
 
 
 
 // Classes -----------------------
+
+class position {
+private:
+	int x, y;
+
+public:
+	constexpr position(const int x, const int y) : x(x), y(y) { };
+	~position() { delete this; };
+
+	const int get_x() const { return this->x; }
+	const int get_y() const { return this->y; }
+
+	const void move_x();
+	const void move_y();
+
+};
 
 class source {
 protected:
@@ -76,7 +92,7 @@ protected:
 		is_attack;
 
 public:
-	source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2, const int is_attack = false) :
+	constexpr source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2, const int is_attack = false) :
 	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character), is_attack(is_attack) { }
 	~source() { delete this; }
 
@@ -100,7 +116,7 @@ public:
 	virtual const void update_sx(const int, const int) const;
 	virtual const void update_sy(const int, const int) const;
 
-}	idle_source = source(-32, 0, 22, 1, 32, 32, IDLE),
+} const idle_source = source(-32, 0, 22, 1, 32, 32, IDLE),
 	move_source = source(-32, 0, 4, 1, 32, 32, MOVE),
 	fall_source = source(-32, 0, 5, 1, 32, 32, FALL, false),
 	jump_source = source(-32, 0, 6, 1, 32, 32, JUMP, false),
@@ -118,7 +134,7 @@ public:
 
 class ws_source : public source {
 public:
-	ws_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int is_attack = false) :
+	constexpr ws_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int is_attack = false) :
 	source(sx, sy, sx_lim, sy_lim, sw, sh, action, set_to_0, KLONOA, is_attack) { }
 	~ws_source() { delete this; }
 
@@ -127,7 +143,7 @@ public:
 	const void update_sx(const int, const int) const override;
 	const void update_sy(const int, const int) const override;
 
-}	ws_wind_cut_source = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
+} const ws_wind_cut_source = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
 	ws_fall_source = ws_source(-32, 0, 5, 1, 32, 32, FALL, false),
 	ws_jump_source = ws_source(-32, 0, 6, 1, 32, 32, JUMP, false),
 	*ws_source = &ws_jump_source;
@@ -615,7 +631,7 @@ int main(int argc, char* argv[]) {
 
 // Functions definition ----------
 
-void switch_character() {
+const void switch_character() {
 	if (actual_character == KLONOA) {
 		actual_character = VANDA;
 		jump_height = 5;
