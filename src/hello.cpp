@@ -65,23 +65,27 @@ const void switch_character();
 
 // Classes -----------------------
 
-class position {
-private:
-	int x, y;
+class pos {
+protected:
+	int x1, x2, y1, y2;
 	const int action_x, action_y;
 
 public:
-	constexpr position(const int x, const int y, const int action_x, const int action_y) :
-	x(x), y(y), action_x(action_x), action_y(action_y) { };
-	~position() { delete this; };
+	constexpr pos(const int x1, const int x2, const int y1, const int y2, const int action_x, const int action_y, const int speed_x, const int speed_y) :
+	x1(x1), y1(y1), x2(x2), y2(y2), action_x(action_x), action_y(action_y), speed_x(speed_x), speed_y(speed_y) { };
+	~pos() { delete this; };
 
-	const int get_x() const { return this->x; }
-	const int get_y() const { return this->y; }
+	const int get_x1() const { return this->x1; }
+	const int get_y1() const { return this->y1; }
+	const int get_x2() const { return this->x2; }
+	const int get_y2() const { return this->y2; }
 
 	const bool check_actual_action(const int) const;
+	const bool check_collision(const position&);
 
-	const void move_x(const int);
-	const void move_y(const int);
+};
+
+class player_pos : public pos {
 
 };
 
@@ -660,7 +664,7 @@ const void switch_character() {
 
 // Methods definition ------------
 
-const bool source::check_actual_action(const int action_n) const {
+const bool pos::check_actual_action(const int action_n) const {
 	if (action_n == 1) {
 
 		if (action1 == this->action)
@@ -681,13 +685,18 @@ const bool source::check_actual_action(const int action_n) const {
 
 }
 
-const void position::move_x(const int action_n) {
+const bool pos::check_collision(const position& obj) {
+	if ( (this->x1 < obj.get_x1() || this->x1 > obj.get_x1()) &&
+		(this->x2 < obj.get_x2() || this->x2 > obj.get_x2()) &&
+		(this->y1 < obj.get_y1() || this->y1 > obj.get_y1()) &&
+		(this->y2 < obj.get_y2() || this->y2 > obj.get_y2()) )
+		return false;
+
+	else
+		return true;
 
 }
 
-const void position::move_y(const int action_n) {
-
-}
 
 
 
