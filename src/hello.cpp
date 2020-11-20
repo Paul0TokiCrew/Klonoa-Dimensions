@@ -463,7 +463,7 @@ int main(int argc, char* argv[]) {
 
 	// Drawing -------------------------
 
-	auto draw = [&] () -> void {
+	auto draw_player = [&] () -> void {
 		al_set_target_bitmap(al_get_backbuffer(window));
 
 		if (dir == LEFT) {
@@ -514,6 +514,10 @@ int main(int argc, char* argv[]) {
 	
 	};
 
+	auto draw_ground = [&] () -> void {
+		al_draw_line(x - 32, y + 32, x + 64, y + 32, COLOR(144, 98, 230), 9.5f);
+	};
+
 	// ---------------------------------
 
 
@@ -541,7 +545,8 @@ int main(int argc, char* argv[]) {
 			game_over = true;
 
 		al_clear_to_color(COLOR(12, 24, 52));
-		draw();
+		draw_ground();
+		draw_player();
 		al_flip_display();
 	
 	}
