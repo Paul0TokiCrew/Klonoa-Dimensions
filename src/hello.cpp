@@ -68,18 +68,24 @@ const void switch_character();
 class position {
 private:
 	int x, y;
+	const int action_x, action_y;
 
 public:
-	constexpr position(const int x, const int y) : x(x), y(y) { };
+	constexpr position(const int x, const int y, const int action_x, const int action_y) :
+	x(x), y(y), action_x(action_x), action_y(action_y) { };
 	~position() { delete this; };
 
 	const int get_x() const { return this->x; }
 	const int get_y() const { return this->y; }
 
-	const void move_x();
-	const void move_y();
+	const bool check_actual_action(const int) const;
+
+	const void move_x(const int);
+	const void move_y(const int);
 
 };
+
+
 
 class source {
 protected:
@@ -654,6 +660,37 @@ const void switch_character() {
 
 // Methods definition ------------
 
+const bool source::check_actual_action(const int action_n) const {
+	if (action_n == 1) {
+
+		if (action1 == this->action)
+			return true;
+
+		else
+			return false;
+
+	} else {
+
+		if (action2 == this->action)
+			return true;
+
+		else
+			return false;
+	
+	}
+
+}
+
+const void position::move_x(const int action_n) {
+
+}
+
+const void position::move_y(const int action_n) {
+
+}
+
+
+
 const bool source::check_actual_character() const {
 	if (actual_character == this->character)
 		return true;
@@ -744,6 +781,8 @@ const void source::update_sy(const int action_n1, const int action_n2) const {
 		this->sy = -(this->sh);
 
 }
+
+
 
 const void ws_source::update_sx(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
