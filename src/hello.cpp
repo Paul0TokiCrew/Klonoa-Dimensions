@@ -3,6 +3,7 @@
 // Headers -----------------------
 
 #include <iostream>
+#include <vector>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
@@ -40,6 +41,8 @@ bool game_over = false,
 	attack = false,
 	jump_many_times = true;
 
+std::vector<std::pair<int, int> > x_pos;
+
 // -------------------------------
 
 
@@ -58,38 +61,14 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 // Prototypes --------------------
 
 const void switch_character();
+const void add_to_map(const int, const int);
+const bool check_x_collision();
 
 // -------------------------------
 
 
 
 // Classes -----------------------
-
-class pos {
-protected:
-	int x1, x2, y1, y2;
-	const int action_x, action_y;
-
-public:
-	constexpr pos(const int x1, const int x2, const int y1, const int y2, const int action_x, const int action_y, const int speed_x, const int speed_y) :
-	x1(x1), y1(y1), x2(x2), y2(y2), action_x(action_x), action_y(action_y), speed_x(speed_x), speed_y(speed_y) { };
-	~pos() { delete this; };
-
-	const int get_x1() const { return this->x1; }
-	const int get_y1() const { return this->y1; }
-	const int get_x2() const { return this->x2; }
-	const int get_y2() const { return this->y2; }
-
-	const bool check_actual_action(const int) const;
-	const bool check_collision(const position&);
-
-};
-
-class player_pos : public pos {
-
-};
-
-
 
 class source {
 protected:
@@ -175,6 +154,8 @@ int main(int argc, char* argv[]) {
 	al_init_primitives_addon();
 	al_init_image_addon();
 	al_install_keyboard();
+	add_to_map(350, 400);
+	add_to_map(50, 80);
 
 	// ---------------------------------
 
@@ -461,6 +442,12 @@ int main(int argc, char* argv[]) {
 
 
 	// Position update -----------------
+
+	auto check_collision = [&] () -> void {
+		if (dir == LEFT) {
+		}
+
+	};
 	
 	auto update_pos = [&] () -> void {
 		if (action1 == FALL)
@@ -469,17 +456,28 @@ int main(int argc, char* argv[]) {
 		else if (action1 == JUMP)
 			y -= 10;
 
+		
 
+		if (action2 == MOVE) {
 
-		if (action2 == MOVE)  {
-			
-			if (dir == LEFT)
-				x -= speed;
+			if (dir == LEFT){
 
-			else
-				x += speed;
+				if (!check_x_collision())
+					x -= speed;
+
+			} else {
+
+				if (!check_x_collision())
+					x += speed;
+
+			}
 
 		}
+
+		if(check_x_collision())
+			PRINT("collision\n")
+
+		PRINT(x << std::endl)
 
 	};
 
@@ -541,7 +539,9 @@ int main(int argc, char* argv[]) {
 	};
 
 	auto draw_ground = [&] () -> void {
-		al_draw_line(x - 32, y + 32, x + 64, y + 32, COLOR(144, 98, 230), 9.5f);
+		al_draw_line(0, 232, W, 232, COLOR(14, 98, 130), 9.5f);
+		al_draw_rectangle(350, 200, 400, 232, COLOR(32, 199, 2), 3.9f);
+		al_draw_rectangle(50, 200, 80, 232, COLOR(32, 199, 2), 3.9f);
 	};
 
 	// ---------------------------------
@@ -658,47 +658,23 @@ const void switch_character() {
 
 }
 
+const void add_to_map(const int x1, const int x2) { x_pos.push_back({x1, x2}); }
+
+const bool check_x_collision() {
+	
+	for (auto i : x_pos)
+		if ( (dir == LEFT && x == i.second) ||
+			(dir == RIGHT && x + 32 == i.first) )
+			return true;
+
+	return false;
+}
+
 // -------------------------------
 
 
 
 // Methods definition ------------
-
-const bool pos::check_actual_action(const int action_n) const {
-	if (action_n == 1) {
-
-		if (action1 == this->action)
-			return true;
-
-		else
-			return false;
-
-	} else {
-
-		if (action2 == this->action)
-			return true;
-
-		else
-			return false;
-	
-	}
-
-}
-
-const bool pos::check_collision(const position& obj) {
-	if ( (this->x1 < obj.get_x1() || this->x1 > obj.get_x1()) &&
-		(this->x2 < obj.get_x2() || this->x2 > obj.get_x2()) &&
-		(this->y1 < obj.get_y1() || this->y1 > obj.get_y1()) &&
-		(this->y2 < obj.get_y2() || this->y2 > obj.get_y2()) )
-		return false;
-
-	else
-		return true;
-
-}
-
-
-
 
 const bool source::check_actual_character() const {
 	if (actual_character == this->character)
