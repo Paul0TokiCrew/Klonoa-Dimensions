@@ -25,6 +25,8 @@
 
 #define ATTACK -1
 
+#define GROUND W, 0, 232, 232
+
 // -------------------------------
 
 
@@ -33,7 +35,7 @@
 
 int x = 250, y = 200,
 	jump_count = -1,
-	jump_height = 9,
+	jump_height = 12,
 	speed = 5,
 	switch_count = 0;
 
@@ -41,7 +43,13 @@ bool game_over = false,
 	attack = false,
 	jump_many_times = true;
 
-std::vector<std::pair<int, int> > x_pos;
+std::vector<std::pair<int, int>> x_pos,
+	y_pos;
+
+std::vector<std::pair<
+	std::pair<int, int>,
+	std::pair<int, int>
+	>> pos;
 
 // -------------------------------
 
@@ -61,8 +69,11 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 // Prototypes --------------------
 
 const void switch_character();
-const void add_to_map(const int, const int);
+const void add_to_map(const int, const int, const int, const int);
 const bool check_x_collision();
+const bool inside_x();
+const bool check_y_collision();
+const bool check_collision();
 
 // -------------------------------
 
@@ -154,8 +165,9 @@ int main(int argc, char* argv[]) {
 	al_init_primitives_addon();
 	al_init_image_addon();
 	al_install_keyboard();
-	add_to_map(350, 400);
-	add_to_map(50, 80);
+	add_to_map(GROUND);
+	add_to_map(350, 400, 200, 232);
+	add_to_map(50, 80, 200, 232);
 
 	// ---------------------------------
 
@@ -445,18 +457,15 @@ int main(int argc, char* argv[]) {
 
 	auto move_x = [&] () -> void {
 
-		for (int i = 0; i < speed; i++) {
-
+		for (int i = 0; i < speed; i++)
 			if(check_x_collision())
 				break;
 
-			if (dir == LEFT)
+			else if (dir == LEFT)
 				x--;
 
 			else
 				x++;
-
-		}
 
 	};
 	
@@ -466,8 +475,6 @@ int main(int argc, char* argv[]) {
 
 		else if (action1 == JUMP)
 			y -= 10;
-
-		
 
 		if (action2 == MOVE)
 			move_x();
@@ -651,16 +658,40 @@ const void switch_character() {
 
 }
 
-const void add_to_map(const int x1, const int x2) { x_pos.push_back({x1, x2}); }
+const void add_to_map(const int x1, const int x2, const int y1, const int y2) {
+	x_pos.push_back( {x1, x2} );
+	y_pos.push_back( {y1, y2} );
+	pos.push_back( {
+		{ x1, x2 }, { y1, y2 }
+	} );
+}
 
 const bool check_x_collision() {
 	
-	for (auto i : x_pos)
-		if ( (dir == LEFT && x == i.second) ||
-			(dir == RIGHT && x + 32 == i.first) )
+	for (auto i : pos)
+		if ( (dir == LEFT && x == i.first.second && (y <= i.second.second && y + 32 >= i.second.first) ) ||
+			(dir == RIGHT && x + 32 == i.first.first && (y <= i.second.second && y + 32 >= i.second.first) ) )
 			return true;
 
 	return false;
+}
+
+const bool check_y_collision() {
+	
+	for (auto i : y_pos)
+		if ( (action1 == FALL && y + 32 == i.first) ||
+			(action1 == JUMP && y == i.second) )
+			return true;
+
+	return false;
+}
+
+const bool check_collision() {
+
+	for (auto i : pos)
+		if ( (dir == LEFT && x == i.first.second) || 
+			(dir == RIGHT && x == i.first.first) ) { }
+
 }
 
 // -------------------------------
