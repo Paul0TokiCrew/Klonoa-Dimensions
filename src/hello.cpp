@@ -41,8 +41,7 @@ int x = 250, y = 200,
 
 bool game_over = false,
 	attack = false,
-	jump_many_times = true,
-	falling = false;
+	jump_many_times = true;
 
 std::vector<std::pair<
 	std::pair<int, int>,
@@ -70,6 +69,7 @@ const void switch_character();
 const void add_to_map(const int, const int, const int, const int);
 const bool check_x_collision();
 const bool check_y_collision();
+const bool inside_x();
 
 // -------------------------------
 
@@ -164,6 +164,7 @@ int main(int argc, char* argv[]) {
 	add_to_map(GROUND);
 	add_to_map(350, 400, 200, 232);
 	add_to_map(50, 80, 200, 232);
+	add_to_map(150, 250, 158, 190);
 
 	// ---------------------------------
 
@@ -256,7 +257,6 @@ int main(int argc, char* argv[]) {
 
 	// General update ------------------
 
-
 	auto def_sprite = [] (ALLEGRO_BITMAP*& l, ALLEGRO_BITMAP*& r) -> ALLEGRO_BITMAP** {
 		if (dir == LEFT)
 			return &l;
@@ -267,21 +267,22 @@ int main(int argc, char* argv[]) {
 	};
 	
 	auto update_dir_and_actions = [&] () -> void {
-		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < jump_height && (action1 != FALL || jump_many_times)) {
+		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < jump_height && (action1 != FALL || jump_many_times) ) {
 			action1 = JUMP;
 			jump_count++;
 			PRINT("jump\n")
 
-		} else if (falling) {
+		} else if (!check_y_collision()) {
 			action1 = FALL;
 			if (jump_count > -1)
 				jump_count--;
+
 			PRINT("fall\n")
 
 		} else {
 			action1 = IDLE;
 			jump_count = -1;
-		
+
 		}
 
 
@@ -553,6 +554,7 @@ int main(int argc, char* argv[]) {
 		al_draw_line(0, 232, W, 232, COLOR(14, 98, 130), 9.5f);
 		al_draw_rectangle(350, 200, 400, 232, COLOR(32, 199, 2), 3.9f);
 		al_draw_rectangle(50, 200, 80, 232, COLOR(32, 199, 2), 3.9f);
+		al_draw_rectangle(150, 158, 250, 190, COLOR(32, 199, 2), 3.9f);
 	};
 
 	// ---------------------------------
@@ -684,15 +686,22 @@ const bool check_x_collision() {
 }
 
 const bool check_y_collision() {
-	falling = false;
 
 	for (auto i : pos)
-		if ( (action1 == FALL && y + 32 == i.second.first && x <= i.first.second && x + 32 >= i.first.first) ||
-			(action1 == JUMP && y == i.second.second && x <= i.first.second && x + 32 >= i.first.first) )
+		if ( (action1 != JUMP && y + 32 == i.second.first && x < i.first.second && x + 32 > i.first.first) ||
+			(action1 == JUMP && y == i.second.second && x < i.first.second && x + 32 > i.first.first) )
 			return true;
 
-	falling = true;
 	return false;
+}
+
+const bool inside_x() {
+
+	for (auto i : pos)
+		if ( (y == i.second.second || y + 32 == i.second.first) && (x >= i.first.second || x + 32 <= i.first.second) )
+			return false;
+
+	return true;
 }
 
 // -------------------------------
