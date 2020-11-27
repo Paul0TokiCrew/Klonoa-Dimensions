@@ -25,8 +25,6 @@
 
 #define ATTACK -1
 
-#define GROUND 0, W, 232, 232
-
 // -------------------------------
 
 
@@ -69,7 +67,6 @@ const void switch_character();
 const void add_to_map(const int, const int, const int, const int);
 const bool check_x_collision();
 const bool check_y_collision();
-const bool inside_x();
 
 // -------------------------------
 
@@ -153,6 +150,7 @@ public:
 
 
 int main(int argc, char* argv[]) {
+
 	// Game start ----------------------
 
 	PRINT("--- starting game ---\n\n")
@@ -161,10 +159,23 @@ int main(int argc, char* argv[]) {
 	al_init_primitives_addon();
 	al_init_image_addon();
 	al_install_keyboard();
-	add_to_map(GROUND);
-	add_to_map(350, 400, 200, 232);
-	add_to_map(50, 80, 200, 232);
-	add_to_map(150, 250, 158, 190);
+
+	add_to_map(0, W, 0, 0);
+	add_to_map(0, W, H, H);
+	add_to_map(0, 0, 0, H);
+	add_to_map(W, W, 0, H);
+
+	add_to_map(0, 101, 114, 126);
+	add_to_map(0, 87, 291, 302);
+	add_to_map(45, 80, 472, H);
+	add_to_map(84, 139, 388, 411);
+	add_to_map(122, 244, 188, 230);
+	add_to_map(164, W, 114, 126);
+	add_to_map(204, 250, 424, 458);
+	add_to_map(238, 321, 298, 312);
+	add_to_map(332, 389, 460, H);
+	add_to_map(420, W, 411, 423);
+	add_to_map(420, W, 329, 347);
 
 	// ---------------------------------
 
@@ -183,7 +194,7 @@ int main(int argc, char* argv[]) {
 
 
 
-	// Keyboard state variable ---------
+	// Variables -----------------------
 
 	ALLEGRO_KEYBOARD_STATE key;
 
@@ -551,10 +562,9 @@ int main(int argc, char* argv[]) {
 	};
 
 	auto draw_scenario = [&] () -> void {
-		al_draw_line(0, 232, W, 232, COLOR(14, 98, 130), 9.5f);
-		al_draw_rectangle(350, 200, 400, 232, COLOR(32, 199, 2), 3.9f);
-		al_draw_rectangle(50, 200, 80, 232, COLOR(32, 199, 2), 3.9f);
-		al_draw_rectangle(150, 158, 250, 190, COLOR(32, 199, 2), 3.9f);
+		for (auto i : pos)
+			al_draw_rectangle(i.first.first, i.second.first, i.first.second, i.second.second, COLOR(243, 78, 13), 3.14f);
+
 	};
 
 	// ---------------------------------
@@ -693,15 +703,6 @@ const bool check_y_collision() {
 			return true;
 
 	return false;
-}
-
-const bool inside_x() {
-
-	for (auto i : pos)
-		if ( (y == i.second.second || y + 32 == i.second.first) && (x >= i.first.second || x + 32 <= i.first.second) )
-			return false;
-
-	return true;
 }
 
 // -------------------------------
