@@ -63,10 +63,10 @@ enum { KLONOA, VANDA } actual_character = KLONOA;
 
 // Prototypes --------------------
 
-const void switch_character();
-const void add_to_map(const int, const int, const int, const int);
-const bool check_x_collision();
-const bool check_y_collision();
+void switch_character();
+void add_to_map(const int, const int, const int, const int);
+bool check_x_collision();
+bool check_y_collision();
 
 // -------------------------------
 
@@ -89,25 +89,25 @@ public:
 	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character), is_attack(is_attack) { }
 	~source() { delete this; }
 
-	const int get_sx() const { return this->sx; }
-	const int get_sy() const { return this->sy; }
-	const int get_sw() const { return this->sw; }
-	const int get_sh() const { return this->sh; }
-	const int get_sx_lim() const { return this->sx_lim; }
-	const int get_sy_lim() const { return this->sy_lim; }
-	const int get_action() const { return this->action; }
-	const int get_character() const { return this->character; }
+	int get_sx() const { return this->sx; }
+	int get_sy() const { return this->sy; }
+	int get_sw() const { return this->sw; }
+	int get_sh() const { return this->sh; }
+	int get_sx_lim() const { return this->sx_lim; }
+	int get_sy_lim() const { return this->sy_lim; }
+	int get_action() const { return this->action; }
+	int get_character() const { return this->character; }
 
-	const int get_sx_index() const { return this->sx / this->sw; }
-	const int get_sy_index() const { return this->sy / this->sh; }
+	int get_sx_index() const { return this->sx / this->sw; }
+	int get_sy_index() const { return this->sy / this->sh; }
 
-	const bool check_actual_character() const;
-	const bool check_actual_action(const int) const;
+	bool check_actual_character() const;
+	bool check_actual_action(const int) const;
 
-	virtual const void update_sx(const int) const;
-	virtual const void update_sy(const int) const;
-	virtual const void update_sx(const int, const int) const;
-	virtual const void update_sy(const int, const int) const;
+	virtual void update_sx(const int) const;
+	virtual void update_sy(const int) const;
+	virtual void update_sx(const int, const int) const;
+	virtual void update_sy(const int, const int) const;
 
 } const idle_source = source(-32, 0, 22, 1, 32, 32, IDLE),
 	move_source = source(-32, 0, 4, 1, 32, 32, MOVE),
@@ -131,10 +131,10 @@ public:
 	source(sx, sy, sx_lim, sy_lim, sw, sh, action, set_to_0, KLONOA, is_attack) { }
 	~ws_source() { delete this; }
 
-	const void update_sx(const int) const override;
-	const void update_sy(const int) const override;
-	const void update_sx(const int, const int) const override;
-	const void update_sy(const int, const int) const override;
+	void update_sx(const int) const override;
+	void update_sy(const int) const override;
+	void update_sx(const int, const int) const override;
+	void update_sy(const int, const int) const override;
 
 } const ws_wind_cut_source = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
 	ws_fall_source = ws_source(-32, 0, 5, 1, 32, 32, FALL, false),
@@ -662,7 +662,7 @@ int main(int argc, char* argv[]) {
 
 // Functions definition ----------
 
-const void switch_character() {
+void switch_character() {
 	if (actual_character == KLONOA) {
 		actual_character = VANDA;
 		jump_height = 5;
@@ -679,13 +679,13 @@ const void switch_character() {
 
 }
 
-const void add_to_map(const int x1, const int x2, const int y1, const int y2) {
+void add_to_map(const int x1, const int x2, const int y1, const int y2) {
 	pos.push_back( {
 		{ x1, x2 }, { y1, y2 }
 	} );
 }
 
-const bool check_x_collision() {
+bool check_x_collision() {
 	
 	for (auto i : pos)
 		if ( (dir == LEFT && x == i.first.second && y < i.second.second && y + 32 > i.second.first) ||
@@ -695,7 +695,7 @@ const bool check_x_collision() {
 	return false;
 }
 
-const bool check_y_collision() {
+bool check_y_collision() {
 
 	for (auto i : pos)
 		if ( (action1 != JUMP && y + 32 == i.second.first && x < i.first.second && x + 32 > i.first.first) ||
@@ -711,7 +711,7 @@ const bool check_y_collision() {
 
 // Methods definition ------------
 
-const bool source::check_actual_character() const {
+bool source::check_actual_character() const {
 	if (actual_character == this->character)
 		return true;
 
@@ -720,7 +720,7 @@ const bool source::check_actual_character() const {
 
 }
 
-const bool source::check_actual_action(const int action_n) const {
+bool source::check_actual_action(const int action_n) const {
 	if (action_n == 0){
 
 		if ( (player_source == this || attack_source == this) && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
@@ -746,7 +746,7 @@ const bool source::check_actual_action(const int action_n) const {
 
 }
 
-const void source::update_sx(const int action_n) const {
+void source::update_sx(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sx_lim)
@@ -760,7 +760,7 @@ const void source::update_sx(const int action_n) const {
 
 }
 
-const void source::update_sy(const int action_n) const {
+void source::update_sy(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sy_lim)
@@ -774,7 +774,7 @@ const void source::update_sy(const int action_n) const {
 
 }
 
-const void source::update_sx(const int action_n1, const int action_n2) const {
+void source::update_sx(const int action_n1, const int action_n2) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sx_lim)
@@ -788,7 +788,7 @@ const void source::update_sx(const int action_n1, const int action_n2) const {
 
 }
 
-const void source::update_sy(const int action_n1, const int action_n2) const {
+void source::update_sy(const int action_n1, const int action_n2) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
 
 		if (this->get_sx_index() < this->sy_lim)
@@ -804,7 +804,7 @@ const void source::update_sy(const int action_n1, const int action_n2) const {
 
 
 
-const void ws_source::update_sx(const int action_n) const {
+void ws_source::update_sx(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
 
 		if (this->get_sx_index() < this->sx_lim)
@@ -818,7 +818,7 @@ const void ws_source::update_sx(const int action_n) const {
 
 }
 
-const void ws_source::update_sy(const int action_n) const {
+void ws_source::update_sy(const int action_n) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
 
 		if (this->get_sx_index() < this->sy_lim)
@@ -832,7 +832,7 @@ const void ws_source::update_sy(const int action_n) const {
 
 }
 
-const void ws_source::update_sx(const int action_n1, const int action_n2) const {
+void ws_source::update_sx(const int action_n1, const int action_n2) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
 
 		if (this->get_sx_index() < this->sx_lim)
@@ -846,7 +846,7 @@ const void ws_source::update_sx(const int action_n1, const int action_n2) const 
 
 }
 
-const void ws_source::update_sy(const int action_n1, const int action_n2) const {
+void ws_source::update_sy(const int action_n1, const int action_n2) const {
 	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
 
 		if (this->get_sx_index() < this->sy_lim)
