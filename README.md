@@ -1,5 +1,5 @@
 # Klonoa Dimensions - Cheesai Crystal
-
+![](img/Title.png)
 ___
 
 ## Warning
