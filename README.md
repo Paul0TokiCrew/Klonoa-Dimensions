@@ -33,7 +33,7 @@ To compile the source code, you must have [Allegro 5 library](https://github.com
 > `g++ hello.cpp -o ../hello $(pkg-config allegro-5 allegro_image-5 allegro_primitives-5 --libs --cflags)`
 
 ### MacOS
-> `g++ hello.cpp -o hello $(pkg-config allegro-5 allegro_main-5 allegro_image-5 allegro_primitives-5 --libs --cflags)`
+> `g++ hello.cpp -o ../hello $(pkg-config allegro-5 allegro_main-5 allegro_image-5 allegro_primitives-5 --libs --cflags)`
 
 After compiling, type:
 > `./../hello`
