@@ -281,7 +281,7 @@ int main(int argc, char* argv[]) {
 			jump_count++;
 			PRINT("jump\n")
 
-		} else if (!check_y_collision()) {
+		} else if (!check_y_collision() || (check_y_collision() && action1 == JUMP) ) {
 			action1 = FALL;
 			if (jump_count > -1)
 				jump_count--;
@@ -311,6 +311,7 @@ int main(int argc, char* argv[]) {
 
 
 
+		attack_source->check_actual_action(0);
 		if (al_key_down(&key, ALLEGRO_KEY_X) || attack) {
 			attack = true;
 			PRINT("attack\n")
@@ -713,15 +714,13 @@ bool source::check_actual_character() const {
 	if (actual_character == this->character)
 		return true;
 
-	else
-		return false;
-
+	return false;
 }
 
 bool source::check_actual_action(const int action_n) const {
 	if (action_n == 0){
 
-		if ( (player_source == this || attack_source == this) && attack && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
+		if ( (player_source == this || attack_source == this) && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
 			attack = false;
 
 	} else if (action_n == 1) {
@@ -732,16 +731,10 @@ bool source::check_actual_action(const int action_n) const {
 		else
 			return false;
 
-	} else {
+	} else if (action2 == this->action)
+		return true;
 
-		if (action2 == this->action)
-			return true;
-
-		else
-			return false;
-	
-	}
-
+	return false;
 }
 
 void source::update_sx(const int action_n) const {
