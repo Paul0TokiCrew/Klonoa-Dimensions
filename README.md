@@ -3,7 +3,7 @@
 ___
 
 ## Warning
-This is a **FAN GAME**, which means that the contributors of this repository are not profiting
+This is not a official game, it's a **FAN GAME**, and the contributors of this repository are not profiting
 ___
 
 ## Controls
@@ -25,6 +25,8 @@ You can also go to **Code** label in this repository, download a .zip file and u
 
 ## Compiling and Running
 To compile the source code, you must have [Allegro 5 library](https://github.com/liballeg/allegro5) and [GCC Compiler](https://gcc.gnu.org/) installed. If you don't have Allegro 5, go to this [link](https://github.com/liballeg/allegro_wiki/wiki/Quickstart) and install it in your OS
+
+Open your command line, acess the _src_ folder, and type one of theese commands:
 
 ### Windows
 > `g++ hello.cpp -o ../hello -lallegro -lallegro_image -lallegro_primitives`
