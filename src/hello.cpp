@@ -5,6 +5,8 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 // -------------------------------
 
@@ -18,6 +20,8 @@
 #define PRINT(txt) std::cout << txt;
 
 #define COLOR(r, g, b) al_map_rgb(r, g, b)
+#define ADD_SFX(pointer_name, path) ALLEGRO_SAMPLE* pointer_name = al_load_sample(path); \
+	samples_num++;
 
 #define FPS 15.0f
 
@@ -33,7 +37,8 @@ int x = 250, y = 200,
 	jump_count = -1,
 	jump_height = 12,
 	speed = 5,
-	switch_count = 0;
+	switch_count = 0,
+	samples_num = 0;
 
 bool game_over = false,
 	attack = false,
@@ -156,7 +161,9 @@ int main(int argc, char* argv[]) {
 	al_init();
 	al_init_primitives_addon();
 	al_init_image_addon();
+	al_init_acodec_addon();
 	al_install_keyboard();
+	al_install_audio();
 
 	add_to_map(0, W, 0, 0);
 	add_to_map(0, W, H, H);
@@ -187,12 +194,15 @@ int main(int argc, char* argv[]) {
 	window = al_create_display(W, H);
 	queue = al_create_event_queue();
 	timer = al_create_timer(1.0f / FPS);
+	
+	ADD_SFX(jump, "../sound/sfx/jump.ogg")
+	al_reserve_samples(samples_num);
 
 	// ---------------------------------
 
 
 
-	// Variables -----------------------
+	// Game variables ------------------
 
 	ALLEGRO_KEYBOARD_STATE key;
 
@@ -492,6 +502,9 @@ int main(int argc, char* argv[]) {
 			else if (jump_count < jump_height)
 				y--;
 
+		if (action1 == JUMP && jump_count == 0)
+			al_play_sample(jump, 1.5f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+
 	};
 
 	auto update_pos = [&] () -> void {
@@ -591,7 +604,7 @@ int main(int argc, char* argv[]) {
 
 		} else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 			game_over = true;
-
+	
 		al_clear_to_color(COLOR(12, 24, 52));
 		draw_scenario();
 		draw_player();
@@ -610,6 +623,7 @@ int main(int argc, char* argv[]) {
 	al_destroy_display(window);
 	al_destroy_event_queue(queue);
 	al_destroy_timer(timer);
+	al_destroy_sample(jump);
 
 	al_destroy_bitmap(kil);
 	al_destroy_bitmap(kir);
