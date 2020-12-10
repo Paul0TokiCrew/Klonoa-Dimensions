@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
@@ -20,8 +21,9 @@
 #define PRINT(txt) std::cout << txt;
 
 #define COLOR(r, g, b) al_map_rgb(r, g, b)
-#define ADD_SFX(pointer_name, path) ALLEGRO_SAMPLE* pointer_name = al_load_sample(path); \
-	samples_num++;
+#define ADD_SFX(pointer_name, sfx_name, path) ALLEGRO_SAMPLE* pointer_name = al_load_sample(path);	\
+									sfx_counts.insert( {sfx_name, 0} );								\
+									samples_num++;
 
 #define FPS 15.0f
 
@@ -48,6 +50,8 @@ std::vector<std::pair<
 	std::pair<int, int>,
 	std::pair<int, int>
 	>> pos;
+
+std::map<std::string, int> sfx_counts;
 
 // -------------------------------
 
@@ -195,7 +199,8 @@ int main(int argc, char* argv[]) {
 	queue = al_create_event_queue();
 	timer = al_create_timer(1.0f / FPS);
 	
-	ADD_SFX(jump, "../sound/sfx/jump.ogg")
+	ADD_SFX(sfx_jump, "jump", "../sound/sfx/Jump.ogg")
+	ADD_SFX(sfx_wind_bullet, "wind bullet", "../sound/sfx/Wind Bullet.ogg")
 	al_reserve_samples(samples_num);
 
 	// ---------------------------------
@@ -296,6 +301,7 @@ int main(int argc, char* argv[]) {
 			if (jump_count > -1)
 				jump_count--;
 
+			sfx_counts["jump"] = 0;
 			PRINT("fall\n")
 
 		} else {
@@ -470,6 +476,29 @@ int main(int argc, char* argv[]) {
 
 	};
 
+	auto update_sfx = [&] () -> void {
+		if (action1 == JUMP && sfx_counts["jump"] == 0) {
+			al_play_sample(sfx_jump, 0.8f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+			sfx_counts["jump"] = 1;
+
+		} else if (action1 == FALL)
+			sfx_counts["jump"] = 0;
+
+
+
+		if (attack) {
+
+			if (actual_character == KLONOA && klonoa_mode == NORMAL && sfx_counts["wind_bullet"] == 0) {
+				al_play_sample(sfx_wind_bullet, 0.8f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+				sfx_counts["wind_bullet"] = 1;
+			
+			}
+
+		} else
+			sfx_counts["wind_bullet"] = 0;
+
+	};
+
 	// ---------------------------------
 
 
@@ -501,9 +530,6 @@ int main(int argc, char* argv[]) {
 
 			else if (jump_count < jump_height)
 				y--;
-
-		if (action1 == JUMP && jump_count == 0)
-			al_play_sample(jump, 1.5f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
 
 	};
 
@@ -598,6 +624,7 @@ int main(int argc, char* argv[]) {
 			update_dir_and_actions();
 			update_sources_and_sprites();
 			update_pos();
+			update_sfx();
 
 			if (al_key_down(&key, ALLEGRO_KEY_ESCAPE))
 				game_over = true;
@@ -623,7 +650,9 @@ int main(int argc, char* argv[]) {
 	al_destroy_display(window);
 	al_destroy_event_queue(queue);
 	al_destroy_timer(timer);
-	al_destroy_sample(jump);
+
+	al_destroy_sample(sfx_jump);
+	al_destroy_sample(sfx_wind_bullet);
 
 	al_destroy_bitmap(kil);
 	al_destroy_bitmap(kir);
