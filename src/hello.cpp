@@ -478,7 +478,7 @@ int main(int argc, char* argv[]) {
 
 	auto update_sfx = [&] () -> void {
 		if (action1 == JUMP && sfx_counts["jump"] == 0) {
-			al_play_sample(sfx_jump, 0.8f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+			al_play_sample(sfx_jump, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
 			sfx_counts["jump"] = 1;
 
 		} else if (action1 == FALL)
@@ -489,7 +489,7 @@ int main(int argc, char* argv[]) {
 		if (attack) {
 
 			if (actual_character == KLONOA && klonoa_mode == NORMAL && sfx_counts["wind_bullet"] == 0) {
-				al_play_sample(sfx_wind_bullet, 0.8f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+				al_play_sample(sfx_wind_bullet, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
 				sfx_counts["wind_bullet"] = 1;
 			
 			}
