@@ -25,7 +25,7 @@
 									sfx_counts.insert( {sfx_name, 0} );								\
 									samples_num++;
 
-#define FPS 15.0f
+#define FPS 17.5f
 
 #define ATTACK -1
 
@@ -200,6 +200,7 @@ int main(int argc, char* argv[]) {
 	ADD_SFX(sfx_jump, "jump", "../sound/sfx/Jump.ogg")
 	ADD_SFX(sfx_wind_bullet, "wind bullet", "../sound/sfx/Wind Bullet.ogg")
 	ADD_SFX(sfx_wind_cut, "wind cut", "../sound/sfx/Wind Cut.ogg")
+	ADD_SFX(sfx_walk, "walk", "../sound/sfx/Walk.ogg")
 	al_reserve_samples(samples_num);
 
 	// ---------------------------------
@@ -476,6 +477,15 @@ int main(int argc, char* argv[]) {
 	};
 
 	auto update_sfx = [&] () -> void {
+		if (action1 == IDLE && action2 == MOVE && sfx_counts["walk"] == 0) {
+			al_play_sample(sfx_walk, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+			sfx_counts["walk"] = 1;
+
+		} else
+			sfx_counts["walk"] = 0;
+
+
+
 		if (action1 == JUMP && sfx_counts["jump"] == 0) {
 			al_play_sample(sfx_jump, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
 			sfx_counts["jump"] = 1;
@@ -502,7 +512,7 @@ int main(int argc, char* argv[]) {
 		} else {
 			sfx_counts["wind bullet"] = 0;
 			sfx_counts["wind cut"] = 0;
-		
+
 		}
 
 	};
