@@ -152,9 +152,7 @@ public:
 
 
 
-// main function --------------------------------------------------------------------
-
-
+// Functions definition ----------
 
 int main(int argc, char* argv[]) {
 
@@ -201,6 +199,7 @@ int main(int argc, char* argv[]) {
 	
 	ADD_SFX(sfx_jump, "jump", "../sound/sfx/Jump.ogg")
 	ADD_SFX(sfx_wind_bullet, "wind bullet", "../sound/sfx/Wind Bullet.ogg")
+	ADD_SFX(sfx_wind_cut, "wind cut", "../sound/sfx/Wind Cut.ogg")
 	al_reserve_samples(samples_num);
 
 	// ---------------------------------
@@ -488,14 +487,23 @@ int main(int argc, char* argv[]) {
 
 		if (attack) {
 
-			if (actual_character == KLONOA && klonoa_mode == NORMAL && sfx_counts["wind_bullet"] == 0) {
+			if (actual_character == VANDA) {
+
+			} else if (klonoa_mode == NORMAL && sfx_counts["wind bullet"] == 0) {
 				al_play_sample(sfx_wind_bullet, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
-				sfx_counts["wind_bullet"] = 1;
+				sfx_counts["wind bullet"] = 1;
 			
+			} else if (klonoa_mode == SAMURAI && sfx_counts["wind cut"] == 0) {
+				al_play_sample(sfx_wind_cut, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
+				sfx_counts["wind cut"] = 1;
+
 			}
 
-		} else
-			sfx_counts["wind_bullet"] = 0;
+		} else {
+			sfx_counts["wind bullet"] = 0;
+			sfx_counts["wind cut"] = 0;
+		
+		}
 
 	};
 
@@ -697,12 +705,6 @@ int main(int argc, char* argv[]) {
 	// ---------------------------------
 
 }
-
-// ----------------------------------------------------------------------------------
-
-
-
-// Functions definition ----------
 
 void switch_character() {
 	if (actual_character == KLONOA) {
