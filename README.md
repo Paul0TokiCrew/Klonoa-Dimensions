@@ -24,18 +24,13 @@ You can clone this repository by using:
 You can also go to **Code** label in this repository, download a .zip file and unzip it
 
 ## Compiling and Running
-To compile the source code, you must have [Allegro 5 library](https://github.com/liballeg/allegro5) and [GCC Compiler](https://gcc.gnu.org/) installed. If you don't have Allegro 5, go to this [link](https://github.com/liballeg/allegro_wiki/wiki/Quickstart) and install it in your OS
+To compile the source code, you must have [SDL2 library](https://www.libsdl.org/) and [GCC Compiler](https://gcc.gnu.org/) installed
 
-Open your command line, acess the _src_ folder, and type one of theese commands:
-
-### Windows
-> `g++ hello.cpp -o ../hello -lallegro -lallegro_image -lallegro_primitives -lallegro_acodec -lallegro_audio`
-
-### Linux
-> `g++ hello.cpp -o ../hello $(pkg-config allegro-5 allegro_image-5 allegro_primitives-5 allegro_acodec-5 allegro_audio-5 --libs --cflags)`
-
-### MacOS
-> `g++ hello.cpp -o ../hello $(pkg-config allegro-5 allegro_main-5 allegro_image-5 allegro_primitives-5 allegro_acodec-5 allegro_audio-5 --libs --cflags)`
+Open your command line, acess the _src_ folder, and type:
+>`g++ main.cpp window.cpp image.cpp character.cpp -o main -lSDL2 -lSDL2_image -I../include`
 
 After compiling, type:
-> `./../hello`
+> `./main`
+
+## Building
+(comming soon)

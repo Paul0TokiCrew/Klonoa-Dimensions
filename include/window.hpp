@@ -1,29 +1,46 @@
 #pragma once
+
+
+
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+
+
 
 class window {
 private:
 	SDL_Window* win;
 	SDL_Renderer* ren;
+	const int w, h;
 
 public:
-	window() : win(nullptr), ren(nullptr) { }
-	window(const char* title, int w, int h) : win(nullptr), ren(nullptr) {
-		this->win = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOW_POS_CENTERED, w, h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	window(const char* title, const int w, const int h) :
+	win(nullptr), ren(nullptr), w(w), h(h) {
+		this->win = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, SDL_WINDOW_SHOWN);
 		this->ren = SDL_CreateRenderer(this->win, -1, SDL_RENDERER_ACCELERATED);
+
+	}
+	window(const char* title, const int w, const int h, const int flags) :
+	win(nullptr), ren(nullptr), w(w), h(h) {
+		this->win = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, flags);
+		this->ren = SDL_CreateRenderer(this->win, -1, SDL_RENDERER_ACCELERATED);
+
 	}
 	~window() {
 		SDL_DestroyWindow(this->win);
 		SDL_DestroyRenderer(this->ren);
-		delete this;
 	}
+
+	void set_w(int w) { this->w; }
+	void set_h(int h) { this->h; }
 
 	SDL_Window* get_win() const { return this->win; }
 	SDL_Renderer* get_ren() const { return this->ren; }
+	int get_w() const { return this->w; }
+	int get_h() const { return this->h; }
 
 	void clear() const;
-	void clear(int r, int g, int b, int a) const;
+	void clear(const int r, const int g, const int b) const;
+	void clear(const int r, const int g, const int b, const int a) const;
 	void update() const;
 
 };

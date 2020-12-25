@@ -1,557 +1,343 @@
-// Headers -----------------------
-
 #include <iostream>
 #include <vector>
-#include <map>
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_acodec.h>
-
-// -------------------------------
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <window.hpp>
+#include <image.hpp>
+#include <sprite.hpp>
+#include <character.hpp>
 
 
 
-// Macros ------------------------
+#define W 720
+#define H 480
 
-#define W 500
-#define H 500
+#define FPS 18
 
-#define PRINT(txt) std::cout << txt;
-
-#define COLOR(r, g, b) al_map_rgb(r, g, b)
-#define ADD_SFX(pointer_name, sfx_name, path) ALLEGRO_SAMPLE* pointer_name = al_load_sample(path);	\
-									sfx_counts.insert( {sfx_name, 0} );								\
-									samples_num++;
-
-#define FPS 17.5f
-
-#define ATTACK -1
-
-// -------------------------------
+#define ADD_BORDERS add_collision_obj( { 0, 0, W, 0 } );	\
+	add_collision_obj( { 0, 0, 0, H } );					\
+	add_collision_obj( { W, 0, 0, H } );					\
+	add_collision_obj( { 0, H, W, 0 } );
 
 
 
-// Global variables --------------
-
-int x = 250, y = 200,
-	jump_count = -1,
-	jump_height = 12,
-	speed = 5,
-	switch_count = 0,
-	samples_num = 0;
-
-bool game_over = false,
-	attack = false,
-	jump_many_times = true;
+int x = W / 2, y = H / 2,
+	w = 64, h = 64;
 
 std::vector<std::pair<
 	std::pair<int, int>,
 	std::pair<int, int>
-	>> pos;
+>> pos;
 
-std::map<std::string, int> sfx_counts;
+std::vector<image*> textures;
 
-// -------------------------------
-
-
-
-// Global enums ------------------
-
-enum { IDLE, MOVE, JUMP, FALL } action1 = IDLE, action2 = IDLE;
-enum { LEFT, RIGHT } dir = RIGHT;
-enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
-enum { KLONOA, VANDA } actual_character = KLONOA;
-
-// -------------------------------
+enum { STAND, JUMP, FALL } action1 = STAND;
+enum { IDLE, MOVE } action2 = IDLE;
+enum { LEFT, RIGHT } dir = LEFT;
 
 
 
-// Prototypes --------------------
+void add_collision_obj(SDL_Rect rec);
+void add_collision_obj(SDL_Rect rec, image& img);
 
-void switch_character();
-void add_to_map(const int, const int, const int, const int);
 bool check_x_collision();
 bool check_y_collision();
 
-// -------------------------------
 
-
-
-// Classes -----------------------
-
-class source {
-protected:
-	mutable int sx, sy;
-	const int sw, sh,
-		sx_lim, sy_lim,
-		action,
-		set_to_0,
-		character,
-		is_attack;
-
-public:
-	constexpr source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int character = 2, const int is_attack = false) :
-	sx(sx), sy(sy), sx_lim(sx_lim - 1), sy_lim(sy_lim - 1), sw(sw), sh(sh), action(action), set_to_0(set_to_0), character(character), is_attack(is_attack) { }
-	~source() { delete this; }
-
-	int get_sx() const { return this->sx; }
-	int get_sy() const { return this->sy; }
-	int get_sw() const { return this->sw; }
-	int get_sh() const { return this->sh; }
-	int get_sx_lim() const { return this->sx_lim; }
-	int get_sy_lim() const { return this->sy_lim; }
-	int get_action() const { return this->action; }
-	int get_character() const { return this->character; }
-
-	int get_sx_index() const { return this->sx / this->sw; }
-	int get_sy_index() const { return this->sy / this->sh; }
-
-	bool check_actual_character() const;
-	bool check_actual_action(const int) const;
-
-	virtual void update_sx(const int) const;
-	virtual void update_sy(const int) const;
-	virtual void update_sx(const int, const int) const;
-	virtual void update_sy(const int, const int) const;
-
-} const idle_source = source(-32, 0, 22, 1, 32, 32, IDLE),
-	move_source = source(-32, 0, 4, 1, 32, 32, MOVE),
-	fall_source = source(-32, 0, 5, 1, 32, 32, FALL, false),
-	jump_source = source(-32, 0, 6, 1, 32, 32, JUMP, false),
-	klonoa_wb_source = source(-32, 0, 11, 1, 32, 32, ATTACK, false, KLONOA, true),
-	klonoa_wc_source = source(-32, 0, 5, 1, 32, 32, ATTACK, false, KLONOA, true),
-	vanda_k_source = source(-32, 0, 8, 1, 32, 32, ATTACK, false, VANDA, true),
-	*player_source = &idle_source,
-
-	wind_bullet_source = source(-64, 0, 11, 1, 64, 32, ATTACK, false, KLONOA, true),
-	wind_cut_source = source(-64, 0, 5, 1, 64, 32, ATTACK, false, KLONOA, true),
-	kick_source = source(-64, 0, 8, 1, 64, 32, ATTACK, false, VANDA, true),
-	*attack_source = &wind_bullet_source;
-
-
-
-class ws_source : public source {
-public:
-	constexpr ws_source(const int sx, const int sy, const int sx_lim, const int sy_lim, const int sw, const int sh, const int action, const bool set_to_0 = true, const int is_attack = false) :
-	source(sx, sy, sx_lim, sy_lim, sw, sh, action, set_to_0, KLONOA, is_attack) { }
-	~ws_source() { delete this; }
-
-	void update_sx(const int) const override;
-	void update_sy(const int) const override;
-	void update_sx(const int, const int) const override;
-	void update_sy(const int, const int) const override;
-
-} const ws_wind_cut_source = ws_source(-32, 0, 5, 1, 32, 32, ATTACK, false, true),
-	ws_fall_source = ws_source(-32, 0, 5, 1, 32, 32, FALL, false),
-	ws_jump_source = ws_source(-32, 0, 6, 1, 32, 32, JUMP, false),
-	*ws_source = &ws_jump_source;
-
-// -------------------------------
-
-
-
-// Functions definition ----------
 
 int main(int argc, char* argv[]) {
-
-	// Game start ----------------------
-
-	PRINT("--- starting game ---\n\n")
-
-	al_init();
-	al_init_primitives_addon();
-	al_init_image_addon();
-	al_init_acodec_addon();
-	al_install_keyboard();
-	al_install_audio();
-
-	add_to_map(0, W, 0, 0);
-	add_to_map(0, W, H, H);
-	add_to_map(0, 0, 0, H);
-	add_to_map(W, W, 0, H);
-
-	add_to_map(0, 101, 114, 126);
-	add_to_map(0, 87, 291, 302);
-	add_to_map(45, 80, 472, H);
-	add_to_map(84, 139, 388, 411);
-	add_to_map(122, 244, 188, 230);
-	add_to_map(164, W, 114, 126);
-	add_to_map(204, 250, 424, 458);
-	add_to_map(238, 321, 298, 312);
-	add_to_map(332, 389, 460, H);
-	add_to_map(420, W, 411, 423);
-	add_to_map(420, W, 329, 347);
-
-	// ---------------------------------
+	SDL_Init(SDL_INIT_VIDEO);
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
 
 
-	// Game pointers -------------------
-	
-	ALLEGRO_DISPLAY* window = NULL;
-	ALLEGRO_EVENT_QUEUE* queue = NULL;
-	ALLEGRO_TIMER* timer = NULL;
-	window = al_create_display(W, H);
-	queue = al_create_event_queue();
-	timer = al_create_timer(1.0f / FPS);
-	
-	ADD_SFX(sfx_jump, "jump", "../sound/sfx/Jump.ogg")
-	ADD_SFX(sfx_wind_bullet, "wind bullet", "../sound/sfx/Wind Bullet.ogg")
-	ADD_SFX(sfx_wind_cut, "wind cut", "../sound/sfx/Wind Cut.ogg")
-	ADD_SFX(sfx_walk, "walk", "../sound/sfx/Walk.ogg")
-	ADD_SFX(sfx_kick, "kick", "../sound/sfx/Kick.ogg")
-	al_reserve_samples(samples_num);
-
-	// ---------------------------------
+	bool game_over = false,
+		attack = false;
+	int jump_count = -1,
+		swicth_count = 0;
+	const int delay = 1000 / FPS;
 
 
 
-	// Game variables ------------------
-
-	ALLEGRO_KEYBOARD_STATE key;
-
-	// ---------------------------------
+	enum { NORMAL, SAMURAI } klonoa_mode = NORMAL;
 
 
 
-	// Sprites -------------------------
-	
-	ALLEGRO_BITMAP* kil = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Idle Left.png"),
-		* kir = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Idle Right.png"),
-		* kwl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Walk Left.png"),
-		* kwr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Walk Right.png"),
-		* kjl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Jump Left.png"),
-		* kjr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Jump Right.png"),
-		* kfl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Fall Left.png"),
-		* kfr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Fall Right.png"),
-		* kwbl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Bullet Left.png"),
-		* kwbr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Bullet Right.png"),
-		* kwcl = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Cut Left.png"),
-		* kwcr = al_load_bitmap("../sprites/Klonoa/Character/Klonoa Wind Cut Right.png"),
-		* vil = al_load_bitmap("../sprites/Vanda/Character/Vanda Idle Left.png"),
-		* vir = al_load_bitmap("../sprites/Vanda/Character/Vanda Idle Right.png"),
-		* vwl = al_load_bitmap("../sprites/Vanda/Character/Vanda Walk Left.png"),
-		* vwr = al_load_bitmap("../sprites/Vanda/Character/Vanda Walk Right.png"),
-		* vjl = al_load_bitmap("../sprites/Vanda/Character/Vanda Jump Left.png"),
-		* vjr = al_load_bitmap("../sprites/Vanda/Character/Vanda Jump Right.png"),
-		* vfl = al_load_bitmap("../sprites/Vanda/Character/Vanda Fall Left.png"),
-		* vfr = al_load_bitmap("../sprites/Vanda/Character/Vanda Fall Right.png"),
-		* vkl = al_load_bitmap("../sprites/Vanda/Character/Vanda Kick Left.png"),
-		* vkr = al_load_bitmap("../sprites/Vanda/Character/Vanda Kick Right.png"),
-		** player_sprite = &kir,
+	window win = window("Klonoa Dimensions - Cheesai Crystal", W, H);
+	image img = image(win, "../res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0, W, H } );
 
-		* wbl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Left.png"),
-		* wbr = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Bullet Right.png"),
-		* wcl = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Cut Left.png"),
-		* wcr = al_load_bitmap("../sprites/Klonoa/Attacks/Wind Cut Right.png"),
-		* kl = al_load_bitmap("../sprites/Vanda/Attacks/Kick Left.png"),
-		* kr = al_load_bitmap("../sprites/Vanda/Attacks/Kick Right.png"),
-		** attack_sprite = &wbr,
+	sprite kil = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
+		kir = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
+		kwl = sprite(win, "../res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
+		kwr = sprite(win, "../res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
+		kjl = sprite(win, "../res/sprites/klonoa/character/Klonoa Jump Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
+		kjr = sprite(win, "../res/sprites/klonoa/character/Klonoa Jump Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
+		kfl = sprite(win, "../res/sprites/klonoa/character/Klonoa Fall Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		kfr = sprite(win, "../res/sprites/klonoa/character/Klonoa Fall Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		kwbl = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Bullet Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 11, 1),
+		kwbr = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Bullet Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 11, 1),
+		kwcl = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Cut Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		kwcr = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Cut Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
 
-		* wsl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Left.png"),
-		* wsr = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Right.png"),
-		* wsjl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Jump Left.png"),
-		* wsjr = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Jump Right.png"),
-		* wsfl = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Fall Left.png"),
-		* wsfr = al_load_bitmap("../sprites/Klonoa/Wind Sword/Wind Sword Fall Right.png"),
-		** sword_sprite = &wsr;
+		vil = sprite(win, "../res/sprites/vanda/character/Vanda Idle Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
+		vir = sprite(win, "../res/sprites/vanda/character/Vanda Idle Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
+		vwl = sprite(win, "../res/sprites/vanda/character/Vanda Walk Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
+		vwr = sprite(win, "../res/sprites/vanda/character/Vanda Walk Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
+		vjl = sprite(win, "../res/sprites/vanda/character/Vanda Jump Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
+		vjr = sprite(win, "../res/sprites/vanda/character/Vanda Jump Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
+		vfl = sprite(win, "../res/sprites/vanda/character/Vanda Fall Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		vfr = sprite(win, "../res/sprites/vanda/character/Vanda Fall Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		vkl = sprite(win, "../res/sprites/vanda/character/Vanda Kick Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 8, 1),
+		vkr = sprite(win, "../res/sprites/vanda/character/Vanda Kick Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 8, 1),
+		* current_sprite = &kil,
 
-	// ---------------------------------
+		wbl = sprite(win, "../res/sprites/klonoa/attacks/Wind Bullet Left.png", { 0, 0, 32, 16 }, { x - w, y, w * 2, h }, 11, 1),
+		wbr = sprite(win, "../res/sprites/klonoa/attacks/Wind Bullet Right.png", { 0, 0, 32, 16 }, { x, y, w * 2, h }, 11, 1),
+		wcl = sprite(win, "../res/sprites/klonoa/attacks/Wind Cut Left.png", { 0, 0, 32, 16 }, { x - w, y, w * 2, h }, 5, 1),
+		wcr = sprite(win, "../res/sprites/klonoa/attacks/Wind Cut Right.png", { 0, 0, 32, 16 }, { x, y, w * 2, h }, 5, 1),
+		kl = sprite(win, "../res/sprites/vanda/attacks/Kick Left.png", { 0, 0, 32, 16 }, { x - w, y, w * 2, h }, 8, 1),
+		kr = sprite(win, "../res/sprites/vanda/attacks/Kick Right.png", { 0, 0, 32, 16 }, { x, y, w * 2, h }, 8, 1),
+		* current_attack = &wbl,
 
+		wsl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 1, 1),
+		wsr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 1, 1),
+		wsjl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Jump Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
+		wsjr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Jump Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
+		wsfl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Fall Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		wsfr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Fall Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		* current_ws_sprite = nullptr;
 
-
-	// Event sources register ----------
-
-	al_register_event_source(queue, al_get_display_event_source(window));
-	al_register_event_source(queue, al_get_timer_event_source(timer));
-	al_register_event_source(queue, al_get_keyboard_event_source());
-
-	// ---------------------------------
+	character klonoa = character(5, 12, true),
+		vanda = character(7, 5, false),
+		* current_character = &klonoa;
 
 
 
-	// Window title --------------------
-
-	al_set_window_title(window, "Klonoa Dimensions - Cheesai Island");
-
-	// ---------------------------------
-
+	ADD_BORDERS
+	add_collision_obj( { 200, H / 2 + 100, 300, 64 }, img);
+	add_collision_obj( { 0, H - 50, 125, 50 }, img);
+	add_collision_obj( { 500, H / 2 + 40, W - 400, 90 }, img);
 
 
-	// General update ------------------
 
-	auto def_sprite = [] (ALLEGRO_BITMAP*& l, ALLEGRO_BITMAP*& r) -> ALLEGRO_BITMAP** {
-		if (dir == LEFT)
-			return &l;
+	auto update_actions = [&] () -> void {
+		const Uint8* key_state = SDL_GetKeyboardState(nullptr);
 
-		else
-			return &r;
-
-	};
-	
-	auto update_dir_and_actions = [&] () -> void {
-		if (al_key_down(&key, ALLEGRO_KEY_Z) && jump_count < jump_height && (action1 != FALL || jump_many_times) ) {
+		if (key_state[SDL_SCANCODE_Z] && jump_count < current_character->get_jump_height() && (action1 != FALL || current_character->get_jump_many_times()) ) {
 			action1 = JUMP;
-			jump_count++;
-			PRINT("jump\n")
+			++jump_count;
 
 		} else if (!check_y_collision() || (check_y_collision() && action1 == JUMP) ) {
 			action1 = FALL;
 			if (jump_count > -1)
-				jump_count--;
-
-			sfx_counts["jump"] = 0;
-			PRINT("fall\n")
+				--jump_count;
 
 		} else {
-			action1 = IDLE;
+			action1 = STAND;
 			jump_count = -1;
 
 		}
 
 
 
-		if (al_key_down(&key, ALLEGRO_KEY_LEFT)) {
+		if (key_state[SDL_SCANCODE_LEFT]) {
+			action2 = MOVE;
 			dir = LEFT;
+
+		} else if (key_state[SDL_SCANCODE_RIGHT]) {
 			action2 = MOVE;
-			PRINT("move left\n")
-		
-		} else if (al_key_down(&key, ALLEGRO_KEY_RIGHT)) {
 			dir = RIGHT;
-			action2 = MOVE;
-			PRINT("move right\n")
 
 		} else
 			action2 = IDLE;
 
 
 
-		attack_source->check_actual_action(0);
-		if (al_key_down(&key, ALLEGRO_KEY_X) || attack) {
+		if (key_state[SDL_SCANCODE_X] || attack)
 			attack = true;
-			PRINT("attack\n")
-		
-		} else
+
+		else
 			attack = false;
 
 
 
-		if (!switch_count && al_key_down(&key, ALLEGRO_KEY_S) && actual_character == KLONOA && !attack) {
-			switch_count = 5;
+		if (key_state[SDL_SCANCODE_C] && !attack && swicth_count == 0) {
+			if (current_character == &klonoa)
+				current_character = &vanda;
 
-			if (klonoa_mode == NORMAL) {
+			else
+				current_character = &klonoa;
+
+			swicth_count = 10;
+
+		} else if (swicth_count > 0)
+			--swicth_count;
+
+
+
+		if (key_state[SDL_SCANCODE_S] && !attack && swicth_count == 0) {
+			if (klonoa_mode == NORMAL)
 				klonoa_mode = SAMURAI;
-				PRINT("mode: samurai\n")
 
-			} else {
+			else
 				klonoa_mode = NORMAL;
-				PRINT("mode: normal\n")
 
-			}
-		
-		}
+			swicth_count = 10;
 
-
-
-		if (!switch_count && al_key_down(&key, ALLEGRO_KEY_C) && !attack) {
-			switch_count = 5;
-			switch_character();
-			PRINT("character swicthed\n")
-
-		}
-
-
-
-		if (switch_count)
-			switch_count--;
+		} else if (swicth_count > 0)
+			--swicth_count;
 
 	};
 
-	auto update_sources_and_sprites = [&] () -> void {
+
+
+	auto def_sprite_by_dir = [&] (sprite& left, sprite& right) -> sprite* {
+		if (dir == LEFT)
+			return &left;
+
+		return &right;
+	};
+
+	auto def_sprite_by_character = [&] (sprite& k, sprite& v) -> sprite& {
+		if (current_character == &klonoa)
+			return k;
+
+		return v;
+	};
+
+	auto update_sprites = [&] () -> void {
+		if (action1 == STAND || current_sprite->get_src_x_index() < current_sprite->get_x_lim()) {
+			current_sprite->advance_x_frame();
+
+			if (klonoa_mode == SAMURAI && current_ws_sprite != nullptr)
+				current_ws_sprite->advance_x_frame();
+
+		}
+
+
+
+		if (attack && current_attack->get_src_x_index() >= current_attack->get_x_lim()) {
+			attack = false;
+			current_attack->change_frame_pos(0, 0);
+
+		} else if (attack)
+			current_attack->advance_x_frame();
+
+
+
 		if (action1 == FALL) {
-			player_source = &fall_source;
-			ws_source = &ws_fall_source;
-			sword_sprite = def_sprite(wsfl, wsfr);
+			current_sprite = def_sprite_by_dir(def_sprite_by_character(kfl, vfl), def_sprite_by_character(kfr, vfr));
 
-			if (actual_character == VANDA)
-				player_sprite = def_sprite(vfl, vfr);
-
-			else
-				player_sprite = def_sprite(kfl, kfr);
-
+			if (current_character == &klonoa && klonoa_mode == SAMURAI)
+				current_ws_sprite = def_sprite_by_dir(wsfl, wsfr);
 
 		} else if (action1 == JUMP) {
-			player_source = &jump_source;
-			ws_source = &ws_jump_source;
-			sword_sprite = def_sprite(wsjl, wsjr);
+			current_sprite = def_sprite_by_dir(def_sprite_by_character(kjl, vjl), def_sprite_by_character(kjr, vjr));
 
-			if (actual_character == VANDA)
-				player_sprite = def_sprite(vjl, vjr);
+			if (current_character == &klonoa && klonoa_mode == SAMURAI)
+				current_ws_sprite = def_sprite_by_dir(wsjl, wsjr);
 
-			else
-				player_sprite = def_sprite(kjl, kjr);
+		} else if (action1 == STAND && action2 == MOVE) {
+			current_sprite = def_sprite_by_dir(def_sprite_by_character(kwl, vwl), def_sprite_by_character(kwr, vwr));
 
-		
-		} else if (action2 == MOVE) {
-			player_source = &move_source;
-			sword_sprite = def_sprite(wsl, wsr);
+			if (current_character == &klonoa && klonoa_mode == SAMURAI)
+				current_ws_sprite = def_sprite_by_dir(wsl, wsr);
 
-			if (actual_character == VANDA)
-				player_sprite = def_sprite(vwl, vwr);
+		} else if (attack && action1 == STAND && action2 == IDLE) {
+
+			if (klonoa_mode == NORMAL)
+				current_sprite = def_sprite_by_dir(def_sprite_by_character(kwbl, vkl), def_sprite_by_character(kwbr, vkr));
 
 			else
-				player_sprite = def_sprite(kwl, kwr);
+				current_sprite = def_sprite_by_dir(def_sprite_by_character(kwcl, vkl), def_sprite_by_character(kwcr, vkr));
 
+			current_ws_sprite = nullptr;
 
 		} else {
-			player_source = &idle_source;
-			sword_sprite = def_sprite(wsl, wsr);
-
-			if (actual_character == VANDA)
-				player_sprite = def_sprite(vil, vir);
-
-			else
-				player_sprite = def_sprite(kil, kir);
-
+			current_sprite = def_sprite_by_dir(def_sprite_by_character(kil, vil), def_sprite_by_character(kir, vir));
+			if (current_character == &klonoa && klonoa_mode == SAMURAI)
+				current_ws_sprite = def_sprite_by_dir(wsl, wsr);
 
 		}
-		
-
-
-		if (attack) {
-
-			if (actual_character == VANDA) {
-				attack_source = &kick_source;
-				attack_sprite = def_sprite(kl, kr);
-				
-				if (player_source == &idle_source) {
-					player_source = &vanda_k_source;
-					player_sprite = def_sprite(vkl, vkr);
-
-				}
-
-			} else if (klonoa_mode == NORMAL) {
-				attack_source = &wind_bullet_source;
-				attack_sprite = def_sprite(wbl, wbr);
-				
-				if (player_source == &idle_source) {
-					player_source = &klonoa_wb_source;
-					player_sprite = def_sprite(kwbl, kwbr);
-
-				}
-
-			} else {
-				attack_source = &wind_cut_source;
-				attack_sprite = def_sprite(wcl, wcr);
-				ws_source = &ws_wind_cut_source;
-				
-				if (player_source == &idle_source) {
-					player_source = &klonoa_wc_source;
-					player_sprite = def_sprite(kwcl, kwcr);
-
-				}
-
-			}
-
-		}
-
-		idle_source.update_sx(1, 2);
-		move_source.update_sx(2);
-		fall_source.update_sx(1);
-		jump_source.update_sx(1);
-		klonoa_wb_source.update_sx(0);
-		klonoa_wc_source.update_sx(0);
-		vanda_k_source.update_sx(0);
-		wind_bullet_source.update_sx(0);
-		wind_cut_source.update_sx(0);
-		kick_source.update_sx(0);
-		ws_wind_cut_source.update_sx(0);
-		ws_fall_source.update_sx(1);
-		ws_jump_source.update_sx(1);
-
-		al_convert_mask_to_alpha(*player_sprite, COLOR(0, 255, 0));
-		al_convert_mask_to_alpha(*attack_sprite, COLOR(0, 255, 0));
-		al_convert_mask_to_alpha(*sword_sprite, COLOR(0, 255, 0));	
-
-	};
-
-	auto update_sfx = [&] () -> void {
-		if (action1 == IDLE && action2 == MOVE && sfx_counts["walk"] == 0) {
-			al_play_sample(sfx_walk, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
-			sfx_counts["walk"] = 1;
-
-		} else
-			sfx_counts["walk"] = 0;
-
-
-
-		if (action1 == JUMP && sfx_counts["jump"] == 0) {
-			al_play_sample(sfx_jump, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
-			sfx_counts["jump"] = 1;
-
-		} else if (action1 == FALL)
-			sfx_counts["jump"] = 0;
 
 
 
 		if (attack) {
+			if (klonoa_mode == NORMAL)
+				current_attack = def_sprite_by_dir(def_sprite_by_character(wbl, kl), def_sprite_by_character(wbr, kr));
 
-			if (actual_character == VANDA && sfx_counts["kick"] == 0) {
-				al_play_sample(sfx_kick, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
-				sfx_counts["kick"] = 1;
-
-			} else if (actual_character == KLONOA && klonoa_mode == NORMAL && sfx_counts["wind bullet"] == 0) {
-				al_play_sample(sfx_wind_bullet, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
-				sfx_counts["wind bullet"] = 1;
-			
-			} else if (actual_character == KLONOA && klonoa_mode == SAMURAI && sfx_counts["wind cut"] == 0) {
-				al_play_sample(sfx_wind_cut, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, 0);
-				sfx_counts["wind cut"] = 1;
-
-			}
-
-		} else {
-			sfx_counts["wind bullet"] = 0;
-			sfx_counts["wind cut"] = 0;
-			sfx_counts["kick"] = 0;
+			else
+				current_attack = def_sprite_by_dir(def_sprite_by_character(wcl, kl), def_sprite_by_character(wcr, kr));
 
 		}
 
+
+
+		kil.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && attack);
+		kir.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && attack);
+		kwl.reset_src_x(dir == LEFT && action1 != STAND && action2 != MOVE);
+		kwr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != MOVE);
+		kjl.reset_src_x(dir == LEFT && action1 != JUMP);
+		kjr.reset_src_x(dir == RIGHT && action1 != JUMP);
+		kfl.reset_src_x(dir == LEFT && action1 != FALL);
+		kfr.reset_src_x(dir == RIGHT && action1 != FALL);
+		kwbl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != NORMAL);
+		kwbr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != NORMAL);
+		kwcl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != SAMURAI);
+		kwcr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != SAMURAI);
+		wbl.reset_src_x(dir == LEFT && !attack && klonoa_mode != NORMAL);
+		wbr.reset_src_x(dir == RIGHT && !attack && klonoa_mode != NORMAL);
+		wcl.reset_src_x(dir == LEFT && !attack && klonoa_mode != SAMURAI);
+		wcr.reset_src_x(dir == RIGHT && !attack && klonoa_mode != SAMURAI);
+
+		vil.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && attack);
+		vir.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && attack);
+		vwl.reset_src_x(dir == LEFT && action1 != STAND && action2 != MOVE);
+		vwr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != MOVE);
+		vjl.reset_src_x(dir == LEFT && action1 != JUMP);
+		vjr.reset_src_x(dir == RIGHT && action1 != JUMP);
+		vfl.reset_src_x(dir == LEFT && action1 != FALL);
+		vfr.reset_src_x(dir == RIGHT && action1 != FALL);
+		vkl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack);
+		vkr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack);
+		kl.reset_src_x(dir == LEFT && !attack);
+		kr.reset_src_x(dir == RIGHT && !attack);
+
+		wsl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack);
+		wsr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack);
+		wsjl.reset_src_x(dir == LEFT && action1 != JUMP);
+		wsjr.reset_src_x(dir == RIGHT && action1 != JUMP);
+		wsfl.reset_src_x(dir == LEFT && action1 != FALL);
+		wsfr.reset_src_x(dir == RIGHT && action1 != FALL);
 	};
 
-	// ---------------------------------
 
-
-
-	// Position update -----------------
 
 	auto move_x = [&] () -> void {
-
-		for (int i = 0; i < speed; i++)
-			if(check_x_collision())
+		
+		for (int i = 0; i < current_character->get_speed() * (h / 32); ++i)
+			if (check_x_collision())
 				break;
 
 			else if (dir == LEFT)
-				x--;
+				--x;
 
 			else
-				x++;
+				++x;
 
 	};
 
 	auto move_y = [&] () -> void {
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 10 * (h / 32); ++i)
 			if (check_y_collision())
 				break;
 
 			else if (action1 == FALL)
-				y++;
+				++y;
 
-			else if (jump_count < jump_height)
-				y--;
+			else if (jump_count < current_character->get_jump_height())
+				--y;
 
 	};
 
@@ -562,192 +348,120 @@ int main(int argc, char* argv[]) {
 		if (action2 == MOVE)
 			move_x();
 
-	};
+		
 
-	// ---------------------------------
+		current_sprite->change_pos(x, y);
+		if (dir == LEFT)
+			current_attack->change_pos(x - w, y);
+
+		else
+			current_attack->change_pos(x, y);
 
 
 
-	// Drawing -------------------------
+		if (klonoa_mode == SAMURAI && current_ws_sprite != nullptr) {
+			current_ws_sprite->change_pos(x, y);
 
-	auto draw_player = [&] () -> void {
-		al_set_target_bitmap(al_get_backbuffer(window));
-
-		if (dir == LEFT) {
-			
-			if (attack)
-				al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x - 32 - 9, y, 0);
-	
-			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
-
-				if (action1 == FALL || action1 == JUMP)
-					al_draw_bitmap_region(*sword_sprite, ws_source->get_sx(), ws_source->get_sy(), ws_source->get_sw(), ws_source->get_sh(), x - 9, y, 0);
-				
-				else if (action2 == MOVE && move_source.get_sx_index() > 1)
-					al_draw_bitmap(*sword_sprite, x - 9 - 2, y, 0);
-
-				else
-					al_draw_bitmap(*sword_sprite, x - 9, y, 0);
-			
-			}
+			if (!attack && action1 == STAND && action2 == IDLE && current_ws_sprite->get_src_x_index() > 1)
+				current_ws_sprite->change_pos(x - w, y);
 
 		}
 
-
-
-		al_draw_bitmap_region(*player_sprite, player_source->get_sx(), player_source->get_sy(), player_source->get_sw(), player_source->get_sh(), x, y, 0);
-
-
-
-		if (dir == RIGHT) {
-			
-			if (attack)
-				al_draw_bitmap_region(*attack_sprite, attack_source->get_sx(), attack_source->get_sy(), attack_source->get_sw(), attack_source->get_sh(), x, y, 0);
-
-			else if (actual_character == KLONOA && klonoa_mode == SAMURAI) {
-
-				if (action1 == FALL || action1 == JUMP)
-					al_draw_bitmap_region(*sword_sprite, ws_source->get_sx(), ws_source->get_sy(), ws_source->get_sw(), ws_source->get_sh(), x, y, 0);
-
-				else if (action2 == MOVE && move_source.get_sx_index() > 1)
-					al_draw_bitmap(*sword_sprite, x - 2, y, 0);
-
-				else	
-					al_draw_bitmap(*sword_sprite, x, y, 0);
-			
-			}
-			
-		}
-	
 	};
+
+
 
 	auto draw_scenario = [&] () -> void {
-		for (auto i : pos)
-			al_draw_rectangle(i.first.first, i.second.first, i.first.second, i.second.second, COLOR(243, 78, 13), 3.14f);
+		SDL_Rect rec;
+
+		for (int i = 0; i < textures.size(); ++i) {
+			
+			if (textures[i] != nullptr) {
+				rec = { textures[i]->get_des_x(), textures[i]->get_des_y(), textures[i]->get_des_w(), textures[i]->get_des_h() };
+				textures[i]->change_pos(pos[i].first.first, pos[i].first.second);
+				textures[i]->change_size(pos[i].second.first - pos[i].first.first, pos[i].second.second - pos[i].first.second);
+				textures[i]->draw();
+				textures[i]->change_pos(rec.x, rec.y);
+				textures[i]->change_size(rec.w, rec.h);
+
+			}
+
+		}
+	};
+
+	auto draw_character = [&] () -> void {
+		current_sprite->draw();
+		if (attack)
+			current_attack->draw();
+
+		if (current_character == &klonoa && current_ws_sprite != nullptr && klonoa_mode == SAMURAI)
+			current_ws_sprite->draw();
 
 	};
 
-	// ---------------------------------
 
 
+	SDL_Event evn;
 
-	// Game loop -----------------------
 
-	al_start_timer(timer);
 
 	while (!game_over) {
 
-		ALLEGRO_EVENT event;
-		al_wait_for_event(queue, &event);
+		while (SDL_PollEvent(&evn)) {
 
-		if (event.type == ALLEGRO_EVENT_TIMER) {
-			al_get_keyboard_state(&key);
+			switch (evn.type) {
+				case SDL_QUIT:
+					game_over = true;
+					break;
 
-			update_dir_and_actions();
-			update_sources_and_sprites();
-			update_pos();
-			update_sfx();
+			}
 
-			if (al_key_down(&key, ALLEGRO_KEY_ESCAPE))
-				game_over = true;
+		}
 
-		} else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
-			game_over = true;
-	
-		al_clear_to_color(COLOR(12, 24, 52));
+		update_actions();
+		update_sprites();
+		update_pos();
+
+		win.clear(0, 0, 0);
+		img.draw();
 		draw_scenario();
-		draw_player();
-		al_flip_display();
-	
+		draw_character();
+		win.update();
+
+		SDL_Delay(delay);
+
 	}
 
-	// ---------------------------------
-
-
-
-	// Game end ------------------------
-
-	al_shutdown_primitives_addon();
-
-	al_destroy_display(window);
-	al_destroy_event_queue(queue);
-	al_destroy_timer(timer);
-
-	al_destroy_sample(sfx_jump);
-	al_destroy_sample(sfx_wind_bullet);
-
-	al_destroy_bitmap(kil);
-	al_destroy_bitmap(kir);
-	al_destroy_bitmap(kwl);
-	al_destroy_bitmap(kwr);
-	al_destroy_bitmap(kjl);
-	al_destroy_bitmap(kjr);
-	al_destroy_bitmap(kfl);
-	al_destroy_bitmap(kfr);
-	al_destroy_bitmap(kwbl);
-	al_destroy_bitmap(kwbr);
-	al_destroy_bitmap(kwcl);
-	al_destroy_bitmap(kwcr);
-	al_destroy_bitmap(vil);
-	al_destroy_bitmap(vir);
-	al_destroy_bitmap(vwl);
-	al_destroy_bitmap(vwr);
-	al_destroy_bitmap(vjl);
-	al_destroy_bitmap(vjr);
-	al_destroy_bitmap(vfl);
-	al_destroy_bitmap(vfr);
-	al_destroy_bitmap(vkl);
-	al_destroy_bitmap(vkr);
-
-	al_destroy_bitmap(wbl);
-	al_destroy_bitmap(wbr);
-	al_destroy_bitmap(wcl);
-	al_destroy_bitmap(wcr);
-	al_destroy_bitmap(kl);
-	al_destroy_bitmap(kr);
-
-	al_destroy_bitmap(wsl);
-	al_destroy_bitmap(wsr);
-	al_destroy_bitmap(wsfl);
-	al_destroy_bitmap(wsfr);
-	al_destroy_bitmap(wsjl);
-	al_destroy_bitmap(wsjr);
-
-	PRINT("\n--- game over ---\n\n")
+	IMG_Quit();
+	SDL_Quit();
 	return 0;
-
-	// ---------------------------------
-
 }
 
-void switch_character() {
-	if (actual_character == KLONOA) {
-		actual_character = VANDA;
-		jump_height = 5;
-		jump_many_times = false;
-		speed = 7;
 
-	} else {
-		actual_character = KLONOA;
-		jump_height = 12;
-		jump_many_times = true;
-		speed = 5;
 
-	}
-
-}
-
-void add_to_map(const int x1, const int x2, const int y1, const int y2) {
+void add_collision_obj(SDL_Rect rec) {
 	pos.push_back( {
-		{ x1, x2 }, { y1, y2 }
+		{ rec.x, rec.y },
+		{ rec.x + rec.w, rec.y + rec.h }
 	} );
+
+	textures.push_back(nullptr);
+}
+
+void add_collision_obj(SDL_Rect rec, image& img) {
+	pos.push_back( {
+		{ rec.x, rec.y },
+		{ rec.x + rec.w, rec.y + rec.h }
+	} );
+
+	textures.push_back(&img);
 }
 
 bool check_x_collision() {
-	
+
 	for (auto i : pos)
-		if ( (dir == LEFT && x == i.first.second && y < i.second.second && y + 32 > i.second.first) ||
-			(dir == RIGHT && x + 32 == i.first.first && y < i.second.second && y + 32 > i.second.first) )
+		if ( (dir == LEFT && x == i.second.first && y < i.second.second && y + h > i.first.second) ||
+			(dir == RIGHT && x + w == i.first.first && y < i.second.second && y + h > i.first.second) )
 			return true;
 
 	return false;
@@ -756,158 +470,9 @@ bool check_x_collision() {
 bool check_y_collision() {
 
 	for (auto i : pos)
-		if ( (action1 != JUMP && y + 32 == i.second.first && x < i.first.second && x + 32 > i.first.first) ||
-			(action1 == JUMP && y == i.second.second && x < i.first.second && x + 32 > i.first.first) )
+		if ( (action1 != JUMP && y + h == i.first.second && x < i.second.first && x + w > i.first.first) ||
+			(action1 == JUMP && y == i.second.second && x < i.second.first && x + w > i.first.first) )
 			return true;
 
 	return false;
 }
-
-// -------------------------------
-
-
-
-// Methods definition ------------
-
-bool source::check_actual_character() const {
-	if (actual_character == this->character)
-		return true;
-
-	return false;
-}
-
-bool source::check_actual_action(const int action_n) const {
-	if (action_n == 0){
-
-		if ( (player_source == this || attack_source == this) && this->get_sx_index() == this->sx_lim && this->get_sy_index() == this->sy_lim)
-			attack = false;
-
-	} else if (action_n == 1) {
-
-		if (action1 == this->action)
-			return true;
-
-		else
-			return false;
-
-	} else if (action2 == this->action)
-		return true;
-
-	return false;
-}
-
-void source::update_sx(const int action_n) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
-
-		if (this->get_sx_index() < this->sx_lim)
-			this->sx += this->sw;
-
-		else if (this->set_to_0)
-			this->sx = 0;
-	
-	} else
-		this->sx = -(this->sw);
-
-}
-
-void source::update_sy(const int action_n) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) ) {
-
-		if (this->get_sx_index() < this->sy_lim)
-			this->sy += this->sh;
-
-		else if (this->set_to_0)
-			this->sy = 0;
-	
-	} else
-		this->sy = -(this->sh);
-
-}
-
-void source::update_sx(const int action_n1, const int action_n2) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
-
-		if (this->get_sx_index() < this->sx_lim)
-			this->sx += this->sw;
-
-		else if (this->set_to_0)
-			this->sx = 0;
-	
-	} else
-		this->sx = -(this->sw);
-
-}
-
-void source::update_sy(const int action_n1, const int action_n2) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) ) {
-
-		if (this->get_sx_index() < this->sy_lim)
-			this->sy += this->sh;
-
-		else if (this->set_to_0)
-			this->sy = 0;
-	
-	} else
-		this->sy = -(this->sh);
-
-}
-
-
-
-void ws_source::update_sx(const int action_n) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
-
-		if (this->get_sx_index() < this->sx_lim)
-			this->sx += this->sw;
-
-		else if (this->set_to_0)
-			this->sx = 0;
-	
-	} else
-		this->sx = -(this->sw);
-
-}
-
-void ws_source::update_sy(const int action_n) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
-
-		if (this->get_sx_index() < this->sy_lim)
-			this->sy += this->sh;
-
-		else if (this->set_to_0)
-			this->sy = 0;
-	
-	} else
-		this->sy = -(this->sh);
-
-}
-
-void ws_source::update_sx(const int action_n1, const int action_n2) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
-
-		if (this->get_sx_index() < this->sx_lim)
-			this->sx += this->sw;
-
-		else if (this->set_to_0)
-			this->sx = 0;
-	
-	} else
-		this->sx = -(this->sw);
-
-}
-
-void ws_source::update_sy(const int action_n1, const int action_n2) const {
-	if ( (this->character == 2 || this->check_actual_character()) && this->check_actual_action(action_n1) && this->check_actual_action(action_n2) || (this->is_attack && attack) && klonoa_mode == SAMURAI) {
-
-		if (this->get_sx_index() < this->sy_lim)
-			this->sy += this->sh;
-
-		else if (this->set_to_0)
-			this->sy = 0;
-	
-	} else
-		this->sy = -(this->sh);
-
-}
-
-// -------------------------------
