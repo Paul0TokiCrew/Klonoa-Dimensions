@@ -444,6 +444,26 @@ int main(int argc, char* argv[]) {
 
 
 
+void add_obj(SDL_Rect rec, const char* id) {
+	obj_pos.push_back( {
+		{ rec.x, rec.y },
+		{ rec.x + rec.w, rec.y + rec.h }
+	} );
+
+	obj_ids.push_back(id);
+	obj_textures.push_back(nullptr);
+}
+
+void add_obj(SDL_Rect rec, const char* id, image& img) {
+	obj_pos.push_back( {
+		{ rec.x, rec.y },
+		{ rec.x + rec.w, rec.y + rec.h }
+	} );
+
+	obj_ids.push_back(id);
+	obj_textures.push_back(&img);
+}
+
 void add_collision_obj(SDL_Rect rec) {
 	obj_pos.push_back( {
 		{ rec.x, rec.y },
@@ -465,8 +485,8 @@ void add_collision_obj(SDL_Rect rec, image& img) {
 }
 
 bool check_x_collision() {
-	std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>>::iterator i = obj_pos.begin();
-	std::vector<const char*>::iterator j = obj_ids.begin();
+	auto i = obj_pos.begin();
+	auto j = obj_ids.begin();
 
 	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
@@ -478,8 +498,8 @@ bool check_x_collision() {
 }
 
 bool check_y_collision() {
-	std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>>::iterator i = obj_pos.begin();
-	std::vector<const char*>::iterator j = obj_ids.begin();
+	auto i = obj_pos.begin();
+	auto j = obj_ids.begin();
 
 	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
