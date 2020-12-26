@@ -27,9 +27,9 @@ int x = W / 2, y = H / 2,
 std::vector<std::pair<
 	std::pair<int, int>,
 	std::pair<int, int>
->> pos;
+>> obj_pos;
 
-std::vector<image*> textures;
+std::vector<image*> obj_textures;
 
 enum { STAND, JUMP, FALL } action1 = STAND;
 enum { IDLE, MOVE } action2 = IDLE;
@@ -440,26 +440,26 @@ int main(int argc, char* argv[]) {
 
 
 void add_collision_obj(SDL_Rect rec) {
-	pos.push_back( {
+	obj_pos.push_back( {
 		{ rec.x, rec.y },
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
-	textures.push_back(nullptr);
+	obj_textures.push_back(nullptr);
 }
 
 void add_collision_obj(SDL_Rect rec, image& img) {
-	pos.push_back( {
+	obj_pos.push_back( {
 		{ rec.x, rec.y },
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
-	textures.push_back(&img);
+	obj_textures.push_back(&img);
 }
 
 bool check_x_collision() {
 
-	for (auto i : pos)
+	for (auto i : obj_pos)
 		if ( (dir == LEFT && x == i.second.first && y < i.second.second && y + h > i.first.second) ||
 			(dir == RIGHT && x + w == i.first.first && y < i.second.second && y + h > i.first.second) )
 			return true;
@@ -469,7 +469,7 @@ bool check_x_collision() {
 
 bool check_y_collision() {
 
-	for (auto i : pos)
+	for (auto i : obj_pos)
 		if ( (action1 != JUMP && y + h == i.first.second && x < i.second.first && x + w > i.first.first) ||
 			(action1 == JUMP && y == i.second.second && x < i.second.first && x + w > i.first.first) )
 			return true;
