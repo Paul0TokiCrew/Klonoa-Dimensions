@@ -29,6 +29,8 @@ std::vector<std::pair<
 	std::pair<int, int>
 >> obj_pos;
 
+std::vector<const char*> obj_ids;
+
 std::vector<image*> obj_textures;
 
 enum { STAND, JUMP, FALL } action1 = STAND;
@@ -36,6 +38,9 @@ enum { IDLE, MOVE } action2 = IDLE;
 enum { LEFT, RIGHT } dir = LEFT;
 
 
+
+void add_obj(SDL_Rect rec, const char* id);
+void add_obj(SDL_Rect rec, const char* id, image& img);
 
 void add_collision_obj(SDL_Rect rec);
 void add_collision_obj(SDL_Rect rec, image& img);
@@ -374,15 +379,15 @@ int main(int argc, char* argv[]) {
 	auto draw_scenario = [&] () -> void {
 		SDL_Rect rec;
 
-		for (int i = 0; i < textures.size(); ++i) {
+		for (int i = 0; i < obj_textures.size(); ++i) {
 			
-			if (textures[i] != nullptr) {
-				rec = { textures[i]->get_des_x(), textures[i]->get_des_y(), textures[i]->get_des_w(), textures[i]->get_des_h() };
-				textures[i]->change_pos(pos[i].first.first, pos[i].first.second);
-				textures[i]->change_size(pos[i].second.first - pos[i].first.first, pos[i].second.second - pos[i].first.second);
-				textures[i]->draw();
-				textures[i]->change_pos(rec.x, rec.y);
-				textures[i]->change_size(rec.w, rec.h);
+			if (obj_textures[i] != nullptr) {
+				rec = { obj_textures[i]->get_des_x(), obj_textures[i]->get_des_y(), obj_textures[i]->get_des_w(), obj_textures[i]->get_des_h() };
+				obj_textures[i]->change_pos(obj_pos[i].first.first, obj_pos[i].first.second);
+				obj_textures[i]->change_size(obj_pos[i].second.first - obj_pos[i].first.first, obj_pos[i].second.second - obj_pos[i].first.second);
+				obj_textures[i]->draw();
+				obj_textures[i]->change_pos(rec.x, rec.y);
+				obj_textures[i]->change_size(rec.w, rec.h);
 
 			}
 
@@ -445,6 +450,7 @@ void add_collision_obj(SDL_Rect rec) {
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
+	obj_ids.push_back("collision");
 	obj_textures.push_back(nullptr);
 }
 
@@ -454,24 +460,31 @@ void add_collision_obj(SDL_Rect rec, image& img) {
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
+	obj_ids.push_back("collision");
 	obj_textures.push_back(&img);
 }
 
 bool check_x_collision() {
+	std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>>::iterator i = obj_pos.begin();
+	std::vector<const char*>::iterator j = obj_ids.begin();
 
-	for (auto i : obj_pos)
-		if ( (dir == LEFT && x == i.second.first && y < i.second.second && y + h > i.first.second) ||
-			(dir == RIGHT && x + w == i.first.first && y < i.second.second && y + h > i.first.second) )
+	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
+		if ( *j == "collision" &&
+			( (dir == LEFT && x == i->second.first && y < i->second.second && y + h > i->first.second) ||
+			(dir == RIGHT && x + w == i->first.first && y < i->second.second && y + h > i->first.second) ) )
 			return true;
 
 	return false;
 }
 
 bool check_y_collision() {
+	std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>>::iterator i = obj_pos.begin();
+	std::vector<const char*>::iterator j = obj_ids.begin();
 
-	for (auto i : obj_pos)
-		if ( (action1 != JUMP && y + h == i.first.second && x < i.second.first && x + w > i.first.first) ||
-			(action1 == JUMP && y == i.second.second && x < i.second.first && x + w > i.first.first) )
+	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
+		if ( *j == "collision" &&
+			( (action1 != JUMP && y + h == i->first.second && x < i->second.first && x + w > i->first.first) ||
+			(action1 == JUMP && y == i->second.second && x < i->second.first && x + w > i->first.first) ) )
 			return true;
 
 	return false;
