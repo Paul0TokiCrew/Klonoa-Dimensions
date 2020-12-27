@@ -17,6 +17,8 @@ public:
 	speed(speed), jump_height(jump_height), jump_many_times(jump_many_times) { }
 	~character() { }
 
+	static int x, y, w, h;
+
 	int get_speed() const { return this->speed; }
 	int get_jump_height() const { return this->jump_height; }
 	bool get_jump_many_times() const { return this->jump_many_times; }

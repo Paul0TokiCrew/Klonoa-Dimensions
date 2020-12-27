@@ -27,7 +27,7 @@ You can also go to **Code** label in this repository, download a .zip file and u
 To compile the source code, you must have [SDL2 library](https://www.libsdl.org/) and [GCC Compiler](https://gcc.gnu.org/) installed
 
 Open your command line, acess the _src_ folder, and type:
->`g++ main.cpp window.cpp image.cpp character.cpp -o main -lSDL2 -lSDL2_image -I../include`
+>`g++ *.cpp -o main -lSDL2 -lSDL2_image -I../include`
 
 After compiling, type:
 > `./main`

@@ -21,8 +21,8 @@
 
 
 
-int x = W / 2, y = H / 2,
-	w = 64, h = 64;
+int character::x = W / 2, character::y = H / 2,
+	character::w = 64, character::h = 64;
 
 std::vector<std::pair<
 	std::pair<int, int>,
@@ -71,45 +71,45 @@ int main(int argc, char* argv[]) {
 	window win = window("Klonoa Dimensions - Cheesai Crystal", W, H);
 	image img = image(win, "../res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0, W, H } );
 
-	sprite kil = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
-		kir = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
-		kwl = sprite(win, "../res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
-		kwr = sprite(win, "../res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
-		kjl = sprite(win, "../res/sprites/klonoa/character/Klonoa Jump Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
-		kjr = sprite(win, "../res/sprites/klonoa/character/Klonoa Jump Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
-		kfl = sprite(win, "../res/sprites/klonoa/character/Klonoa Fall Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
-		kfr = sprite(win, "../res/sprites/klonoa/character/Klonoa Fall Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
-		kwbl = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Bullet Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 11, 1),
-		kwbr = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Bullet Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 11, 1),
-		kwcl = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Cut Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
-		kwcr = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Cut Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+	sprite kil = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
+		kir = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
+		kwl = sprite(win, "../res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 4, 1),
+		kwr = sprite(win, "../res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 4, 1),
+		kjl = sprite(win, "../res/sprites/klonoa/character/Klonoa Jump Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 6, 1),
+		kjr = sprite(win, "../res/sprites/klonoa/character/Klonoa Jump Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 6, 1),
+		kfl = sprite(win, "../res/sprites/klonoa/character/Klonoa Fall Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
+		kfr = sprite(win, "../res/sprites/klonoa/character/Klonoa Fall Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
+		kwbl = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Bullet Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 11, 1),
+		kwbr = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Bullet Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 11, 1),
+		kwcl = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Cut Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
+		kwcr = sprite(win, "../res/sprites/klonoa/character/Klonoa Wind Cut Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
 
-		vil = sprite(win, "../res/sprites/vanda/character/Vanda Idle Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
-		vir = sprite(win, "../res/sprites/vanda/character/Vanda Idle Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 22, 1),
-		vwl = sprite(win, "../res/sprites/vanda/character/Vanda Walk Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
-		vwr = sprite(win, "../res/sprites/vanda/character/Vanda Walk Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 4, 1),
-		vjl = sprite(win, "../res/sprites/vanda/character/Vanda Jump Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
-		vjr = sprite(win, "../res/sprites/vanda/character/Vanda Jump Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
-		vfl = sprite(win, "../res/sprites/vanda/character/Vanda Fall Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
-		vfr = sprite(win, "../res/sprites/vanda/character/Vanda Fall Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
-		vkl = sprite(win, "../res/sprites/vanda/character/Vanda Kick Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 8, 1),
-		vkr = sprite(win, "../res/sprites/vanda/character/Vanda Kick Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 8, 1),
+		vil = sprite(win, "../res/sprites/vanda/character/Vanda Idle Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
+		vir = sprite(win, "../res/sprites/vanda/character/Vanda Idle Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
+		vwl = sprite(win, "../res/sprites/vanda/character/Vanda Walk Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 4, 1),
+		vwr = sprite(win, "../res/sprites/vanda/character/Vanda Walk Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 4, 1),
+		vjl = sprite(win, "../res/sprites/vanda/character/Vanda Jump Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 6, 1),
+		vjr = sprite(win, "../res/sprites/vanda/character/Vanda Jump Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 6, 1),
+		vfl = sprite(win, "../res/sprites/vanda/character/Vanda Fall Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
+		vfr = sprite(win, "../res/sprites/vanda/character/Vanda Fall Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
+		vkl = sprite(win, "../res/sprites/vanda/character/Vanda Kick Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 8, 1),
+		vkr = sprite(win, "../res/sprites/vanda/character/Vanda Kick Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 8, 1),
 		* current_sprite = &kil,
 
-		wbl = sprite(win, "../res/sprites/klonoa/attacks/Wind Bullet Left.png", { 0, 0, 32, 16 }, { x - w, y, w * 2, h }, 11, 1),
-		wbr = sprite(win, "../res/sprites/klonoa/attacks/Wind Bullet Right.png", { 0, 0, 32, 16 }, { x, y, w * 2, h }, 11, 1),
-		wcl = sprite(win, "../res/sprites/klonoa/attacks/Wind Cut Left.png", { 0, 0, 32, 16 }, { x - w, y, w * 2, h }, 5, 1),
-		wcr = sprite(win, "../res/sprites/klonoa/attacks/Wind Cut Right.png", { 0, 0, 32, 16 }, { x, y, w * 2, h }, 5, 1),
-		kl = sprite(win, "../res/sprites/vanda/attacks/Kick Left.png", { 0, 0, 32, 16 }, { x - w, y, w * 2, h }, 8, 1),
-		kr = sprite(win, "../res/sprites/vanda/attacks/Kick Right.png", { 0, 0, 32, 16 }, { x, y, w * 2, h }, 8, 1),
+		wbl = sprite(win, "../res/sprites/klonoa/attacks/Wind Bullet Left.png", { 0, 0, 32, 16 }, { character::x - character::w, character::y, character::w * 2, character::h }, 11, 1),
+		wbr = sprite(win, "../res/sprites/klonoa/attacks/Wind Bullet Right.png", { 0, 0, 32, 16 }, { character::x, character::y, character::w * 2, character::h }, 11, 1),
+		wcl = sprite(win, "../res/sprites/klonoa/attacks/Wind Cut Left.png", { 0, 0, 32, 16 }, { character::x - character::w, character::y, character::w * 2, character::h }, 5, 1),
+		wcr = sprite(win, "../res/sprites/klonoa/attacks/Wind Cut Right.png", { 0, 0, 32, 16 }, { character::x, character::y, character::w * 2, character::h }, 5, 1),
+		kl = sprite(win, "../res/sprites/vanda/attacks/Kick Left.png", { 0, 0, 32, 16 }, { character::x - character::w, character::y, character::w * 2, character::h }, 8, 1),
+		kr = sprite(win, "../res/sprites/vanda/attacks/Kick Right.png", { 0, 0, 32, 16 }, { character::x, character::y, character::w * 2, character::h }, 8, 1),
 		* current_attack = &wbl,
 
-		wsl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 1, 1),
-		wsr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 1, 1),
-		wsjl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Jump Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
-		wsjr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Jump Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 6, 1),
-		wsfl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Fall Left.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
-		wsfr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Fall Right.png", { 0, 0, 16, 16 }, { x, y, w, h }, 5, 1),
+		wsl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 1, 1),
+		wsr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 1, 1),
+		wsjl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Jump Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 6, 1),
+		wsjr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Jump Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 6, 1),
+		wsfl = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Fall Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
+		wsfr = sprite(win, "../res/sprites/klonoa/wind sword/Wind Sword Fall Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 5, 1),
 		* current_ws_sprite = nullptr;
 
 	character klonoa = character(5, 12, true),
@@ -320,29 +320,29 @@ int main(int argc, char* argv[]) {
 
 	auto move_x = [&] () -> void {
 		
-		for (int i = 0; i < current_character->get_speed() * (h / 32); ++i)
+		for (int i = 0; i < current_character->get_speed() * (character::h / 32); ++i)
 			if (check_x_collision())
 				break;
 
 			else if (dir == LEFT)
-				--x;
+				--character::x;
 
 			else
-				++x;
+				++character::x;
 
 	};
 
 	auto move_y = [&] () -> void {
 
-		for (int i = 0; i < 10 * (h / 32); ++i)
+		for (int i = 0; i < 10 * (character::h / 32); ++i)
 			if (check_y_collision())
 				break;
 
 			else if (action1 == FALL)
-				++y;
+				++character::y;
 
 			else if (jump_count < current_character->get_jump_height())
-				--y;
+				--character::y;
 
 	};
 
@@ -355,20 +355,20 @@ int main(int argc, char* argv[]) {
 
 		
 
-		current_sprite->change_pos(x, y);
+		current_sprite->change_pos(character::x, character::y);
 		if (dir == LEFT)
-			current_attack->change_pos(x - w, y);
+			current_attack->change_pos(character::x - character::w, character::y);
 
 		else
-			current_attack->change_pos(x, y);
+			current_attack->change_pos(character::x, character::y);
 
 
 
 		if (klonoa_mode == SAMURAI && current_ws_sprite != nullptr) {
-			current_ws_sprite->change_pos(x, y);
+			current_ws_sprite->change_pos(character::x, character::y);
 
 			if (!attack && action1 == STAND && action2 == IDLE && current_ws_sprite->get_src_x_index() > 1)
-				current_ws_sprite->change_pos(x - w, y);
+				current_ws_sprite->change_pos(character::x - character::w, character::y);
 
 		}
 
@@ -490,8 +490,8 @@ bool check_x_collision() {
 
 	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
-			( (dir == LEFT && x == i->second.first && y < i->second.second && y + h > i->first.second) ||
-			(dir == RIGHT && x + w == i->first.first && y < i->second.second && y + h > i->first.second) ) )
+			( (dir == LEFT && character::x == i->second.first && character::y < i->second.second && character::y + character::h > i->first.second) ||
+			(dir == RIGHT && character::x + character::w == i->first.first && character::y < i->second.second && character::y + character::h > i->first.second) ) )
 			return true;
 
 	return false;
@@ -503,8 +503,8 @@ bool check_y_collision() {
 
 	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
-			( (action1 != JUMP && y + h == i->first.second && x < i->second.first && x + w > i->first.first) ||
-			(action1 == JUMP && y == i->second.second && x < i->second.first && x + w > i->first.first) ) )
+			( (action1 != JUMP && character::y + character::h == i->first.second && character::x < i->second.first && character::x + character::w > i->first.first) ||
+			(action1 == JUMP && character::y == i->second.second && character::x < i->second.first && character::x + character::w > i->first.first) ) )
 			return true;
 
 	return false;
