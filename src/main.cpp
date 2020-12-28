@@ -20,6 +20,8 @@
 	add_collision_obj( { W, 0, 0, H } );					\
 	add_collision_obj( { 0, H, W, 0 } );
 
+#define CHARACTER_REC { character::x, character::y, character::w, character::h }
+
 
 
 std::vector<std::pair<
@@ -41,8 +43,10 @@ void add_obj(SDL_Rect rec, const char* id, image& img);
 void add_collision_obj(SDL_Rect rec);
 void add_collision_obj(SDL_Rect rec, image& img);
 
-bool check_x_collision();
-bool check_y_collision();
+bool check_id(const char* id);
+
+bool check_x_collision(SDL_Rect rec);
+bool check_y_collision(SDL_Rect rec);
 
 
 
@@ -130,7 +134,7 @@ int main(int argc, char* argv[]) {
 			action1 = JUMP;
 			++jump_count;
 
-		} else if (!check_y_collision() || (check_y_collision() && action1 == JUMP) ) {
+		} else if (!check_y_collision(CHARACTER_REC) || (check_y_collision(CHARACTER_REC) && action1 == JUMP) ) {
 			action1 = FALL;
 			if (jump_count > -1)
 				--jump_count;
@@ -319,7 +323,7 @@ int main(int argc, char* argv[]) {
 	auto move_x = [&] () -> void {
 		
 		for (int i = 0; i < current_character->get_speed() * (character::h / 32); ++i)
-			if (check_x_collision())
+			if (check_x_collision(CHARACTER_REC))
 				break;
 
 			else if (dir == LEFT)
@@ -333,7 +337,7 @@ int main(int argc, char* argv[]) {
 	auto move_y = [&] () -> void {
 
 		for (int i = 0; i < 10 * (character::h / 32); ++i)
-			if (check_y_collision())
+			if (check_y_collision(CHARACTER_REC))
 				break;
 
 			else if (action1 == FALL)
@@ -489,27 +493,27 @@ void add_collision_obj(SDL_Rect rec, image& img) {
 	obj_textures.push_back(&img);
 }
 
-bool check_x_collision() {
+bool check_x_collision(SDL_Rect rec) {
 	auto i = obj_pos.begin();
 	auto j = object::ids.begin();
 
 	for (; i != obj_pos.end() && j != object::ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
-			( (dir == LEFT && character::x == i->second.first && character::y < i->second.second && character::y + character::h > i->first.second) ||
-			(dir == RIGHT && character::x + character::w == i->first.first && character::y < i->second.second && character::y + character::h > i->first.second) ) )
+			( (dir == LEFT && rec.x == i->second.first && rec.y < i->second.second && rec.y + rec.h > i->first.second) ||
+			(dir == RIGHT && rec.x + rec.w == i->first.first && rec.y < i->second.second && rec.y + rec.h > i->first.second) ) )
 			return true;
 
 	return false;
 }
 
-bool check_y_collision() {
+bool check_y_collision(SDL_Rect rec) {
 	auto i = obj_pos.begin();
 	auto j = object::ids.begin();
 
 	for (; i != obj_pos.end() && j != object::ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
-			( (action1 != JUMP && character::y + character::h == i->first.second && character::x < i->second.first && character::x + character::w > i->first.first) ||
-			(action1 == JUMP && character::y == i->second.second && character::x < i->second.first && character::x + character::w > i->first.first) ) )
+			( (action1 != JUMP && rec.y + rec.h == i->first.second && rec.x < i->second.first && rec.x + rec.w > i->first.first) ||
+			(action1 == JUMP && rec.y == i->second.second && rec.x < i->second.first && rec.x + rec.w > i->first.first) ) )
 			return true;
 
 	return false;
