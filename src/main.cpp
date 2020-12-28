@@ -65,7 +65,8 @@ int main(int argc, char* argv[]) {
 
 
 	window win = window("Klonoa Dimensions - Cheesai Crystal", W, H);
-	image img = image(win, "../res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0, W, H } );
+	image harold = image(win, "../res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0, W, H } ),
+		* background = &harold;
 
 	sprite kil = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
 		kir = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
@@ -115,9 +116,9 @@ int main(int argc, char* argv[]) {
 
 
 	ADD_BORDERS
-	add_collision_obj( { 200, H / 2 + 100, 300, 64 }, img);
-	add_collision_obj( { 0, H - 50, 125, 50 }, img);
-	add_collision_obj( { 500, H / 2 + 40, W - 400, 90 }, img);
+	add_collision_obj( { 200, H / 2 + 100, 300, 64 }, harold);
+	add_collision_obj( { 0, H - 50, 125, 50 }, harold);
+	add_collision_obj( { 500, H / 2 + 40, W - 400, 90 }, harold);
 
 
 
@@ -374,6 +375,14 @@ int main(int argc, char* argv[]) {
 
 	auto draw_scenario = [&] () -> void {
 		SDL_Rect rec;
+		rec.w = background->get_des_w();
+		rec.h = background->get_des_h();
+		int bgw, bgh;
+
+		SDL_GetWindowSize(win.get_win(), &bgw, &bgh);
+		background->change_size(rec.w, rec.h);
+		background->draw();
+		background->change_size(bgw, bgh);
 
 		for (int i = 0; i < obj_textures.size(); ++i) {
 			
@@ -424,7 +433,6 @@ int main(int argc, char* argv[]) {
 		update_pos();
 
 		win.clear(0, 0, 0);
-		img.draw();
 		draw_scenario();
 		draw_character();
 		win.update();
