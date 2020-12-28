@@ -66,6 +66,7 @@ int main(int argc, char* argv[]) {
 
 	window win = window("Klonoa Dimensions - Cheesai Crystal", W, H);
 	image harold = image(win, "../res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0, W, H } ),
+		putin = image(win, "../res/textures/putin.jpg", { 0, 0, 1200, 1200 }, {0, 0, 1200, 1200} ),
 		* background = &harold;
 
 	sprite kil = sprite(win, "../res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { character::x, character::y, character::w, character::h }, 22, 1),
@@ -116,9 +117,9 @@ int main(int argc, char* argv[]) {
 
 
 	ADD_BORDERS
-	add_collision_obj( { 200, H / 2 + 100, 300, 64 }, harold);
-	add_collision_obj( { 0, H - 50, 125, 50 }, harold);
-	add_collision_obj( { 500, H / 2 + 40, W - 400, 90 }, harold);
+	add_collision_obj( { 200, H / 2 + 100, 300, 64 }, putin);
+	add_collision_obj( { 0, H - 50, 125, 50 }, putin);
+	add_collision_obj( { 500, H / 2 + 40, W - 400, 90 }, putin);
 
 
 
