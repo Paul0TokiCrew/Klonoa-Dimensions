@@ -21,9 +21,6 @@
 
 
 
-int character::x = W / 2, character::y = H / 2,
-	character::w = 64, character::h = 64;
-
 std::vector<std::pair<
 	std::pair<int, int>,
 	std::pair<int, int>
