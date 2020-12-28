@@ -6,6 +6,7 @@
 #include <image.hpp>
 #include <sprite.hpp>
 #include <character.hpp>
+#include <object.hpp>
 
 
 
@@ -25,8 +26,6 @@ std::vector<std::pair<
 	std::pair<int, int>,
 	std::pair<int, int>
 >> obj_pos;
-
-std::vector<const char*> obj_ids;
 
 std::vector<image*> obj_textures;
 
@@ -447,7 +446,7 @@ void add_obj(SDL_Rect rec, const char* id) {
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
-	obj_ids.push_back(id);
+	object::ids.push_back(id);
 	obj_textures.push_back(nullptr);
 }
 
@@ -457,7 +456,7 @@ void add_obj(SDL_Rect rec, const char* id, image& img) {
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
-	obj_ids.push_back(id);
+	object::ids.push_back(id);
 	obj_textures.push_back(&img);
 }
 
@@ -467,7 +466,7 @@ void add_collision_obj(SDL_Rect rec) {
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
-	obj_ids.push_back("collision");
+	object::ids.push_back("collision");
 	obj_textures.push_back(nullptr);
 }
 
@@ -477,15 +476,15 @@ void add_collision_obj(SDL_Rect rec, image& img) {
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
-	obj_ids.push_back("collision");
+	object::ids.push_back("collision");
 	obj_textures.push_back(&img);
 }
 
 bool check_x_collision() {
 	auto i = obj_pos.begin();
-	auto j = obj_ids.begin();
+	auto j = object::ids.begin();
 
-	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
+	for (; i != obj_pos.end() && j != object::ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
 			( (dir == LEFT && character::x == i->second.first && character::y < i->second.second && character::y + character::h > i->first.second) ||
 			(dir == RIGHT && character::x + character::w == i->first.first && character::y < i->second.second && character::y + character::h > i->first.second) ) )
@@ -496,9 +495,9 @@ bool check_x_collision() {
 
 bool check_y_collision() {
 	auto i = obj_pos.begin();
-	auto j = obj_ids.begin();
+	auto j = object::ids.begin();
 
-	for (; i != obj_pos.end() && j != obj_ids.end(); ++i, ++j)
+	for (; i != obj_pos.end() && j != object::ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
 			( (action1 != JUMP && character::y + character::h == i->first.second && character::x < i->second.first && character::x + character::w > i->first.first) ||
 			(action1 == JUMP && character::y == i->second.second && character::x < i->second.first && character::x + character::w > i->first.first) ) )
