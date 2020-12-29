@@ -15,10 +15,10 @@
 
 #define FPS 18
 
-#define ADD_BORDERS add_collision_obj( { 0, 0, W, 0 } );	\
-	add_collision_obj( { 0, 0, 0, H } );					\
-	add_collision_obj( { W, 0, 0, H } );					\
-	add_collision_obj( { 0, H, W, 0 } );
+#define ADD_BORDERS object::add_obj( { 0, 0, W, 0 }, "collision" );	\
+	object::add_obj( { 0, 0, 0, H }, "collision" );					\
+	object::add_obj( { W, 0, 0, H }, "collision" );					\
+	object::add_obj( { 0, H, W, 0 }, "collision" );
 
 #define CHARACTER_REC { character::x, character::y, character::w, character::h }
 
@@ -29,14 +29,6 @@ enum { IDLE, MOVE } action2 = IDLE;
 enum { LEFT, RIGHT } dir = LEFT;
 
 
-
-void add_obj(SDL_Rect rec, const char* id);
-void add_obj(SDL_Rect rec, const char* id, image& img);
-
-void add_collision_obj(SDL_Rect rec);
-void add_collision_obj(SDL_Rect rec, image& img);
-
-bool check_id(const char* id);
 
 bool check_x_collision(SDL_Rect rec);
 bool check_y_collision(SDL_Rect rec);
@@ -114,9 +106,9 @@ int main(int argc, char* argv[]) {
 
 
 	ADD_BORDERS
-	add_collision_obj( { 200, H / 2 + 100, 300, 64 }, putin);
-	add_collision_obj( { 0, H - 50, 125, 50 }, putin);
-	add_collision_obj( { 500, H / 2 + 40, W - 400, 90 }, putin);
+	object::add_obj( { 200, H / 2 + 100, 300, 64 }, putin, "collision");
+	object::add_obj( { 0, H - 50, 125, 50 }, putin, "collision");
+	object::add_obj( { 500, H / 2 + 40, W - 400, 90 }, putin, "collision");
 
 
 
@@ -445,46 +437,6 @@ int main(int argc, char* argv[]) {
 }
 
 
-
-void add_obj(SDL_Rect rec, const char* id) {
-	object::pos.push_back( {
-		{ rec.x, rec.y },
-		{ rec.x + rec.w, rec.y + rec.h }
-	} );
-
-	object::ids.push_back(id);
-	object::textures.push_back(nullptr);
-}
-
-void add_obj(SDL_Rect rec, const char* id, image& img) {
-	object::pos.push_back( {
-		{ rec.x, rec.y },
-		{ rec.x + rec.w, rec.y + rec.h }
-	} );
-
-	object::ids.push_back(id);
-	object::textures.push_back(&img);
-}
-
-void add_collision_obj(SDL_Rect rec) {
-	object::pos.push_back( {
-		{ rec.x, rec.y },
-		{ rec.x + rec.w, rec.y + rec.h }
-	} );
-
-	object::ids.push_back("collision");
-	object::textures.push_back(nullptr);
-}
-
-void add_collision_obj(SDL_Rect rec, image& img) {
-	object::pos.push_back( {
-		{ rec.x, rec.y },
-		{ rec.x + rec.w, rec.y + rec.h }
-	} );
-
-	object::ids.push_back("collision");
-	object::textures.push_back(&img);
-}
 
 bool check_x_collision(SDL_Rect rec) {
 	auto i = object::pos.begin();
