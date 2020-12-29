@@ -24,13 +24,6 @@
 
 
 
-std::vector<std::pair<
-	std::pair<int, int>,
-	std::pair<int, int>
->> obj_pos;
-
-std::vector<image*> obj_textures;
-
 enum { STAND, JUMP, FALL } action1 = STAND;
 enum { IDLE, MOVE } action2 = IDLE;
 enum { LEFT, RIGHT } dir = LEFT;
@@ -389,15 +382,15 @@ int main(int argc, char* argv[]) {
 		background->draw();
 		background->change_size(bgw, bgh);
 
-		for (int i = 0; i < obj_textures.size(); ++i) {
+		for (int i = 0; i < object::textures.size(); ++i) {
 			
-			if (obj_textures[i] != nullptr) {
-				rec = { obj_textures[i]->get_des_x(), obj_textures[i]->get_des_y(), obj_textures[i]->get_des_w(), obj_textures[i]->get_des_h() };
-				obj_textures[i]->change_pos(obj_pos[i].first.first, obj_pos[i].first.second);
-				obj_textures[i]->change_size(obj_pos[i].second.first - obj_pos[i].first.first, obj_pos[i].second.second - obj_pos[i].first.second);
-				obj_textures[i]->draw();
-				obj_textures[i]->change_pos(rec.x, rec.y);
-				obj_textures[i]->change_size(rec.w, rec.h);
+			if (object::textures[i] != nullptr) {
+				rec = { object::textures[i]->get_des_x(), object::textures[i]->get_des_y(), object::textures[i]->get_des_w(), object::textures[i]->get_des_h() };
+				object::textures[i]->change_pos(object::pos[i].first.first, object::pos[i].first.second);
+				object::textures[i]->change_size(object::pos[i].second.first - object::pos[i].first.first, object::pos[i].second.second - object::pos[i].first.second);
+				object::textures[i]->draw();
+				object::textures[i]->change_pos(rec.x, rec.y);
+				object::textures[i]->change_size(rec.w, rec.h);
 
 			}
 
@@ -454,50 +447,50 @@ int main(int argc, char* argv[]) {
 
 
 void add_obj(SDL_Rect rec, const char* id) {
-	obj_pos.push_back( {
+	object::pos.push_back( {
 		{ rec.x, rec.y },
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
 	object::ids.push_back(id);
-	obj_textures.push_back(nullptr);
+	object::textures.push_back(nullptr);
 }
 
 void add_obj(SDL_Rect rec, const char* id, image& img) {
-	obj_pos.push_back( {
+	object::pos.push_back( {
 		{ rec.x, rec.y },
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
 	object::ids.push_back(id);
-	obj_textures.push_back(&img);
+	object::textures.push_back(&img);
 }
 
 void add_collision_obj(SDL_Rect rec) {
-	obj_pos.push_back( {
+	object::pos.push_back( {
 		{ rec.x, rec.y },
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
 	object::ids.push_back("collision");
-	obj_textures.push_back(nullptr);
+	object::textures.push_back(nullptr);
 }
 
 void add_collision_obj(SDL_Rect rec, image& img) {
-	obj_pos.push_back( {
+	object::pos.push_back( {
 		{ rec.x, rec.y },
 		{ rec.x + rec.w, rec.y + rec.h }
 	} );
 
 	object::ids.push_back("collision");
-	obj_textures.push_back(&img);
+	object::textures.push_back(&img);
 }
 
 bool check_x_collision(SDL_Rect rec) {
-	auto i = obj_pos.begin();
+	auto i = object::pos.begin();
 	auto j = object::ids.begin();
 
-	for (; i != obj_pos.end() && j != object::ids.end(); ++i, ++j)
+	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
 			( (dir == LEFT && rec.x == i->second.first && rec.y < i->second.second && rec.y + rec.h > i->first.second) ||
 			(dir == RIGHT && rec.x + rec.w == i->first.first && rec.y < i->second.second && rec.y + rec.h > i->first.second) ) )
@@ -507,10 +500,10 @@ bool check_x_collision(SDL_Rect rec) {
 }
 
 bool check_y_collision(SDL_Rect rec) {
-	auto i = obj_pos.begin();
+	auto i = object::pos.begin();
 	auto j = object::ids.begin();
 
-	for (; i != obj_pos.end() && j != object::ids.end(); ++i, ++j)
+	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
 		if ( *j == "collision" &&
 			( (action1 != JUMP && rec.y + rec.h == i->first.second && rec.x < i->second.first && rec.x + rec.w > i->first.first) ||
 			(action1 == JUMP && rec.y == i->second.second && rec.x < i->second.first && rec.x + rec.w > i->first.first) ) )
