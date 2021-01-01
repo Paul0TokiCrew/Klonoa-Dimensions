@@ -30,3 +30,9 @@ void object::add_obj(SDL_Rect rec, image& img, const char* id) {
 	object::textures.push_back(&img);
 	object::ids.push_back(id);
 }
+
+void object::del_obj(const int index) {
+	object::pos.erase(object::pos.begin() + index);
+	object::textures.erase(object::textures.begin() + index);
+	object::ids.erase(object::ids.begin() + index);
+}

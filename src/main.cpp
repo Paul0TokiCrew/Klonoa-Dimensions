@@ -370,9 +370,9 @@ int main(int argc, char* argv[]) {
 		int bgw, bgh;
 
 		SDL_GetWindowSize(win.get_win(), &bgw, &bgh);
-		background->change_size(rec.w, rec.h);
-		background->draw();
 		background->change_size(bgw, bgh);
+		background->draw();
+		background->change_size(rec.w, rec.h);
 
 		for (int i = 0; i < object::textures.size(); ++i) {
 			

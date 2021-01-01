@@ -22,7 +22,6 @@ public:
 	static void add_obj(SDL_Rect rec, const char* id);
 	static void add_obj(SDL_Rect rec, image& img, const char* id);
 
-	static void add_collision_obj(SDL_Rect rec);
-	static void add_collision_obj(SDL_Rect rec, image& img);
+	static void del_obj(const int index);
 
 };
