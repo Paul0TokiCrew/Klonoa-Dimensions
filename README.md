@@ -24,13 +24,14 @@ You can clone this repository by using:
 You can also go to **Code** label in this repository, download a .zip file and unzip it
 
 ## Compiling and Running
-To compile the source code, you must have [SDL2 library](https://www.libsdl.org/) and [GCC](https://gcc.gnu.org/) installed. If you don't have one of theese installed, go to the [wiki](https://github.com/Paul0TokiCrew/Klonoa-Dimensions/wiki) and see how to install them
+To compile the source code, you must have [SDL2 library](https://www.libsdl.org/) and [GCC](https://gcc.gnu.org/) installed. If you don't have one of these installed, go to the [wiki](https://github.com/Paul0TokiCrew/Klonoa-Dimensions/wiki) and see how to install them
 
 Open your command line, acess the _src_ folder, and type:
->`g++ *.cpp -o main -lSDL2 -lSDL2_image -I../include`
+> `g++ *.cpp -o main -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -I../include` (`-lmingw32` only using MinGw)
 
 After compiling, type:
-> `./main`
+> `main` (Windows)
+> `./main` (Linux)
 
 ## Building
 (comming soon)
