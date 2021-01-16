@@ -36,3 +36,55 @@ void object::del_obj(const int index) {
 	object::textures.erase(object::textures.begin() + index);
 	object::ids.erase(object::ids.begin() + index);
 }
+
+bool object::check_up_collision(SDL_Rect rec) {
+	auto i = object::pos.begin();
+	auto j = object::ids.begin();
+
+	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
+		if (strchr(*j, 'u') != nullptr &&
+			rec.y == i->second.second &&
+			(rec.x < i->second.first && rec.x + rec.w > i->first.first) )
+			return true;
+
+	return false;
+}
+
+bool object::check_down_collision(SDL_Rect rec) {
+	auto i = object::pos.begin();
+	auto j = object::ids.begin();
+
+	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
+		if (strchr(*j, 'd') != nullptr &&
+			rec.y + rec.h == i->first.second &&
+			(rec.x < i->second.first && rec.x + rec.w > i->first.first) )
+			return true;
+
+	return false;
+}
+
+bool object::check_right_collision(SDL_Rect rec) {
+	auto i = object::pos.begin();
+	auto j = object::ids.begin();
+
+	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
+		if (strchr(*j, 'r') != nullptr &&
+			rec.x + rec.w == i->first.first &&
+			(rec.y < i->second.second && rec.y + rec.w > i->first.second) )
+			return true;
+
+	return false;
+}
+
+bool object::check_left_collision(SDL_Rect rec) {
+	auto i = object::pos.begin();
+	auto j = object::ids.begin();
+
+	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
+		if (strchr(*j, 'l') != nullptr &&
+			rec.x == i->second.first &&
+			(rec.y < i->second.second && rec.y + rec.w > i->first.second) )
+			return true;
+
+	return false;
+}

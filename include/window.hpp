@@ -30,9 +30,6 @@ public:
 		SDL_DestroyRenderer(this->ren);
 	}
 
-	void set_w(int w) { this->w; }
-	void set_h(int h) { this->h; }
-
 	SDL_Window* get_win() const { return this->win; }
 	SDL_Renderer* get_ren() const { return this->ren; }
 	int get_w() const { return this->w; }

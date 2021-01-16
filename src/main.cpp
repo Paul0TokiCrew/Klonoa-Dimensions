@@ -15,23 +15,17 @@
 
 #define FPS 18
 
-#define ADD_BORDERS object::add_obj( { 0, 0, W, 0 }, "collision" );	\
-	object::add_obj( { 0, 0, 0, H }, "collision" );					\
-	object::add_obj( { W, 0, 0, H }, "collision" );					\
-	object::add_obj( { 0, H, W, 0 }, "collision" );
-
-#define CHARACTER_REC { character::x, character::y, character::w, character::h }
+#define ADD_BORDERS object::add_obj( { 0, 0, W, 0 }, "u" );	\
+	object::add_obj( { 0, 0, 0, H }, "l" );					\
+	object::add_obj( { W, 0, 0, H }, "r" );					\
+	object::add_obj( { 0, H, W, 0 }, "d" );
 
 
 
-enum { STAND, JUMP, FALL } action1 = STAND;
-enum { IDLE, MOVE } action2 = IDLE;
-enum { LEFT, RIGHT } dir = LEFT;
-
-
-
-bool check_x_collision(SDL_Rect rec);
-bool check_y_collision(SDL_Rect rec);
+extern void move_up();
+extern void move_down();
+extern void move_left(character* obj);
+extern void move_right(character* obj);
 
 
 
@@ -106,26 +100,26 @@ int main(int argc, char* argv[]) {
 
 
 	ADD_BORDERS
-	object::add_obj( { 200, H / 2 + 100, 300, 64 }, putin, "collision");
-	object::add_obj( { 0, H - 50, 125, 50 }, putin, "collision");
-	object::add_obj( { 500, H / 2 + 40, W - 400, 90 }, putin, "collision");
+	//object::add_obj( { 200, H / 2 + 100, 300, 64 }, putin, "collision");
+	//object::add_obj( { 0, H - 50, 125, 50 }, putin, "collision");
+	//object::add_obj( { 500, H / 2 + 40, W - 400, 90 }, putin, "collision");
 
 
 
 	auto update_actions = [&] () -> void {
 		const Uint8* key_state = SDL_GetKeyboardState(nullptr);
 
-		if (key_state[SDL_SCANCODE_Z] && jump_count < current_character->get_jump_height() && (action1 != FALL || current_character->get_jump_many_times()) ) {
-			action1 = JUMP;
+		if (key_state[SDL_SCANCODE_Z] && jump_count < current_character->get_jump_height() && (character::action1 != FALL || current_character->get_jump_many_times()) ) {
+			character::action1 = JUMP;
 			++jump_count;
 
-		} else if (!check_y_collision(CHARACTER_REC) || (check_y_collision(CHARACTER_REC) && action1 == JUMP) ) {
-			action1 = FALL;
+		} else if (!object::check_down_collision(CHARACTER_REC)) {
+			character::action1 = FALL;
 			if (jump_count > -1)
 				--jump_count;
 
 		} else {
-			action1 = STAND;
+			character::action1 = STAND;
 			jump_count = -1;
 
 		}
@@ -133,15 +127,15 @@ int main(int argc, char* argv[]) {
 
 
 		if (key_state[SDL_SCANCODE_LEFT]) {
-			action2 = MOVE;
-			dir = LEFT;
+			character::action2 = MOVE;
+			character::dir = LEFT;
 
 		} else if (key_state[SDL_SCANCODE_RIGHT]) {
-			action2 = MOVE;
-			dir = RIGHT;
+			character::action2 = MOVE;
+			character::dir = RIGHT;
 
 		} else
-			action2 = IDLE;
+			character::action2 = IDLE;
 
 
 
@@ -184,7 +178,7 @@ int main(int argc, char* argv[]) {
 
 
 	auto def_sprite_by_dir = [&] (sprite& left, sprite& right) -> sprite* {
-		if (dir == LEFT)
+		if (character::dir == LEFT)
 			return &left;
 
 		return &right;
@@ -198,7 +192,7 @@ int main(int argc, char* argv[]) {
 	};
 
 	auto update_sprites = [&] () -> void {
-		if (action1 == STAND || current_sprite->get_src_x_index() < current_sprite->get_x_lim()) {
+		if (character::action1 == STAND || current_sprite->get_src_x_index() < current_sprite->get_x_lim()) {
 			current_sprite->advance_x_frame();
 
 			if (klonoa_mode == SAMURAI && current_ws_sprite != nullptr)
@@ -217,25 +211,25 @@ int main(int argc, char* argv[]) {
 
 
 
-		if (action1 == FALL) {
+		if (character::action1 == FALL) {
 			current_sprite = def_sprite_by_dir(def_sprite_by_character(kfl, vfl), def_sprite_by_character(kfr, vfr));
 
 			if (current_character == &klonoa && klonoa_mode == SAMURAI)
 				current_ws_sprite = def_sprite_by_dir(wsfl, wsfr);
 
-		} else if (action1 == JUMP) {
+		} else if (character::action1 == JUMP) {
 			current_sprite = def_sprite_by_dir(def_sprite_by_character(kjl, vjl), def_sprite_by_character(kjr, vjr));
 
 			if (current_character == &klonoa && klonoa_mode == SAMURAI)
 				current_ws_sprite = def_sprite_by_dir(wsjl, wsjr);
 
-		} else if (action1 == STAND && action2 == MOVE) {
+		} else if (character::action1 == STAND && character::action2 == MOVE) {
 			current_sprite = def_sprite_by_dir(def_sprite_by_character(kwl, vwl), def_sprite_by_character(kwr, vwr));
 
 			if (current_character == &klonoa && klonoa_mode == SAMURAI)
 				current_ws_sprite = def_sprite_by_dir(wsl, wsr);
 
-		} else if (attack && action1 == STAND && action2 == IDLE) {
+		} else if (attack && character::action1 == STAND && character::action2 == IDLE) {
 
 			if (klonoa_mode == NORMAL)
 				current_sprite = def_sprite_by_dir(def_sprite_by_character(kwbl, vkl), def_sprite_by_character(kwbr, vkr));
@@ -265,85 +259,68 @@ int main(int argc, char* argv[]) {
 
 
 
-		kil.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && attack);
-		kir.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && attack);
-		kwl.reset_src_x(dir == LEFT && action1 != STAND && action2 != MOVE);
-		kwr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != MOVE);
-		kjl.reset_src_x(dir == LEFT && action1 != JUMP);
-		kjr.reset_src_x(dir == RIGHT && action1 != JUMP);
-		kfl.reset_src_x(dir == LEFT && action1 != FALL);
-		kfr.reset_src_x(dir == RIGHT && action1 != FALL);
-		kwbl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != NORMAL);
-		kwbr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != NORMAL);
-		kwcl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != SAMURAI);
-		kwcr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack && klonoa_mode != SAMURAI);
-		wbl.reset_src_x(dir == LEFT && !attack && klonoa_mode != NORMAL);
-		wbr.reset_src_x(dir == RIGHT && !attack && klonoa_mode != NORMAL);
-		wcl.reset_src_x(dir == LEFT && !attack && klonoa_mode != SAMURAI);
-		wcr.reset_src_x(dir == RIGHT && !attack && klonoa_mode != SAMURAI);
+		kil.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != IDLE && attack);
+		kir.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != IDLE && attack);
+		kwl.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != MOVE);
+		kwr.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != MOVE);
+		kjl.reset_src_x(character::dir == LEFT && character::action1 != JUMP);
+		kjr.reset_src_x(character::dir == RIGHT && character::action1 != JUMP);
+		kfl.reset_src_x(character::dir == LEFT && character::action1 != FALL);
+		kfr.reset_src_x(character::dir == RIGHT && character::action1 != FALL);
+		kwbl.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != IDLE && !attack && klonoa_mode != NORMAL);
+		kwbr.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != IDLE && !attack && klonoa_mode != NORMAL);
+		kwcl.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != IDLE && !attack && klonoa_mode != SAMURAI);
+		kwcr.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != IDLE && !attack && klonoa_mode != SAMURAI);
+		wbl.reset_src_x(character::dir == LEFT && !attack && klonoa_mode != NORMAL);
+		wbr.reset_src_x(character::dir == RIGHT && !attack && klonoa_mode != NORMAL);
+		wcl.reset_src_x(character::dir == LEFT && !attack && klonoa_mode != SAMURAI);
+		wcr.reset_src_x(character::dir == RIGHT && !attack && klonoa_mode != SAMURAI);
 
-		vil.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && attack);
-		vir.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && attack);
-		vwl.reset_src_x(dir == LEFT && action1 != STAND && action2 != MOVE);
-		vwr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != MOVE);
-		vjl.reset_src_x(dir == LEFT && action1 != JUMP);
-		vjr.reset_src_x(dir == RIGHT && action1 != JUMP);
-		vfl.reset_src_x(dir == LEFT && action1 != FALL);
-		vfr.reset_src_x(dir == RIGHT && action1 != FALL);
-		vkl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack);
-		vkr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack);
-		kl.reset_src_x(dir == LEFT && !attack);
-		kr.reset_src_x(dir == RIGHT && !attack);
+		vil.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != IDLE && attack);
+		vir.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != IDLE && attack);
+		vwl.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != MOVE);
+		vwr.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != MOVE);
+		vjl.reset_src_x(character::dir == LEFT && character::action1 != JUMP);
+		vjr.reset_src_x(character::dir == RIGHT && character::action1 != JUMP);
+		vfl.reset_src_x(character::dir == LEFT && character::action1 != FALL);
+		vfr.reset_src_x(character::dir == RIGHT && character::action1 != FALL);
+		vkl.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != IDLE && !attack);
+		vkr.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != IDLE && !attack);
+		kl.reset_src_x(character::dir == LEFT && !attack);
+		kr.reset_src_x(character::dir == RIGHT && !attack);
 
-		wsl.reset_src_x(dir == LEFT && action1 != STAND && action2 != IDLE && !attack);
-		wsr.reset_src_x(dir == RIGHT && action1 != STAND && action2 != IDLE && !attack);
-		wsjl.reset_src_x(dir == LEFT && action1 != JUMP);
-		wsjr.reset_src_x(dir == RIGHT && action1 != JUMP);
-		wsfl.reset_src_x(dir == LEFT && action1 != FALL);
-		wsfr.reset_src_x(dir == RIGHT && action1 != FALL);
+		wsl.reset_src_x(character::dir == LEFT && character::action1 != STAND && character::action2 != IDLE && !attack);
+		wsr.reset_src_x(character::dir == RIGHT && character::action1 != STAND && character::action2 != IDLE && !attack);
+		wsjl.reset_src_x(character::dir == LEFT && character::action1 != JUMP);
+		wsjr.reset_src_x(character::dir == RIGHT && character::action1 != JUMP);
+		wsfl.reset_src_x(character::dir == LEFT && character::action1 != FALL);
+		wsfr.reset_src_x(character::dir == RIGHT && character::action1 != FALL);
 	};
 
 
-
-	auto move_x = [&] () -> void {
-		
-		for (int i = 0; i < current_character->get_speed() * (character::h / 32); ++i)
-			if (check_x_collision(CHARACTER_REC))
-				break;
-
-			else if (dir == LEFT)
-				--character::x;
-
-			else
-				++character::x;
-
-	};
-
-	auto move_y = [&] () -> void {
-
-		for (int i = 0; i < 10 * (character::h / 32); ++i)
-			if (check_y_collision(CHARACTER_REC))
-				break;
-
-			else if (action1 == FALL)
-				++character::y;
-
-			else if (jump_count < current_character->get_jump_height())
-				--character::y;
-
-	};
 
 	auto update_pos = [&] () -> void {
-		if (action1 == FALL || action1 == JUMP)
-			move_y();
+		if (character::action1 == FALL)
+			move_down();
 
-		if (action2 == MOVE)
-			move_x();
+		else if (character::action1 == JUMP)
+			move_up();
 
-		
+
+
+		if (character::action2 == MOVE) {
+			if (character::dir == LEFT)
+				move_left(current_character);
+
+			else
+				move_right(current_character);
+
+		}
+
+
 
 		current_sprite->change_pos(character::x, character::y);
-		if (dir == LEFT)
+		if (character::dir == LEFT)
 			current_attack->change_pos(character::x - character::w, character::y);
 
 		else
@@ -354,7 +331,7 @@ int main(int argc, char* argv[]) {
 		if (klonoa_mode == SAMURAI && current_ws_sprite != nullptr) {
 			current_ws_sprite->change_pos(character::x, character::y);
 
-			if (!attack && action1 == STAND && action2 == IDLE && current_ws_sprite->get_src_x_index() > 1)
+			if (!attack && character::action1 == STAND && character::action2 == IDLE && current_ws_sprite->get_src_x_index() > 1)
 				current_ws_sprite->change_pos(character::x - character::w, character::y);
 
 		}
@@ -374,7 +351,7 @@ int main(int argc, char* argv[]) {
 		background->draw();
 		background->change_size(rec.w, rec.h);
 
-		for (int i = 0; i < object::textures.size(); ++i) {
+		for (unsigned int i = 0; i < object::textures.size(); ++i) {
 			
 			if (object::textures[i] != nullptr) {
 				rec = { object::textures[i]->get_des_x(), object::textures[i]->get_des_y(), object::textures[i]->get_des_w(), object::textures[i]->get_des_h() };
@@ -407,16 +384,10 @@ int main(int argc, char* argv[]) {
 
 	while (!game_over) {
 
-		while (SDL_PollEvent(&evn)) {
+		while (SDL_PollEvent(&evn))
+			if (evn.type == SDL_QUIT)
+				game_over = true;
 
-			switch (evn.type) {
-				case SDL_QUIT:
-					game_over = true;
-					break;
-
-			}
-
-		}
 
 		update_actions();
 		update_sprites();
@@ -434,32 +405,4 @@ int main(int argc, char* argv[]) {
 	IMG_Quit();
 	SDL_Quit();
 	return 0;
-}
-
-
-
-bool check_x_collision(SDL_Rect rec) {
-	auto i = object::pos.begin();
-	auto j = object::ids.begin();
-
-	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
-		if ( *j == "collision" &&
-			( (dir == LEFT && rec.x == i->second.first && rec.y < i->second.second && rec.y + rec.h > i->first.second) ||
-			(dir == RIGHT && rec.x + rec.w == i->first.first && rec.y < i->second.second && rec.y + rec.h > i->first.second) ) )
-			return true;
-
-	return false;
-}
-
-bool check_y_collision(SDL_Rect rec) {
-	auto i = object::pos.begin();
-	auto j = object::ids.begin();
-
-	for (; i != object::pos.end() && j != object::ids.end(); ++i, ++j)
-		if ( *j == "collision" &&
-			( (action1 != JUMP && rec.y + rec.h == i->first.second && rec.x < i->second.first && rec.x + rec.w > i->first.first) ||
-			(action1 == JUMP && rec.y == i->second.second && rec.x < i->second.first && rec.x + rec.w > i->first.first) ) )
-			return true;
-
-	return false;
 }

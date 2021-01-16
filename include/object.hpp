@@ -24,4 +24,9 @@ public:
 
 	static void del_obj(const int index);
 
+	static bool check_up_collision(SDL_Rect rec);
+	static bool check_down_collision(SDL_Rect rec);
+	static bool check_right_collision(SDL_Rect rec);
+	static bool check_left_collision(SDL_Rect rec);
+
 };
