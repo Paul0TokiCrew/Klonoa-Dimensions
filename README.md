@@ -27,12 +27,9 @@ You can also go to **Code** label in this repository, download a .zip file and u
 To compile the source code, you must have [SDL2 library](https://www.libsdl.org/) and [GCC](https://gcc.gnu.org/) installed. If you don't have one of these installed, go to the [wiki](https://github.com/Paul0TokiCrew/Klonoa-Dimensions/wiki) and see how to install them
 
 Open your command line, acess the _src_ folder, and type:
-> `g++ src/*.cpp -o main -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -I include` (`-lmingw32` only using MinGw)
+> `g++ src/*.cpp -o main -I include -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -Wall` (`-lmingw32` only using MinGw)
 
-After compiling, type:
-> `main` (Windows)
-
-> `./main` (Linux)
+After compiling, execute the generated file
 
 ## Building
 (comming soon)
