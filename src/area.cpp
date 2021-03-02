@@ -110,8 +110,22 @@ void area_manager::draw_areas() const {
 
 	for (auto i : this->areas) {
 
-		if (std::get<2>(i) != nullptr)
-			std::get<2>(i)->draw();
+		image*& img = std::get<2>(i);
+		const vec2f xy = std::get<0>(i),
+			wh = vec2f(std::get<1>(i) - xy);
+
+		if (img != nullptr) {
+			SDL_Rect rec = img->get_des();
+
+			img->change_pos(xy.x, xy.y);
+			img->change_size(wh.x, wh.y);
+
+			img->draw();
+
+			img->change_pos(rec.x, rec.y);
+			img->change_size(rec.w, rec.h);
+
+		}
 
 	}
 
