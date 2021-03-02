@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 
 	window win = window("Klonoa Dimensions", 720, 480);
 
-	character klonoa = character(vec2f(0, 0), vec2f(64, 64), vec2f(0, 0), vec2f(100, GRAVITY));
+	character klonoa = character(vec2f(0, 0), vec2f(64, 64), vec2f(0, 0), vec2f(100, 5));
 	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 100, 0, 100, 100 } );
 	area_manager area_man = area_manager();
 
@@ -54,12 +54,21 @@ int main(int argc, char* argv[]) {
             if (evn.type == SDL_QUIT)
                 running = false;
 
+		const Uint8* key = SDL_GetKeyboardState(nullptr);
+
+		klonoa.update_datas(key, area_man);
+		klonoa.update_pos(0.033, 100, area_man);
+
+
+
         while (!msgs.empty()) {
 
             PRINTLN(msgs.front())
             msgs.pop();
 
         }
+
+
 
         win.clear();
         draw();
