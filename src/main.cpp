@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 100, 0, 100, 100 } );
 	area_manager area_man = area_manager();
 
-    area_man.register_area(vec2f(100, 100), vec2f(150, 150), &k);
+    area_man.register_collision_area(vec2f(100, 100), vec2f(150, 150), &k);
 
 
 

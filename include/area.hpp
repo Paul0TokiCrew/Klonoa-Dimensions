@@ -11,13 +11,13 @@
 
 class area_manager {
 private:
-	std::vector<std::tuple<vec2f, vec2f, image*>> areas;
+	std::vector<std::tuple<vec2f, vec2f, image*>> collision_areas;
 
 public:
 	area_manager() { }
 	~area_manager() { }
 
-	void register_area(const vec2f xy1, const vec2f xy2, image* tex = nullptr);
+	void register_collision_area(const vec2f xy1, const vec2f xy2, image* tex = nullptr);
 
 	bool check_trigger(const vec2f other_xy1, const vec2f other_xy2) const;
 
