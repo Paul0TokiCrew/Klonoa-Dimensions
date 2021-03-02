@@ -117,13 +117,13 @@ void area_manager::draw_areas() const {
 		if (img != nullptr) {
 			SDL_Rect rec = img->get_des();
 
-			img->change_pos(10, 200);
-			img->change_size(100, 100);
+			img->change_pos(xy.x, xy.y);
+			img->change_size(wh.x, wh.y);
 
 			img->draw();
 
-			//img->change_pos(rec.x, rec.y);
-			//img->change_size(rec.w, rec.h);
+			img->change_pos(rec.x, rec.y);
+			img->change_size(rec.w, rec.h);
 
 		}
 

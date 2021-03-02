@@ -31,6 +31,7 @@ int main(int argc, char* argv[]) {
 
 
     auto draw = [&] () -> void {
+		area_man.draw_areas();
         SDL_Rect rec = k.get_des();
 
         k.change_pos(klonoa.get_xy().x, klonoa.get_xy().y);
