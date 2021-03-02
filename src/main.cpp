@@ -4,10 +4,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <window.hpp>
+#include <character.hpp>
 
 
 
 #define PRINTLN(txt) std::cout << txt << std::endl;
+#define GRAVITY 500
 
 
 
@@ -18,6 +20,7 @@ int main(int argc, char* argv[]) {
     IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
 
     window win = window("Klonoa Dimensions", 720, 480);
+    character klonoa = character(vec2f(0, 0), vec2f(64, 64), vec2f(0, 0), vec2f(100, GRAVITY));
 
     bool running = true;
     SDL_Event evn;
