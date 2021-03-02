@@ -10,11 +10,14 @@
 
 
 #define PRINTLN(txt) std::cout << txt << std::endl;
-#define GRAVITY 500
 
 
 
 std::queue<std::string> msgs;
+
+
+
+float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 
 int main(int argc, char* argv[]) {
 	SDL_Init(SDL_INIT_VIDEO);
