@@ -30,6 +30,20 @@ int main(int argc, char* argv[]) {
 
 
 
+    auto draw = [&] () -> void {
+        SDL_Rect rec = k.get_des();
+
+        k.change_pos(klonoa.get_xy().x, klonoa.get_xy().y);
+        k.change_size(klonoa.get_wh().x, klonoa.get_wh().y);
+
+        k.draw();
+
+        k.change_pos(rec.x, rec.y);
+        k.change_size(rec.w, rec.h);
+    };
+
+
+
     bool running = true;
     SDL_Event evn;
 
@@ -47,7 +61,7 @@ int main(int argc, char* argv[]) {
         }
 
         win.clear();
-        k.draw();
+        draw();
         win.update();
 
     }
