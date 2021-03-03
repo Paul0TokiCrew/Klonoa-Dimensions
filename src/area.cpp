@@ -23,7 +23,7 @@ bool area_manager::check_trigger(const vec2f other_xy1, const vec2f other_xy2) c
 	return false;
 }
 
-bool area_manager::check_up_collision(const vec2f other_xy1, const vec2f other_xy2) const {
+bool area_manager::check_up_collision(const vec2f other_xy1, const vec2f other_xy2, vec2f* const diff) const {
 
 	for (auto i : this->collision_areas) {
 
@@ -41,7 +41,7 @@ bool area_manager::check_up_collision(const vec2f other_xy1, const vec2f other_x
 	return false;
 }
 
-bool area_manager::check_down_collision(const vec2f other_xy1, const vec2f other_xy2) const {
+bool area_manager::check_down_collision(const vec2f other_xy1, const vec2f other_xy2, vec2f* const diff) const {
 
 	for (auto i : this->collision_areas) {
 
@@ -59,7 +59,7 @@ bool area_manager::check_down_collision(const vec2f other_xy1, const vec2f other
 	return false;
 }
 
-bool area_manager::check_right_collision(const vec2f other_xy1, const vec2f other_xy2) const {
+bool area_manager::check_right_collision(const vec2f other_xy1, const vec2f other_xy2, vec2f* const diff) const {
 
 	for (auto i : this->collision_areas) {
 
@@ -77,7 +77,7 @@ bool area_manager::check_right_collision(const vec2f other_xy1, const vec2f othe
 	return false;
 }
 
-bool area_manager::check_left_collision(const vec2f other_xy1, const vec2f other_xy2) const {
+bool area_manager::check_left_collision(const vec2f other_xy1, const vec2f other_xy2, vec2f* const diff) const {
 
 	for (auto i : this->collision_areas) {
 
