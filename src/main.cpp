@@ -26,10 +26,11 @@ int main(int argc, char* argv[]) {
 	window win = window("Klonoa Dimensions", 720, 480);
 
 	character klonoa = character(vec2f(0, 0), vec2f(64, 64), vec2f(0, 0), vec2f(100, 5));
-	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 100, 0, 100, 100 } );
+	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 0, 0 });
+    image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0 });
 	area_manager area_man = area_manager();
 
-    area_man.register_collision_area(vec2f(100, 100), vec2f(150, 150), &k);
+    area_man.register_collision_area(vec2f(100, 100), vec2f(150, 150), &harold);
 
 
 
