@@ -10,37 +10,6 @@ void character::update_pos(const float delta_time, const float fric, const area_
 
 	vec2f xy2 = vec2f(this->xy.x + this->wh.x, this->xy.y + this->wh.y), diff = vec2f(0, 0);
 
-	if (area_man.check_up_collision(this->xy, xy2, &diff)) {
-		msgs.push("up collision detected");
-
-		if (this->vel.y < 0)
-			this->vel.y = 0;
-
-	}
-
-	if (area_man.check_down_collision(this->xy, xy2, &diff)) {
-		msgs.push("down collision detected");
-
-		if (this->vel.y > 0)
-			this->vel.y = 0;
-
-	}
-
-	if (area_man.check_right_collision(this->xy, xy2, &diff)) {
-		msgs.push("right collision detected");
-
-		if (this->vel.x > 0)
-			this->vel.x = 0;
-
-	}
-
-	if (area_man.check_left_collision(this->xy, xy2, &diff)) {
-		msgs.push("left collision detected");
-
-		if (this->vel.x < 0)
-			this->vel.x = 0;
-
-	}
 
 
 
@@ -65,6 +34,48 @@ void character::update_pos(const float delta_time, const float fric, const area_
 
 	else if (std::ceil(this->vel.y) > std::ceil(this->goal_vel.y))
 		this->vel.y -= delta_time * fric;
+
+
+
+	if (area_man.check_up_collision(this->xy, xy2, &diff)) {
+		msgs.push("up collision detected");
+
+		if (this->vel.y < 0)
+			this->vel.y = 0;
+
+		this->xy.y + diff.y;
+
+	}
+
+	if (area_man.check_down_collision(this->xy, xy2, &diff)) {
+		msgs.push("down collision detected");
+
+		if (this->vel.y > 0)
+			this->vel.y = 0;
+
+		this->xy.y - diff.y;
+
+	}
+
+	if (area_man.check_right_collision(this->xy, xy2, &diff)) {
+		msgs.push("right collision detected");
+
+		if (this->vel.x > 0)
+			this->vel.x = 0;
+
+		this->xy.x - diff.x;
+
+	}
+
+	if (area_man.check_left_collision(this->xy, xy2, &diff)) {
+		msgs.push("left collision detected");
+
+		if (this->vel.x < 0)
+			this->vel.x = 0;
+
+		this->xy.x + diff.x;
+
+	}
 
 }
 
