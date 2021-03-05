@@ -95,6 +95,10 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 		this->goal_vel.x = 0;
 
 
+	
+	if (key[SDL_SCANCODE_Z])
+		this->vel.y = -100;
+
 
 	if (this->counter)
 		--counter;
