@@ -96,22 +96,6 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 
 
 
-	if (key[SDL_SCANCODE_Z] && !(this->counter)) {
-		
-		if (this->is_running) {
-			this->max_vel = this->max_vel / vec2f(2, 2);
-			this->is_running = false;
-
-		} else {
-			this->max_vel = this->max_vel * vec2f(2, 2);
-			this->is_running = true;
-
-		}
-
-		this->counter = 10;
-
-	}
-
 	if (this->counter)
 		--counter;
 
