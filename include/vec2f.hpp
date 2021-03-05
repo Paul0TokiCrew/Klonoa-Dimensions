@@ -20,6 +20,8 @@ public:
 
 	float x, y;
 
+	void reset();
+
 	void move(const float x_speed, const float y_speed);
 
 	float get_length() const;

@@ -27,42 +27,42 @@ int main(int argc, char* argv[]) {
 
 	character klonoa = character(vec2f(0, 0), vec2f(64, 64), vec2f(0, 0), vec2f(100, 5));
 	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 0, 0 });
-    image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0 });
+	image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 0, 0, 0 });
 	area_manager area_man = area_manager();
 
-    area_man.register_collision_area(vec2f(100, 100), vec2f(150, 150), &harold);
+	area_man.register_collision_area(vec2f(100, 100), vec2f(150, 150), &harold);
 
 
 
-    auto draw = [&] () -> void {
+	auto draw = [&] () -> void {
 		area_man.draw_areas();
-        SDL_Rect rec = k.get_des();
+		SDL_Rect rec = k.get_des();
 
-        k.change_pos(klonoa.get_xy().x, klonoa.get_xy().y);
-        k.change_size(klonoa.get_wh().x, klonoa.get_wh().y);
+		k.change_pos(klonoa.get_xy().x, klonoa.get_xy().y);
+		k.change_size(klonoa.get_wh().x, klonoa.get_wh().y);
 
-        k.draw();
+		k.draw();
 
-        k.change_pos(rec.x, rec.y);
-        k.change_size(rec.w, rec.h);
-    };
+		k.change_pos(rec.x, rec.y);
+		k.change_size(rec.w, rec.h);
+	};
 
 
 
-    bool running = true;
-    SDL_Event evn;
+	bool running = true;
+	SDL_Event evn;
 
 	float current_time = get_current_time();
 
-    while (running) {
+	while (running) {
 
 		float new_time = get_current_time();
 		float delta_time = new_time - current_time;
 		current_time = new_time;
 
-        while (SDL_PollEvent(&evn))
-            if (evn.type == SDL_QUIT)
-                running = false;
+		while (SDL_PollEvent(&evn))
+			if (evn.type == SDL_QUIT)
+				running = false;
 
 		const Uint8* key = SDL_GetKeyboardState(nullptr);
 
@@ -71,22 +71,22 @@ int main(int argc, char* argv[]) {
 
 
 
-        while (!msgs.empty()) {
+		while (!msgs.empty()) {
 
-            PRINTLN(msgs.front())
-            msgs.pop();
+			PRINTLN(msgs.front())
+			msgs.pop();
 
-        }
+		}
 
 
 
-        win.clear();
-        draw();
-        win.update();
+		win.clear();
+		draw();
+		win.update();
 
-    }
+	}
 
-    SDL_Quit();
-    IMG_Quit();
-    return 0;
+	SDL_Quit();
+	IMG_Quit();
+	return 0;
 }

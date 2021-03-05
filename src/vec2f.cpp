@@ -2,6 +2,11 @@
 
 
 
+void vec2f::reset() {
+	this->x = 0;
+	this->y = 0;
+}
+
 void vec2f::move(float x_speed, float y_speed) {
 	this->x += x_speed;
 	this->y += y_speed;
