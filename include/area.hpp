@@ -12,6 +12,7 @@
 class area_manager {
 private:
 	std::vector<std::tuple<vec2f, vec2f, image*>> collision_areas;
+	std::vector<std::tuple<vec2f, vec2f, float, image*>> fric_areas;
 
 public:
 	area_manager() { }
