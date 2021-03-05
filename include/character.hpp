@@ -13,7 +13,6 @@
 class character {
 private:
 	vec2f xy, wh, vel, goal_vel, max_vel;
-	bool is_running;
 	short counter;
 
 public:
