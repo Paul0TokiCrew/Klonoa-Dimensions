@@ -17,7 +17,7 @@ private:
 
 public:
 	character(const vec2f xy, const vec2f wh, const vec2f vel, const vec2f max_vel) :
-		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), is_running(false), counter(0) { }
+		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), counter(0) { }
 	~character() { }
 
 	vec2f get_xy() const { return this->xy; }
