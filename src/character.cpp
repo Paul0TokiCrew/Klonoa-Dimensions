@@ -27,7 +27,7 @@ void character::update_pos(const float delta_time, const float fric, const area_
 		if (this->vel.y > 0)
 			this->vel.y = 0;
 
-		this->xy.y -= diff.y;
+		this->xy.y += diff.y;
 
 	}
 
@@ -37,7 +37,7 @@ void character::update_pos(const float delta_time, const float fric, const area_
 		if (this->vel.x > 0)
 			this->vel.x = 0;
 
-		this->xy.x -= diff.x;
+		this->xy.x += diff.x;
 
 	}
 
