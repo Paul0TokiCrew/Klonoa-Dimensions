@@ -9,7 +9,7 @@ void character::update_pos(const float delta_time, const float fric, const area_
 		return;
 
 	vec2f xy2 = vec2f(this->xy.x + this->wh.x, this->xy.y + this->wh.y), diff = vec2f(0, 0),
-		move = vec2f(this->xy + this->vel * vec2f(delta_time));
+		move = vec2f(this->vel * vec2f(delta_time));
 
 	if (area_man.check_up_collision(this->xy, xy2, &diff)) {
 		msgs.push("up collision detected");
@@ -54,10 +54,10 @@ void character::update_pos(const float delta_time, const float fric, const area_
 
 
 	if (std::ceil(this->vel.x))
-		this->xy.x = move.x;
+		this->xy.x += move.x;
 
 	if (std::ceil(this->vel.y))
-		this->xy.y = move.y;
+		this->xy.y += move.y;
 
 
 
