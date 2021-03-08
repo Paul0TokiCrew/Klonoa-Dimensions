@@ -55,7 +55,7 @@ bool area_manager::check_down_collision(const vec2f other_xy1, const vec2f other
 			other_xy2.y >= std::get<0>(i).y &&
 			other_xy2.y < std::get<1>(i).y 
 		) {
-			diff->y = other_xy2.y - std::get<0>(i).y;
+			diff->y = std::get<0>(i).y - other_xy2.y;
 			return true;
 
 		}
@@ -76,7 +76,7 @@ bool area_manager::check_right_collision(const vec2f other_xy1, const vec2f othe
 			other_xy2.y >= std::get<0>(i).y &&
 			other_xy2.x < std::get<1>(i).x
 		) {
-			diff->x = other_xy2.x - std::get<0>(i).x;
+			diff->x = std::get<0>(i).x - other_xy2.x;
 			return true;
 
 		}
