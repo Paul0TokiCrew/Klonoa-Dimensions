@@ -10,6 +10,8 @@
 class vec2f {
 public:
 	vec2f() { }
+	vec2f(const float xy) :
+		x(xy), y(xy) { }
 	vec2f(const float x, const float y) :
 		x(x), y(y) { }
 	vec2f(const vec2f& vec) :
