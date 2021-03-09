@@ -23,4 +23,6 @@ public:
 	int get_x_advance() const { return this->x_advance; }
 	int get_y_advance() const { return this->y_advance; }
 
+	void advance(const int x_advance = 0, const int y_advance = 0);
+
 };
