@@ -15,13 +15,13 @@ void sprite::advance(const int x_advance, const int y_advance) {
 	int new_x = this->get_src().x, new_y = this->get_src().y;
 
 	if (x_advance == 0)
-		new_x += this->x_advance;
+		new_x += this->x_move;
 
 	else
 		new_x += x_advance;
 
 	if (y_advance == 0)
-		new_y += this->y_advance;
+		new_y += this->y_move;
 
 	else
 		new_y += y_advance;
