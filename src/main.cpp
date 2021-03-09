@@ -31,17 +31,15 @@ int main(int argc, char* argv[]) {
 	character klonoa = character(vec2f(0), vec2f(64), vec2f(0), vec2f(100, GRAVITY), nullptr);
 	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 });
 	camera klonoa_cam = camera(klonoa.get_xy());
-	image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
+	image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 20, 80 });
 	area_manager area_man = area_manager();
 
-	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480), &harold);
+	area_man.register_collision_area(vec2f(0, 400), vec2f(20, 480), &harold);
 
 
 	auto draw = [&] () -> void {
 		area_man.draw_areas();
 		SDL_Rect rec = k.get_des();
-
-		k.change_size(klonoa.get_wh().x, klonoa.get_wh().y);
 
 		k.draw();
 

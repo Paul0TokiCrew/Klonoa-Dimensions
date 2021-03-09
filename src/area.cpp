@@ -28,8 +28,8 @@ bool area_manager::check_up_collision(const vec2f other_xy1, const vec2f other_x
 	for (auto i : this->collision_areas) {
 
 		if (
-			other_xy1.x <= std::get<1>(i).x &&
-			other_xy2.x >= std::get<0>(i).x &&
+			other_xy1.x < std::get<1>(i).x &&
+			other_xy2.x > std::get<0>(i).x &&
 			other_xy1.y <= std::get<1>(i).y &&
 			other_xy2.y > std::get<1>(i).y &&
 			other_xy1.y > std::get<0>(i).y
@@ -49,8 +49,8 @@ bool area_manager::check_down_collision(const vec2f other_xy1, const vec2f other
 	for (auto i : this->collision_areas) {
 
 		if (
-			other_xy1.x <= std::get<1>(i).x &&
-			other_xy2.x >= std::get<0>(i).x &&
+			other_xy1.x < std::get<1>(i).x &&
+			other_xy2.x > std::get<0>(i).x &&
 			other_xy1.y < std::get<0>(i).y &&
 			other_xy2.y >= std::get<0>(i).y &&
 			other_xy2.y < std::get<1>(i).y 
@@ -72,8 +72,8 @@ bool area_manager::check_right_collision(const vec2f other_xy1, const vec2f othe
 		if (
 			other_xy1.x < std::get<0>(i).x &&
 			other_xy2.x >= std::get<0>(i).x &&
-			other_xy1.y <= std::get<1>(i).y &&
-			other_xy2.y >= std::get<0>(i).y &&
+			other_xy1.y < std::get<1>(i).y &&
+			other_xy2.y > std::get<0>(i).y &&
 			other_xy2.x < std::get<1>(i).x
 		) {
 			diff->x = std::get<0>(i).x - other_xy2.x;
@@ -93,8 +93,8 @@ bool area_manager::check_left_collision(const vec2f other_xy1, const vec2f other
 		if (
 			other_xy1.x <= std::get<1>(i).x &&
 			other_xy2.x > std::get<1>(i).x &&
-			other_xy1.y <= std::get<1>(i).y &&
-			other_xy2.y >= std::get<0>(i).y &&
+			other_xy1.y < std::get<1>(i).y &&
+			other_xy2.y > std::get<0>(i).y &&
 			other_xy1.x > std::get<0>(i).x
 		) {
 			diff->x =std::get<1>(i).x - other_xy1.x;
