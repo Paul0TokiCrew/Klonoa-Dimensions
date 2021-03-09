@@ -20,7 +20,7 @@ public:
 		img(nullptr), src(src), des(des), old_des(des), win(win) {
 		this->img = IMG_LoadTexture(this->win.get_ren(), path);
 	}
-	~image() {
+	virtual ~image() {
 		SDL_DestroyTexture(this->img);
 	}
 

@@ -2,7 +2,7 @@
 
 
 
-void advance(const int x_advance = 0, const int y_advance = 0) {
+void sprite::advance(const int x_advance = 0, const int y_advance = 0) {
 	int x_move, y_move;
 
 	if (x_advance == 0)
