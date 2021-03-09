@@ -3,7 +3,6 @@
 
 
 #include <vec2f.hpp>
-#include <window.hpp>
 
 
 

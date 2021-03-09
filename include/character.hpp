@@ -18,7 +18,7 @@ private:
 	short counter;
 
 public:
-	character(const vec2f xy, const vec2f wh, const vec2f vel, const vec2f max_vel, const sprite* const current_sprite) :
+	character(const vec2f xy, const vec2f wh, const vec2f vel, const vec2f max_vel, sprite* current_sprite) :
 		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), current_sprite(current_sprite), counter(0) { }
 	~character() { }
 
