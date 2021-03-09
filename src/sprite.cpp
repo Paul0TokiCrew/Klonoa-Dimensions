@@ -2,7 +2,16 @@
 
 
 
-void sprite::advance(const int x_advance = 0, const int y_advance = 0) {
+void sprite::advance(const int x_advance, const int y_advance) {
+	if (this->index == this->reset_index) {
+		this->change_frame_pos(0, 0);
+		this->index = 0;
+		return;
+
+	}
+
+
+
 	int x_move, y_move;
 
 	if (x_advance == 0)
@@ -17,8 +26,7 @@ void sprite::advance(const int x_advance = 0, const int y_advance = 0) {
 	else
 		x_move = x_advance;
 
-
-
 	this->change_frame_pos(x_move, y_move);
+	++(this->index);
 
 }
