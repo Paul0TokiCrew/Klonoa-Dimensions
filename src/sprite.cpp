@@ -12,21 +12,21 @@ void sprite::advance(const int x_advance, const int y_advance) {
 
 
 
-	int x_move, y_move;
+	int new_x = this->get_src().x, new_y = this->get_src().y;
 
 	if (x_advance == 0)
-		x_move = this->x_advance;
+		new_x += this->x_advance;
 
 	else
-		x_move = x_advance;
+		new_x += x_advance;
 
-	if (x_advance == 0)
-		x_move = this->x_advance;
+	if (y_advance == 0)
+		new_y += this->y_advance;
 
 	else
-		x_move = x_advance;
+		new_y += y_advance;
 
-	this->change_frame_pos(x_move, y_move);
+	this->change_frame_pos(new_x, new_y);
 	++(this->index);
 
 }
