@@ -112,7 +112,9 @@ void area_manager::change_areas_pos(const vec2f mod) {
 	for (auto i : this->collision_areas) {
 
 		image*& img = std::get<2>(i);
-		img->change_pos(img->get_old_des().x - std::ceil(mod.x), img->get_old_des().y - std::ceil(mod.y));
+
+		if (img != nullptr)
+			img->change_pos(img->get_old_des().x - std::ceil(mod.x), img->get_old_des().y - std::ceil(mod.y));
 
 	}
 
