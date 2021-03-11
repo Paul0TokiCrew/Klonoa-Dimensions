@@ -24,7 +24,7 @@ bool area_manager::check_trigger(const vec2f other_xy1, const vec2f other_xy2) c
 	for (auto i : this->collision_areas) {
 
 		if (
-			other_xy1.x <= std::get<0>(i).x &&
+			other_xy1.x <= std::get<1>(i).x &&
 			other_xy2.x >= std::get<0>(i).x &&
 			other_xy1.y <= std::get<1>(i).y &&
 			other_xy2.y >= std::get<0>(i).y
@@ -125,11 +125,20 @@ float area_manager::get_fric(const vec2f other_xy1, const vec2f other_xy2) const
 
 	for (auto i : this->fric_areas) {
 
-		fric.push(std::get<2>(i));
+		if (
+			other_xy1.x <= std::get<1>(i).x &&
+			other_xy2.x >= std::get<0>(i).x &&
+			other_xy1.y <= std::get<1>(i).y &&
+			other_xy2.y >= std::get<0>(i).y
+		)
+			fric.push(std::get<2>(i));
 
 	}
 
-	return fric.top();
+	if (!(fric.empty()))
+		return fric.top();
+
+	return 0;
 
 }
 

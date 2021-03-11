@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480), &harold);
 	area_man.register_collision_area(vec2f(500, 280), vec2f(600, 380), &putin);
 
-	area_man.register_fric_area(vec2f(0, 0), vec2f(720, 480));
+	area_man.register_fric_area(vec2f(0, 0), vec2f(720, 480), FRIC);
 
 
 	auto draw = [&] () -> void {
