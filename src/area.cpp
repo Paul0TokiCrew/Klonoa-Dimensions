@@ -12,7 +12,7 @@ void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, ima
 
 
 void area_manager::register_fric_area(const vec2f xy1, const vec2f xy2, const float fric, image* tex) {
-	this->fric_areas.push_back(std::make_tuple(xy1, xy2, fric, tex));
+	this->fric_areas.push_back(std::make_tuple(xy1, xy2, fric));
 
 	if (tex != nullptr)
 		this->img_areas.push_back(std::make_pair(*tex, xy1));
