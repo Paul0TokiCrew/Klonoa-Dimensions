@@ -3,12 +3,20 @@
 
 
 void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, image* tex) {
-	this->collision_areas.push_back(std::make_tuple(xy1, xy2, tex));
+	this->collision_areas.push_back(std::make_tuple(xy1, xy2));
+
+	if (tex != nullptr)
+		this->img_areas.push_back(std::make_pair(*tex, xy1));
+
 }
 
 
 void area_manager::register_fric_area(const vec2f xy1, const vec2f xy2, const float fric, image* tex) {
 	this->fric_areas.push_back(std::make_tuple(xy1, xy2, fric, tex));
+
+	if (tex != nullptr)
+		this->img_areas.push_back(std::make_pair(*tex, xy1));
+
 }
 
 bool area_manager::check_trigger(const vec2f other_xy1, const vec2f other_xy2) const {
@@ -114,12 +122,10 @@ bool area_manager::check_left_collision(const vec2f other_xy1, const vec2f other
 
 void area_manager::change_areas_pos(const vec2f mod) {
 
-	for (auto i : this->collision_areas) {
+	for (auto i : this->img_areas) {
 
-		image*& img = std::get<2>(i);
-
-		if (img != nullptr)
-			img->change_pos(img->get_old_des().x - std::ceil(mod.x), img->get_old_des().y - std::ceil(mod.y));
+		image& img = i.first;
+		img.change_pos(img.get_old_des().x - std::ceil(mod.x), img.get_old_des().y - std::ceil(mod.y));
 
 	}
 
@@ -127,12 +133,10 @@ void area_manager::change_areas_pos(const vec2f mod) {
 
 void area_manager::draw_areas() const {
 
-	for (auto i : this->collision_areas) {
+	for (auto i : this->img_areas) {
 
-		image*& img = std::get<2>(i);
-
-		if (img != nullptr)
-			img->draw();
+		image& img = i.first;
+		img.draw();
 
 
 	}
