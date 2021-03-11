@@ -14,11 +14,20 @@ protected:
 	SDL_Rect src, des;
 	const SDL_Rect old_des;
 	const window& win;
+	const char* path;
 
 public:
 	image(const window& win, const char* path, const SDL_Rect src, const SDL_Rect des) :
-		img(nullptr), src(src), des(des), old_des(des), win(win) {
-		this->img = IMG_LoadTexture(this->win.get_ren(), path);
+		img(nullptr), src(src), des(des), old_des(des), win(win), path(path) {
+		this->img = IMG_LoadTexture(this->win.get_ren(), this->path);
+	}
+	image(const image& tex) :
+		img(nullptr), src(tex.get_src()), des(tex.get_des()), old_des(tex.get_old_des()), win(tex.get_win()), path(tex.get_path()) {
+		this->img = IMG_LoadTexture(this->win.get_ren(), this->path);
+	}
+	image(const image&& tex) :
+		img(nullptr), src(tex.get_src()), des(tex.get_des()), old_des(tex.get_old_des()), win(tex.get_win()), path(tex.get_path()) {
+		this->img = IMG_LoadTexture(this->win.get_ren(), this->path);
 	}
 	virtual ~image() {
 		SDL_DestroyTexture(this->img);
@@ -27,6 +36,8 @@ public:
 	SDL_Rect get_src() const { return this->src; }
 	SDL_Rect get_des() const { return this->des; }
 	SDL_Rect get_old_des() const { return this->old_des; }
+	const window& get_win() const { return this->win; }
+	const char* get_path() const { return this->path; }
 
 	void change_frame_pos(const int x, const int y);
 	void change_frame_size(const int w, const int h);
