@@ -6,6 +6,11 @@ void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, ima
 	this->collision_areas.push_back(std::make_tuple(xy1, xy2, tex));
 }
 
+
+void area_manager::register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 0, image* tex = nullptr) {
+	this->fric_areas.push_back(std::make_tuple(xy1, xy2, fric, tex));
+}
+
 bool area_manager::check_trigger(const vec2f other_xy1, const vec2f other_xy2) const {
 
 	for (auto i : this->collision_areas) {

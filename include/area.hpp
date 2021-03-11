@@ -19,6 +19,7 @@ public:
 	~area_manager() { }
 
 	void register_collision_area(const vec2f xy1, const vec2f xy2, image* tex = nullptr);
+	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 0, image* tex = nullptr);
 
 	bool check_trigger(const vec2f other_xy1, const vec2f other_xy2) const;
 

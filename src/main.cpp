@@ -5,6 +5,7 @@
 #include <SDL2/SDL_image.h>
 #include <window.hpp>
 #include <image.hpp>
+#include <area.hpp>
 #include <character.hpp>
 #include <camera.hpp>
 
