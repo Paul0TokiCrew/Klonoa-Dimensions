@@ -3,6 +3,9 @@
 
 
 void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, image* tex) {
+	if (xy1 == xy2)
+		return;
+
 	this->collision_areas.push_back(std::make_tuple(xy1, xy2));
 
 	if (tex != nullptr)
