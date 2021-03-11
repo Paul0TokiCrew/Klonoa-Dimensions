@@ -36,8 +36,8 @@ int main(int argc, char* argv[]) {
 	image putin = image(win, "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
 	area_manager area_man = area_manager();
 
-	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480));//, &harold);
-	area_man.register_collision_area(vec2f(500, 280), vec2f(600, 380));//, &putin);
+	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480), &harold);
+	area_man.register_collision_area(vec2f(500, 280), vec2f(600, 380), &putin);
 
 
 	auto draw = [&] () -> void {

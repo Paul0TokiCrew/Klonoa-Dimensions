@@ -6,7 +6,7 @@ void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, ima
 	this->collision_areas.push_back(std::make_tuple(xy1, xy2));
 
 	if (tex != nullptr)
-		this->img_areas.push_back(std::make_pair(*tex, xy1));
+		this->img_areas.push_back(std::make_pair(tex, xy1));
 
 }
 
@@ -15,7 +15,7 @@ void area_manager::register_fric_area(const vec2f xy1, const vec2f xy2, const fl
 	this->fric_areas.push_back(std::make_tuple(xy1, xy2, fric));
 
 	if (tex != nullptr)
-		this->img_areas.push_back(std::make_pair(*tex, xy1));
+		this->img_areas.push_back(std::make_pair(tex, xy1));
 
 }
 
@@ -124,7 +124,7 @@ void area_manager::change_areas_pos(const vec2f mod) {
 
 	for (auto i : this->img_areas) {
 
-		image& img = i.first;
+		image& img = *(i.first);
 		img.change_pos(img.get_old_des().x - std::ceil(mod.x), img.get_old_des().y - std::ceil(mod.y));
 
 	}
@@ -135,7 +135,7 @@ void area_manager::draw_areas() const {
 
 	for (auto i : this->img_areas) {
 
-		image& img = i.first;
+		image& img = *(i.first);
 		img.draw();
 
 
