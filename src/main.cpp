@@ -39,6 +39,8 @@ int main(int argc, char* argv[]) {
 	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480), &harold);
 	area_man.register_collision_area(vec2f(500, 280), vec2f(600, 380), &putin);
 
+	area_man.register_fric_area(vec2f(0, 0), vec2f(720, 480));
+
 
 	auto draw = [&] () -> void {
 		area_man.draw_areas();
@@ -70,7 +72,7 @@ int main(int argc, char* argv[]) {
 		const Uint8* key = SDL_GetKeyboardState(nullptr);
 
 		klonoa.update_datas(key, area_man);
-		klonoa.update_pos(delta_time, FRIC, area_man);
+		klonoa.update_pos(delta_time, area_man);
 		klonoa_cam.update_cam(klonoa.get_xy());
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
 
