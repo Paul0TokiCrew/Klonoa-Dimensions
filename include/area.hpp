@@ -31,7 +31,7 @@ public:
 	bool check_right_collision(const vec2f other_xy1, const vec2f other_xy2, vec2f* const diff = nullptr) const;
 	bool check_left_collision(const vec2f other_xy1, const vec2f other_xy2, vec2f* const diff = nullptr) const;
 
-	float get_current_fric(const vec2f other_xy1, const vec2f other_xy2) const;
+	float get_fric(const vec2f other_xy1, const vec2f other_xy2) const;
 
 	void change_areas_pos(const vec2f mod);
 	void draw_areas() const;

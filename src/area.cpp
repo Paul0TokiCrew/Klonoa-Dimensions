@@ -120,7 +120,7 @@ bool area_manager::check_left_collision(const vec2f other_xy1, const vec2f other
 	return false;
 }
 
-float area_manager::get_current_fric(const vec2f other_xy1, const vec2f other_xy2) const {
+float area_manager::get_fric(const vec2f other_xy1, const vec2f other_xy2) const {
 	std::priority_queue<float, std::vector<float>, std::greater<float>> fric;
 
 	for (auto i : this->fric_areas) {
