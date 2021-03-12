@@ -2,7 +2,7 @@
 
 
 
-void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, image* tex) {
+void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex) {
 	if (xy1 == xy2)
 		return;
 
@@ -14,7 +14,10 @@ void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, ima
 }
 
 
-void area_manager::register_fric_area(const vec2f xy1, const vec2f xy2, const float fric, image* tex) {
+void area_manager::register_fric_area(const vec2f xy1, const vec2f xy2, const float fric, image* const tex) {
+	if (std::ceil(fric) < 0)
+		return;
+
 	this->fric_areas.push_back(std::make_tuple(xy1, xy2, fric));
 
 	if (tex != nullptr)
