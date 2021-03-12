@@ -13,16 +13,16 @@
 
 class area_manager {
 private:
-	std::vector<std::pair<image*, vec2f>> img_areas; 
+	std::vector<std::pair<image* const, const vec2f>> img_areas; 
 	std::vector<std::tuple<vec2f, vec2f>> collision_areas;
-	std::vector<std::tuple<vec2f, vec2f, float>> fric_areas;
+	std::vector<std::tuple<vec2f, vec2f, const float>> fric_areas;
 
 public:
 	area_manager() { }
 	~area_manager() { }
 
-	void register_collision_area(const vec2f xy1, const vec2f xy2, image* tex = nullptr);
-	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 0, image* tex = nullptr);
+	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr);
+	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 0, image* const tex = nullptr);
 
 	bool check_trigger(const vec2f other_xy1, const vec2f other_xy2) const;
 
