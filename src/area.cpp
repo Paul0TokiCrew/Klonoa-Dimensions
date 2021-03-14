@@ -161,6 +161,8 @@ void area_manager::change_areas_pos(const vec2f mod) {
 }
 
 void area_manager::draw_areas() const {
+	if (this->bg != nullptr)
+		this->bg->draw();
 
 	for (auto i : this->img_areas) {
 
