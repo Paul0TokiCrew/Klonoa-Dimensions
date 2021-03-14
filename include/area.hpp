@@ -13,12 +13,14 @@
 
 class area_manager {
 private:
+	image* bg;
 	std::vector<std::pair<image* const, const vec2f>> img_areas; 
 	std::vector<std::tuple<vec2f, vec2f>> collision_areas;
 	std::vector<std::tuple<vec2f, vec2f, const float>> fric_areas;
 
 public:
-	area_manager() { }
+	area_manager() :
+		bg(nullptr) { }
 	~area_manager() { }
 
 	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr);
