@@ -21,6 +21,8 @@ private:
 public:
 	area_manager() :
 		bg(nullptr) { }
+	area_manager(image* bg) :
+		bg(bg) { }
 	~area_manager() { }
 
 	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr);
