@@ -25,6 +25,8 @@ public:
 		bg(bg) { }
 	~area_manager() { }
 
+	void change_bg(image*) { this->bg = bg; }
+
 	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr);
 	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 1, image* const tex = nullptr);
 
