@@ -27,6 +27,8 @@ public:
 	vec2f get_vel() const { return this->vel; }
 	vec2f get_goal_vel() const { return this->goal_vel; }
 	vec2f get_max_vel() const { return this->max_vel; }
+	sprite* get_current_sprite() const { return this->current_sprite; }
+	short get_counter() const { return this->counter; }
 
 	void update_sprites();
 	void update_pos(const float delta_time, const area_manager area_man);
