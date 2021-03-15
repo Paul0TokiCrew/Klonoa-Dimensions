@@ -4,7 +4,11 @@
 
 extern std::queue<std::string> msgs;
 
-void character::update_sprites() { }
+void character::update_sprites() {
+	if (this->current_sprite != nullptr)
+		this->current_sprite->advance();
+
+}
 
 void character::update_pos(const float delta_time, const area_manager area_man) {
 	vec2f xy2 = vec2f(this->xy.x + this->wh.x, this->xy.y + this->wh.y), diff = vec2f(0, 0),
