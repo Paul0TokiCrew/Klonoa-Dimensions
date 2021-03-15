@@ -4,6 +4,7 @@
 
 #include <cstring>
 #include <vector>
+#include <iterator>
 #include <queue>
 #include <tuple>
 #include <utility>
@@ -21,6 +22,9 @@ private:
 public:
 	area_manager() { }
 	~area_manager() { }
+
+	unsigned get_img_areas_size() const { return this->img_areas.size(); }
+	std::pair<image* const, const vec2f> get_img_area(unsigned index = 0) const { return index <= this->img_areas.size() ? this->img_areas[index] : std::make_pair(nullptr, vec2f(0, 0)); }
 
 	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr, const char* coll = "UDRL");
 	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 1, image* const tex = nullptr);
