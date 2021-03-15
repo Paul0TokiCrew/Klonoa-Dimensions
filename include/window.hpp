@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <image.hpp>
 #include <sprite.hpp>
+#include <area.hpp>
 
 
 
@@ -46,6 +47,7 @@ public:
 	void clear(const int r, const int g, const int b, const int a) const;
 	void render(const image& img) const;
 	void render(const sprite& spr) const;
+	void render(const area_manager& area_man) const;
 	void update() const;
 
 };

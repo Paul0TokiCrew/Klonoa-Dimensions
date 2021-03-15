@@ -21,7 +21,3 @@ void image::change_size(int w, int h) {
 	this->des.w = w;
 	this->des.h = h;
 }
-
-void image::draw() const {
-	SDL_RenderCopy(this->win.get_ren(), this->img, &(this->src), &(this->des));
-}

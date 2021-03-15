@@ -13,8 +13,8 @@ private:
 		x_move, y_move;
 
 public:
-	sprite(const window& win, const char* path, const SDL_Rect src, const SDL_Rect des, const int index = 0, const int reset_index = 0, const int x_move = 0, const int y_move = 0) :
-		image(win, path, src, des), index(index), reset_index(reset_index), x_move(x_move), y_move(y_move) { }
+	sprite(SDL_Renderer* ren, const char* path, const SDL_Rect src, const SDL_Rect des, const int index = 0, const int reset_index = 0, const int x_move = 0, const int y_move = 0) :
+		image(ren, path, src, des), index(index), reset_index(reset_index), x_move(x_move), y_move(y_move) { }
 
 	~sprite() { }
 

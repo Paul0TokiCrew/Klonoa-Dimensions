@@ -17,11 +17,15 @@ void window::clear(const int r, const int g, const int b, const int a) const {
 }
 
 void window::render(const image& img) const {
-	SDL_RenderCopy(this->ren, img.get_img(), &(img.get_src), &(img.get_des));
+	SDL_Rect src = img.get_src(),
+		des = img.get_des();
+	SDL_RenderCopy(this->ren, img.get_img(), &src, &des);
 }
 
 void window::render(const sprite& spr) const {
-	SDL_RenderCopy(this->ren, spr.get_img(), &(spr.get_src), &(spr.get_des));
+	SDL_Rect src = spr.get_src(),
+		des = spr.get_des();
+	SDL_RenderCopy(this->ren, spr.get_img(), &src, &des);
 }
 
 void window::update() const {
