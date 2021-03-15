@@ -3,6 +3,8 @@
 
 
 #include <SDL2/SDL.h>
+#include <image.hpp>
+#include <sprite.hpp>
 
 
 
@@ -42,6 +44,8 @@ public:
 	void clear() const;
 	void clear(const int r, const int g, const int b) const;
 	void clear(const int r, const int g, const int b, const int a) const;
+	void render(const image& img) const;
+	void render(const sprite& spr) const;
 	void update() const;
 
 };
