@@ -6,6 +6,7 @@
 #include <image.hpp>
 #include <sprite.hpp>
 #include <area.hpp>
+#include <character.hpp>
 
 
 
@@ -45,9 +46,12 @@ public:
 	void clear() const;
 	void clear(const int r, const int g, const int b) const;
 	void clear(const int r, const int g, const int b, const int a) const;
+
 	void render(const image& img) const;
 	void render(const sprite& spr) const;
 	void render(const area_manager& area_man) const;
+	void render(const character& chr) const;
+
 	void update() const;
 
 };

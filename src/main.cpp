@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 	auto draw = [&] () -> void {
 		win.render(area_man);
 		if (klonoa.get_current_sprite() != nullptr)
-			win.render(klonoa.get_current_sprite()[0]);
+			win.render(klonoa);
 
 	};
 

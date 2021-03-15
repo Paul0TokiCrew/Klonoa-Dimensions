@@ -31,6 +31,7 @@ void window::render(const sprite& spr) const {
 void window::render(const area_manager& area_man) const {
 
 	for (unsigned i = 0; i < area_man.get_img_areas_size(); ++i) {
+
 		image& img = area_man.get_img_area(i).first[0];
 		SDL_Rect src = img.get_src(),
 		des = img.get_des();
@@ -39,6 +40,13 @@ void window::render(const area_manager& area_man) const {
 
 	}
 
+}
+
+void window::render(const character& chr) const {
+	sprite& spr = chr.get_current_sprite()[0];
+	SDL_Rect src = spr.get_src(),
+		des = spr.get_des();
+	SDL_RenderCopy(this->ren, spr.get_img(), &src, &des);;
 }
 
 void window::update() const {
