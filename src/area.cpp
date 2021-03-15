@@ -47,6 +47,7 @@ bool area_manager::check_up_collision(const vec2f other_xy1, const vec2f other_x
 	for (auto i : this->collision_areas) {
 
 		if (
+			std::strchr(std::get<2>(i), 'U') != nullptr &&
 			other_xy1.x < std::get<1>(i).x &&
 			other_xy2.x > std::get<0>(i).x &&
 			other_xy1.y <= std::get<1>(i).y &&
@@ -68,6 +69,7 @@ bool area_manager::check_down_collision(const vec2f other_xy1, const vec2f other
 	for (auto i : this->collision_areas) {
 
 		if (
+			std::strchr(std::get<2>(i), 'D') != nullptr &&
 			other_xy1.x < std::get<1>(i).x &&
 			other_xy2.x > std::get<0>(i).x &&
 			other_xy1.y < std::get<0>(i).y &&
@@ -89,6 +91,7 @@ bool area_manager::check_right_collision(const vec2f other_xy1, const vec2f othe
 	for (auto i : this->collision_areas) {
 
 		if (
+			std::strchr(std::get<2>(i), 'R') != nullptr &&
 			other_xy1.x < std::get<0>(i).x &&
 			other_xy2.x >= std::get<0>(i).x &&
 			other_xy1.y < std::get<1>(i).y &&
@@ -110,6 +113,7 @@ bool area_manager::check_left_collision(const vec2f other_xy1, const vec2f other
 	for (auto i : this->collision_areas) {
 
 		if (
+			std::strchr(std::get<2>(i), 'L') != nullptr &&
 			other_xy1.x <= std::get<1>(i).x &&
 			other_xy2.x > std::get<1>(i).x &&
 			other_xy1.y < std::get<1>(i).y &&
