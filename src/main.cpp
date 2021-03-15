@@ -29,11 +29,13 @@ int main(int argc, char* argv[]) {
 
 	window win = window("Klonoa Dimensions", 720, 480);
 
-	character klonoa = character(vec2f(0), vec2f(64), vec2f(0), vec2f(100, GRAVITY), nullptr);
-	image k = image(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 });
+	sprite k = sprite(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16);
+	character klonoa = character(vec2f(0), vec2f(64), vec2f(0), vec2f(100, GRAVITY), &k);
 	camera klonoa_cam = camera(klonoa.get_xy());
+
 	image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
 	image putin = image(win, "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
+
 	area_manager area_man = area_manager();
 
 	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480), &harold, "Down");
@@ -44,12 +46,9 @@ int main(int argc, char* argv[]) {
 
 	auto draw = [&] () -> void {
 		area_man.draw_areas();
-		SDL_Rect rec = k.get_des();
+		if (klonoa.get_current_sprite() != nullptr)
+			klonoa.get_current_sprite()->draw();
 
-		k.draw();
-
-		k.change_pos(rec.x, rec.y);
-		k.change_size(rec.w, rec.h);
 	};
 
 
@@ -72,6 +71,7 @@ int main(int argc, char* argv[]) {
 		const Uint8* key = SDL_GetKeyboardState(nullptr);
 
 		klonoa.update_datas(key, area_man);
+		klonoa.update_sprites();
 		klonoa.update_pos(delta_time, area_man);
 		klonoa_cam.update_cam(klonoa.get_xy());
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
