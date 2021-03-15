@@ -42,6 +42,4 @@ public:
 	void change_pos(const int x, const int y);
 	void change_size(const int w, const int h);
 
-	void draw() const { }
-
 };

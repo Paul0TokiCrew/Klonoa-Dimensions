@@ -163,15 +163,3 @@ void area_manager::change_areas_pos(const vec2f mod) {
 	}
 
 }
-
-void area_manager::draw_areas() const {
-
-	for (auto i : this->img_areas) {
-
-		image& img = *(i.first);
-		img.draw();
-
-
-	}
-
-}
