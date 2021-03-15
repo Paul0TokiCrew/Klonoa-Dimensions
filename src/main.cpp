@@ -29,12 +29,12 @@ int main(int argc, char* argv[]) {
 
 	window win = window("Klonoa Dimensions", 720, 480);
 
-	sprite k = sprite(win, "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16);
+	sprite k = sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16);
 	character klonoa = character(vec2f(0), vec2f(64), vec2f(0), vec2f(100, GRAVITY), &k);
 	camera klonoa_cam = camera(klonoa.get_xy());
 
-	image harold = image(win, "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
-	image putin = image(win, "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
+	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
+	image putin = image(win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
 
 	area_manager area_man = area_manager();
 
@@ -45,9 +45,9 @@ int main(int argc, char* argv[]) {
 
 
 	auto draw = [&] () -> void {
-		area_man.draw_areas();
+		win.render(area_man);
 		if (klonoa.get_current_sprite() != nullptr)
-			klonoa.get_current_sprite()->draw();
+			win.render(klonoa.get_current_sprite()[0]);
 
 	};
 
