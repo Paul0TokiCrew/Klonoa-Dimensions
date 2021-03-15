@@ -15,7 +15,7 @@ class area_manager {
 private:
 	image* bg;
 	std::vector<std::pair<image* const, const vec2f>> img_areas; 
-	std::vector<std::tuple<vec2f, vec2f>> collision_areas;
+	std::vector<std::tuple<vec2f, vec2f, const char*>> collision_areas;
 	std::vector<std::tuple<vec2f, vec2f, const float>> fric_areas;
 
 public:
@@ -27,7 +27,7 @@ public:
 
 	void change_bg(image* bg) { this->bg = bg; }
 
-	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr);
+	void register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex = nullptr, const char* coll = "UDRL");
 	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 1, image* const tex = nullptr);
 
 	bool check_trigger(const vec2f other_xy1, const vec2f other_xy2) const;

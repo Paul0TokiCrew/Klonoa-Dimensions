@@ -2,11 +2,11 @@
 
 
 
-void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex) {
+void area_manager::register_collision_area(const vec2f xy1, const vec2f xy2, image* const tex, const char* coll) {
 	if (xy1 == xy2)
 		return;
 
-	this->collision_areas.push_back(std::make_tuple(xy1, xy2));
+	this->collision_areas.push_back(std::make_tuple(xy1, xy2, coll));
 
 	if (tex != nullptr)
 		this->img_areas.push_back(std::make_pair(tex, xy1));
