@@ -1,7 +1,7 @@
 #include <game.hpp>
 
 
-
+bool game::running = false;
 std::queue<std::string> msgs;
 
 
@@ -9,6 +9,15 @@ std::queue<std::string> msgs;
 float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 
 bool game::init() {
+	static bool called = false;
+
+	if (called) {
+		msgs.push("WARNING: calling \"game::init()\" multiple times");
+		return false;
+
+	}
+
+	called = true;
 	bool initialized = true;
 
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -24,7 +33,7 @@ bool game::init() {
 	}
 
 	if (initialized)
-	    this->running = true;
+	    game::running = true;
 
 	return initialized;
 }

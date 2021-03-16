@@ -19,9 +19,9 @@
 
 class game {
 private:
-	bool running;
+	static bool running;
 
 public:
-	bool init();
+	static bool init();
 
 };
