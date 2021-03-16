@@ -1,3 +1,7 @@
+#pragma once
+
+
+
 #include <iostream>
 #include <queue>
 #include <string>
@@ -22,6 +26,14 @@ private:
 	const window win;
 
 public:
+	game(const char* title = "Window", const int w = 720, const int h = 480, const int flags = SDL_WINDOW_SHOWN) :
+		win(window(title, w, h, flags)) { }
+	game(const char* title, const window& wnd) :
+		win(title, wnd) { }
+	game(const char* title, const window&& wnd) :
+		win(title, wnd) { }
+	~game() { }
+
 	static bool running;
 
 	static bool init();
