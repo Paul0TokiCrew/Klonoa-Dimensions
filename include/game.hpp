@@ -3,19 +3,17 @@
 
 
 #include <iostream>
-#include <queue>
-#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <window.hpp>
+#include <log.hpp>
 #include <image.hpp>
 #include <area.hpp>
 #include <character.hpp>
 #include <camera.hpp>
+#include <window.hpp>
 
 
 
-#define PRINTLN(txt) std::cout << txt << std::endl;
 #define GRAVITY 10000
 #define FRIC 400
 

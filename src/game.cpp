@@ -2,7 +2,6 @@
 
 
 bool game::running = false;
-std::queue<std::string> msgs;
 
 
 
