@@ -10,14 +10,7 @@ extern float get_current_time();
 
 int main(int argc, char* argv[]) {
 	if (!game::init()) {
-
-		while(!errors.empty()) {
-
-			PRINTLN(errors.front())
-			errors.pop();
-
-		}
-
+		log_e();
 		return 1;
 
 	}
@@ -70,16 +63,7 @@ int main(int argc, char* argv[]) {
 		klonoa_cam.update_cam(klonoa.get_xy());
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
 
-
-
-		while (!msgs.empty()) {
-
-			PRINTLN(msgs.front())
-			msgs.pop();
-
-		}
-
-
+		log_m();
 
 		win.clear();
 		draw();

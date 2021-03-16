@@ -9,14 +9,7 @@ float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 
 void game::play() {
 	if (!this->init()) {
-
-		while(!errors.empty()) {
-
-			PRINTLN(errors.front())
-			errors.pop();
-
-		}
-
+		log_e();
 		return;
 
 	}
@@ -67,16 +60,7 @@ void game::play() {
 		klonoa_cam.update_cam(klonoa.get_xy());
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
 
-
-
-		while (!msgs.empty()) {
-
-			PRINTLN(msgs.front())
-			msgs.pop();
-
-		}
-
-
+		log_m();
 
 		this->win.clear();
 		draw();
