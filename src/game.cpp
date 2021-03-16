@@ -37,3 +37,5 @@ bool game::init() {
 
 	return initialized;
 }
+
+bool game::is_running() { return game::running; }

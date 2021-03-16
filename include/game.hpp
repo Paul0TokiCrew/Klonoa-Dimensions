@@ -23,5 +23,6 @@ private:
 
 public:
 	static bool init();
+	static bool is_running();
 
 };
