@@ -22,12 +22,12 @@ void game::play() {
 
 	}
 
-	sprite k = sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16);
+	sprite k = sprite(this->win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16);
 	character klonoa = character(vec2f(0), vec2f(64), vec2f(0), vec2f(100, GRAVITY), &k);
 	camera klonoa_cam = camera(klonoa.get_xy());
 
-	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
-	image putin = image(win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
+	image harold = image(this->win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
+	image putin = image(this->win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
 
 	area_manager area_man = area_manager();
 
@@ -79,9 +79,9 @@ void game::play() {
 
 
 
-		win.clear();
+		this->win.clear();
 		draw();
-		win.update();
+		this->win.update();
 
 	}
 
