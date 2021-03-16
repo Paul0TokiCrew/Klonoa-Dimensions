@@ -34,6 +34,8 @@ public:
 		win(title, wnd) { }
 	~game() { }
 
+	void play();
+
 	static bool running;
 
 	static bool init();
