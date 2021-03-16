@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 
 	window win = window("Klonoa Dimensions", 720, 480);
 
-	sprite k = sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16);
+	sprite k = sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16, 0, 25);
 	character klonoa = character(vec2f(0), vec2f(64), vec2f(0), vec2f(100, GRAVITY), &k);
 	camera klonoa_cam = camera(klonoa.get_xy());
 

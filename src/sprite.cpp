@@ -3,6 +3,13 @@
 
 
 void sprite::advance(const int x_advance, const int y_advance) {
+	if (count < max_count) {
+		++count;
+		return;
+
+	} else
+		count = 0;
+
 	if (this->index == this->reset_index) {
 		this->change_frame_pos(0, 0);
 		this->index = 0;
