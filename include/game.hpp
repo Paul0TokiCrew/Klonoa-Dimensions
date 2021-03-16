@@ -17,10 +17,6 @@
 
 
 
-//std::queue<std::string> msgs;
-
-
-
 class game {
 private:
 	bool running;

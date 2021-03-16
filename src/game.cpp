@@ -2,6 +2,10 @@
 
 
 
+std::queue<std::string> msgs;
+
+
+
 bool game::init() {
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
 		return false;

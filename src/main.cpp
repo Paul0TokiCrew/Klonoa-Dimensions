@@ -17,7 +17,7 @@
 
 
 
-std::queue<std::string> msgs;
+extern std::queue<std::string> msgs;
 
 
 
