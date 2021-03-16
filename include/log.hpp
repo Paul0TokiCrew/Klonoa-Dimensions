@@ -18,3 +18,9 @@
 extern std::queue<std::string> msgs;
 extern std::queue<std::string> warnings;
 extern std::queue<std::string> errors;
+
+
+
+extern void log_m();
+extern void log_w();
+extern void log_e();
