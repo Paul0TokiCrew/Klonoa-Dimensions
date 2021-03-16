@@ -11,10 +11,10 @@ extern float get_current_time();
 int main(int argc, char* argv[]) {
 	if (!game::init()) {
 
-		while(!msgs.empty()) {
+		while(!errors.empty()) {
 
-			PRINTLN(msgs.front())
-			msgs.pop();
+			PRINTLN(errors.front())
+			errors.pop();
 
 		}
 

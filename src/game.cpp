@@ -10,10 +10,10 @@ float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 void game::play() {
 	if (!this->init()) {
 
-		while(!msgs.empty()) {
+		while(!errors.empty()) {
 
-			PRINTLN(msgs.front())
-			msgs.pop();
+			PRINTLN(errors.front())
+			errors.pop();
 
 		}
 
@@ -92,7 +92,7 @@ bool game::init() {
 	static bool called = false;
 
 	if (called) {
-		msgs.push("WARNING: calling \"game::init()\" multiple times");
+		warnings.push("WARNING: calling \"game::init()\" multiple times");
 		return false;
 
 	}
@@ -101,15 +101,15 @@ bool game::init() {
 	bool initialized = true;
 
 	if (SDL_Init(SDL_INIT_VIDEO)) {
-		msgs.push("ERROR: could not initialize SDL library");
+		errors.push("ERROR: could not initialize SDL library");
 		initialized = false;
-		
+
 	}
 
 	if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != (IMG_INIT_PNG | IMG_INIT_JPG)) {
-		msgs.push("ERROR: could not initialize SDL_image library");
+		errors.push("ERROR: could not initialize SDL_image library");
 		initialized = false;
-		
+
 	}
 
 	if (initialized)
