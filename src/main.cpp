@@ -1,13 +1,4 @@
-#include <iostream>
-#include <queue>
-#include <string>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <window.hpp>
-#include <image.hpp>
-#include <area.hpp>
-#include <character.hpp>
-#include <camera.hpp>
+#include <game.hpp>
 
 
 
@@ -24,8 +15,18 @@ extern std::queue<std::string> msgs;
 extern float get_current_time();
 
 int main(int argc, char* argv[]) {
-	SDL_Init(SDL_INIT_VIDEO);
-	IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
+	if (!game::init()) {
+
+		while(!msgs.empty()) {
+
+			PRINTLN(msgs.front())
+			msgs.pop();
+
+		}
+
+		return 1;
+
+	}
 
 	window win = window("Klonoa Dimensions", 720, 480);
 
@@ -53,12 +54,11 @@ int main(int argc, char* argv[]) {
 
 
 
-	bool running = true;
 	SDL_Event evn;
 
 	float current_time = get_current_time();
 
-	while (running) {
+	while (game::running) {
 
 		float new_time = get_current_time();
 		float delta_time = new_time - current_time;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
 
 		while (SDL_PollEvent(&evn))
 			if (evn.type == SDL_QUIT)
-				running = false;
+				game::running = false;
 
 		const Uint8* key = SDL_GetKeyboardState(nullptr);
 

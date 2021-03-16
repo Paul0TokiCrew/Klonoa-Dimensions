@@ -18,11 +18,8 @@
 
 
 class game {
-private:
-	static bool running;
-
 public:
 	static bool init();
-	static bool is_running();
+	static bool running;
 
 };
