@@ -19,40 +19,44 @@ void character::update_pos(const float delta_time, const area_manager area_man) 
 	if (area_man.check_up_collision(this->xy + move, xy2 + move, &diff)) {
 		msgs.push("up collision detected");
 
-		if (this->vel.y < 0)
+		if (this->vel.y < 0) {
 			this->vel.y = 0;
+			move.y += diff.y;
 
-		move.y += diff.y;
+		}
 
 	}
 
 	if (area_man.check_down_collision(this->xy + move, xy2 + move, &diff)) {
 		msgs.push("down collision detected");
 
-		if (this->vel.y > 0)
+		if (this->vel.y > 0) {
 			this->vel.y = 0;
+			move.y += diff.y;
 
-		move.y += diff.y;
+		}
 
 	}
 
 	if (area_man.check_right_collision(this->xy + move, xy2 + move, &diff)) {
 		msgs.push("right collision detected");
 
-		if (this->vel.x > 0)
+		if (this->vel.x > 0) {
 			this->vel.x = 0;
+			move.x += diff.x;
 
-		move.x += diff.x;
+		}
 
 	}
 
 	if (area_man.check_left_collision(this->xy + move, xy2 + move, &diff)) {
 		msgs.push("left collision detected");
 
-		if (this->vel.x < 0)
+		if (this->vel.x < 0) {
 			this->vel.x = 0;
+			move.x += diff.x;
 
-		move.x += diff.x;
+		}
 
 	}
 
