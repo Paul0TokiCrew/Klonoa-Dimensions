@@ -20,7 +20,7 @@ bool game::init() {
 	called = true;
 	bool initialized = true;
 
-	if (!SDL_Init(SDL_INIT_VIDEO)) {
+	if (SDL_Init(SDL_INIT_VIDEO)) {
 		msgs.push("ERROR: could not initialize SDL library");
 		initialized = false;
 		

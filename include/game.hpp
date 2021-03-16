@@ -11,9 +11,9 @@
 
 
 
-//#define PRINTLN(txt) std::cout << txt << std::endl;
-//#define GRAVITY 10000
-//#define FRIC 400
+#define PRINTLN(txt) std::cout << txt << std::endl;
+#define GRAVITY 10000
+#define FRIC 400
 
 
 
