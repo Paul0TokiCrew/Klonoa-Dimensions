@@ -20,7 +20,6 @@
 class game {
 private:
 	bool running;
-	static float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 
 public:
 	bool init();

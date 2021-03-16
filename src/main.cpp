@@ -21,7 +21,7 @@ extern std::queue<std::string> msgs;
 
 
 
-float get_current_time() { return SDL_GetTicks() / 1000.0f; }
+extern float get_current_time();
 
 int main(int argc, char* argv[]) {
 	SDL_Init(SDL_INIT_VIDEO);

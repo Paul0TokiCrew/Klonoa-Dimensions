@@ -6,6 +6,8 @@ std::queue<std::string> msgs;
 
 
 
+float get_current_time() { return SDL_GetTicks() / 1000.0f; }
+
 bool game::init() {
 	if (!SDL_Init(SDL_INIT_VIDEO)) {
 		return false;
