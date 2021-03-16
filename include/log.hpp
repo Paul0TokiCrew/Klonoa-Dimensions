@@ -13,3 +13,5 @@
 
 
 extern std::queue<std::string> msgs;
+extern std::queue<std::string> warnings;
+extern std::queue<std::string> errors;
