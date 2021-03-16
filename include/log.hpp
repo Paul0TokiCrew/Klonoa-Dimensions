@@ -8,8 +8,11 @@
 #include <string>
 
 
-#define PRINTLN(txt) std::cout << txt << std::endl;
+
 #define PRINT(txt) std::cout << txt;
+#define PRINTLN(txt) std::cout << txt << std::endl;
+#define PRINTF(...) std::printf(__VA_ARGS__);
+
 
 
 extern std::queue<std::string> msgs;
