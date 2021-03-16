@@ -18,8 +18,12 @@
 
 
 class game {
+private:
+	const window win;
+
 public:
-	static bool init();
 	static bool running;
+
+	static bool init();
 
 };
