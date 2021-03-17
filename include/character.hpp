@@ -26,7 +26,7 @@ private:
 
 public:
 	character(const vec2f xy, const vec2f wh, const vec2f vel, const vec2f max_vel, sprite* r_sprites, sprite* l_sprites) :
-		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), r_sprites(r_sprites), l_sprites(l_sprites), current_sprite(nullptr), counter(0) { }
+		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), r_sprites(r_sprites), l_sprites(l_sprites), current_sprite(&(r_sprites[0])), counter(0) { }
 	~character() { }
 
 	vec2f get_xy() const { return this->xy; }

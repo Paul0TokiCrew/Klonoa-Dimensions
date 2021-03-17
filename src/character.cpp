@@ -8,6 +8,18 @@ void character::update_sprites() {
 	if (this->current_sprite != nullptr)
 		this->current_sprite->advance();
 
+
+
+	if (this->goal_vel != vec2f(0)) {
+
+		if (this->goal_vel.x > 0)
+			this->current_sprite = &(r_sprites[IDLE]);
+
+		else
+			this->current_sprite = &(l_sprites[IDLE]);
+
+	}
+
 }
 
 void character::update_pos(const float delta_time, const area_manager area_man) {
