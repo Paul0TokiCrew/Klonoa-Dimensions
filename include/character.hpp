@@ -11,6 +11,11 @@
 
 
 
+#define R 0
+#define L 1
+
+
+
 class character {
 private:
 	vec2f xy, wh, vel, goal_vel, max_vel;
