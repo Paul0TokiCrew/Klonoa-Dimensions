@@ -11,9 +11,6 @@
 
 
 
-#define R 0
-#define L 1
-
 #define IDLE 0
 #define MOVE 1
 
