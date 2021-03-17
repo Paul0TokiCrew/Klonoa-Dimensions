@@ -12,7 +12,9 @@
 
 
 #define IDLE 0
-#define MOVE 1
+#define WALK 1
+#define JUMP 2
+#define FALL 3
 
 
 
