@@ -18,10 +18,17 @@ void character::update_sprites() {
 	if (this->goal_vel != vec2f(0)) {
 
 		if (this->goal_vel.x > 0)
-			this->current_sprite = &(r_sprites[IDLE]);
+			this->switch_current_sprite(this->r_sprites[WALK]);
 
 		else
-			this->current_sprite = &(l_sprites[IDLE]);
+			this->switch_current_sprite(this->l_sprites[WALK]);
+
+	} else {
+		if (this->current_sprite[0] == this->r_sprites[WALK])
+			this->switch_current_sprite(this->r_sprites[IDLE]);
+
+		else
+			this->switch_current_sprite(this->l_sprites[IDLE]);
 
 	}
 
