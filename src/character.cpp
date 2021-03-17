@@ -4,6 +4,11 @@
 
 extern std::queue<std::string> msgs;
 
+void character::switch_current_sprite(sprite& new_sprite) {
+	current_sprite->change_frame_pos(0, 0);
+	current_sprite = &(new_sprite);
+}
+
 void character::update_sprites() {
 	if (this->current_sprite != nullptr)
 		this->current_sprite->advance();
