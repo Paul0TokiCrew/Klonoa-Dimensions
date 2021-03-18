@@ -5,6 +5,9 @@
 extern std::queue<std::string> msgs;
 
 void character::switch_current_sprite(sprite& new_sprite) {
+	if (&new_sprite == this->current_sprite)
+		return;
+
 	current_sprite->change_frame_pos(0, 0);
 	current_sprite = &(new_sprite);
 }
