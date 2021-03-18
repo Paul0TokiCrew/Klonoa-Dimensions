@@ -11,7 +11,6 @@ class image {
 protected:
 	SDL_Texture* img;
 	SDL_Rect src, des;
-	const SDL_Rect old_des;
 	const char* path;
 
 public:
@@ -20,11 +19,11 @@ public:
 		this->img = IMG_LoadTexture(ren, this->path);
 	}
 	image(SDL_Renderer* ren, const image& tex) :
-		img(nullptr), src(tex.get_src()), des(tex.get_des()), old_des(tex.get_old_des()), path(tex.get_path()) {
+		img(nullptr), src(tex.get_src()), des(tex.get_des()), path(tex.get_path()) {
 		this->img = IMG_LoadTexture(ren, this->path);
 	}
 	image(SDL_Renderer* ren, const image&& tex) :
-		img(nullptr), src(tex.get_src()), des(tex.get_des()), old_des(tex.get_old_des()), path(tex.get_path()) {
+		img(nullptr), src(tex.get_src()), des(tex.get_des()), path(tex.get_path()) {
 		this->img = IMG_LoadTexture(ren, this->path);
 	}
 	virtual ~image() {
@@ -34,7 +33,6 @@ public:
 	SDL_Texture* get_img() const { return this->img; }
 	SDL_Rect get_src() const { return this->src; }
 	SDL_Rect get_des() const { return this->des; }
-	SDL_Rect get_old_des() const { return this->old_des; }
 	const char* get_path() const { return this->path; }
 
 	void change_frame_pos(const int x, const int y);
