@@ -15,7 +15,7 @@ protected:
 
 public:
 	image(SDL_Renderer* ren, const char* path, const SDL_Rect src, const SDL_Rect des) :
-		img(nullptr), src(src), des(des), old_des(des), path(path) {
+		img(nullptr), src(src), des(des),  path(path) {
 		this->img = IMG_LoadTexture(ren, this->path);
 	}
 	image(SDL_Renderer* ren, const image& tex) :
