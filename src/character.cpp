@@ -24,7 +24,7 @@ void character::update_sprites() {
 			this->switch_current_sprite(this->l_sprites[WALK]);
 
 	} else {
-		if (this->current_sprite[0] == this->r_sprites[WALK])
+		if (this->current_sprite == &(this->r_sprites[WALK]))
 			this->switch_current_sprite(this->r_sprites[IDLE]);
 
 		else
