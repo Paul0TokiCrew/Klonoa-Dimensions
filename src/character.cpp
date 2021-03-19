@@ -114,27 +114,41 @@ void character::update_pos(const float delta_time, const area_manager area_man) 
 }
 
 void character::update_datas(const Uint8* key, const area_manager area_man) {
-	if (!area_man.check_down_collision(this->xy, vec2f(this->xy - this->wh)))
+	if (!area_man.check_down_collision(this->xy, vec2f(this->xy - this->wh))) {
 		this->goal_vel.y = this->max_vel.y;
 
-	else
+		if (std::ceil(this->vel.y) >= 0)
+			this->dir.y = 1;
+
+	} else {
 		this->goal_vel.y = 0;
+		this->dir.y = 0;
+
+	}
 
 
 
-	if (key[SDL_SCANCODE_RIGHT])
+	if (key[SDL_SCANCODE_RIGHT]) {
 		this->goal_vel.x = this->max_vel.x;
+		this->dir.x = 1;
 
-	else if (key[SDL_SCANCODE_LEFT])
+	} else if (key[SDL_SCANCODE_LEFT]) {
 		this->goal_vel.x = -(this->max_vel.x);
+		this->dir.x = -1;
 
-	else
+	} else {
 		this->goal_vel.x = 0;
+		this->dir.x = 0;
+
+	}
 
 
 	
-	if (key[SDL_SCANCODE_Z])
+	if (key[SDL_SCANCODE_Z]) {
 		this->vel.y = -100;
+		this->dir.y = -1;
+
+	}
 
 
 	if (this->counter)
