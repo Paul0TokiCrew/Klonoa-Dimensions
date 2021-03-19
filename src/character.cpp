@@ -20,14 +20,14 @@ void character::update_sprites() {
 
 	if (this->goal_vel != vec2f(0)) {
 
-		if (this->goal_vel.x > 0)
+		if (this->dir.x > 0)
 			this->switch_current_sprite(this->r_sprites[WALK]);
 
 		else
 			this->switch_current_sprite(this->l_sprites[WALK]);
 
 	} else {
-		if (this->current_sprite == &(this->r_sprites[WALK]))
+		if (this->dir.x > 0)
 			this->switch_current_sprite(this->r_sprites[IDLE]);
 
 		else
