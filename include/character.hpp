@@ -19,7 +19,7 @@
 
 
 class character {
-private:
+protected:
 	vec2f xy, wh, dir, vel, goal_vel, max_vel;
 	sprite* r_sprites;
 	sprite* l_sprites;
