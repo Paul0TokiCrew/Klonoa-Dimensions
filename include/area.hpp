@@ -4,10 +4,8 @@
 
 #include <cstring>
 #include <vector>
-#include <iterator>
 #include <queue>
 #include <tuple>
-#include <utility>
 #include <vec2f.hpp>
 #include <image.hpp>
 
