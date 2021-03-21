@@ -3,7 +3,8 @@
 
 
 void camera::update_cam(const vec2f new_ref) {
-	this->cam_pos.x += new_ref.x - this->ref.x;
-	this->cam_pos.y += new_ref.y - this->ref.y;
+	const vec2f move = vec2f(new_ref - this->ref);
+	this->cam_pos.x += move;
+	this->cam_pos.y += move;
 	this->ref = new_ref;
 }
