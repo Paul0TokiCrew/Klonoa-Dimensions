@@ -27,7 +27,7 @@ void character::update_sprites() {
 			this->switch_current_sprite(this->l_sprites[WALK]);
 
 	} else {
-		if (this->current_sprite == &(this->r_sprites[WALK]) || this->current_sprite == &(this->r_sprites[IDLE]))
+		if (this->dir.x > 0)
 			this->switch_current_sprite(this->r_sprites[IDLE]);
 
 		else
@@ -120,11 +120,9 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 		if (std::ceil(this->vel.y) >= 0)
 			this->dir.y = 1;
 
-	} else {
+	} else
 		this->goal_vel.y = 0;
-		this->dir.y = 0;
 
-	}
 
 
 
@@ -136,11 +134,8 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 		this->goal_vel.x = -(this->max_vel.x);
 		this->dir.x = -1;
 
-	} else {
+	} else
 		this->goal_vel.x = 0;
-		this->dir.x = 0;
-
-	}
 
 
 	
