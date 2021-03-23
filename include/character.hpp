@@ -2,10 +2,9 @@
 
 
 
-#include <queue>
-#include <string>
 #include <SDL2/SDL.h>
 #include <vec2f.hpp>
+#include <log.hpp>
 #include <area.hpp>
 #include <sprite.hpp>
 

@@ -2,6 +2,7 @@
 
 
 
+#include <log.hpp>
 #include <camera.hpp>
 #include <character.hpp>
 
