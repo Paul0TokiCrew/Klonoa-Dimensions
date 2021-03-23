@@ -23,13 +23,14 @@ protected:
 	sprite* r_sprites;
 	sprite* l_sprites;
 	sprite* current_sprite;
+	const area_manager* current_area;
 	short counter;
 
 	void switch_current_sprite(sprite& new_sprite);
 
 public:
-	character(const vec2f xy, const vec2f wh, const vec2f dir, const vec2f vel, const vec2f max_vel, sprite* r_sprites, sprite* l_sprites) :
-		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), r_sprites(r_sprites), l_sprites(l_sprites), current_sprite(&(r_sprites[0])), counter(0) { }
+	character(const vec2f xy, const vec2f wh, const vec2f dir, const vec2f vel, const vec2f max_vel, sprite* r_sprites, sprite* l_sprites, const area_manager* current_area = nullptr) :
+		xy(xy), wh(wh), vel(vel), goal_vel(vel), max_vel(max_vel), r_sprites(r_sprites), l_sprites(l_sprites), current_sprite(&(r_sprites[0])), current_area(current_area), counter(0) { }
 	~character() { }
 
 	vec2f get_xy() const { return this->xy; }
@@ -41,6 +42,7 @@ public:
 	sprite* get_r_sprites() const { return this->r_sprites; }
 	sprite* get_l_sprites() const { return this->l_sprites; }
 	sprite* get_current_sprite() const { return this->current_sprite; }
+	const area_manager* get_current_area() const { return this->current_area; }
 	short get_counter() const { return this->counter; }
 
 	void update_sprites();
