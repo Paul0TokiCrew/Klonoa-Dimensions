@@ -2,10 +2,6 @@
 
 
 
-extern std::queue<std::string> msgs;
-
-
-
 extern float get_current_time();
 
 int main(int argc, char* argv[]) {
