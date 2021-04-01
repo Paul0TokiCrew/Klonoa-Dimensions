@@ -47,5 +47,12 @@ public:
 			this->avaible_entities.push(i);
 
 	}
+	~entity_manager() { }
+
+	void set_signature(const entity ent, const signature sign) { this->signs[ent] = sign; }
+	signature get_signature(const entity ent) { return this->signs[ent]; }
+
+	entity create_entity();
+	void destroy_entity(entity ent);
 
 };
