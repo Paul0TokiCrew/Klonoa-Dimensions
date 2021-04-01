@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <log.hpp>
+#include <ECS.hpp>
 #include <image.hpp>
 #include <area.hpp>
 #include <character.hpp>
