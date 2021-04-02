@@ -58,10 +58,7 @@ public:
 		comp_arr { }, en_to_i { }, i_to_en { }, size(0) { }
 	~component_array() { }
 
-	T& get_data(const entity ent)  {
-		std::uint32_t i = this->en_to_i[ent];
-		return this->comp_arr[i];
-	}
+	T& get_data(const entity ent) { return this->comp_arr[this->en_to_i[ent]]; }
 
 	void add_data(const entity ent, const T data);
 	void remove_data(const entity ent);
