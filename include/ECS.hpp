@@ -28,7 +28,7 @@ inline component_id get_new_id() {
 
 template <class T>
 inline component_id get_id() {
-	static component_id id = get_new_id();
+	const static component_id id = get_new_id();
 	return id;
 }
 
@@ -39,7 +39,7 @@ public:
 	i_component_array() { }
 	virtual ~i_component_array() { }
 
-	virtual void entity_destroyed(entity ent) = 0;
+	virtual void entity_destroyed(const entity ent) = 0;
 
 };
 
@@ -58,7 +58,15 @@ public:
 		comp_arr { }, en_to_i { }, i_to_en { }, size(0) { }
 	~component_array() { }
 
-	void entity_destroyed(entity ent) override;
+	T& get_data(const entity ent)  {
+		std::uint32_t i = this->en_to_i[ent];
+		return this->comp_arr[i];
+	}
+
+	void add_data(const entity ent, const T data);
+	void remove_data(const entity ent);
+
+	void entity_destroyed(const entity ent) override;
 
 };
 
@@ -84,6 +92,6 @@ public:
 	signature get_signature(const entity ent) const { return this->signs[ent]; }
 
 	entity create_entity();
-	void destroy_entity(entity ent);
+	void destroy_entity(const entity ent);
 
 };
