@@ -6,6 +6,7 @@
 #include <bitset>
 #include <array>
 #include <queue>
+#include <unordered_map>
 
 
 
@@ -33,6 +34,36 @@ inline component_id get_id() {
 
 
 
+class i_component_array {
+public:
+	i_component_array() { }
+	virtual ~i_component_array() { }
+
+	virtual void entity_destroyed(entity ent) = 0;
+
+};
+
+template <class T>
+class component_array : public i_component_array {
+private:
+	std::array<T, MAX_ENTITIES> comp_arr;
+
+	std::unordered_map<entity, std::uint32_t> en_to_i;
+	std::unordered_map<std::uint32_t, entity> i_to_en;
+
+	std::uint32_t size;
+
+public:
+	component_array() :
+		comp_arr { }, en_to_i { }, i_to_en { }, size(0) { }
+	~component_array() { }
+
+	void entity_destroyed(entity ent) override;
+
+};
+
+
+
 class entity_manager {
 private:
 	std::uint32_t entity_count;
@@ -50,7 +81,7 @@ public:
 	~entity_manager() { }
 
 	void set_signature(const entity ent, const signature sign) { this->signs[ent] = sign; }
-	signature get_signature(const entity ent) { return this->signs[ent]; }
+	signature get_signature(const entity ent) const { return this->signs[ent]; }
 
 	entity create_entity();
 	void destroy_entity(entity ent);
