@@ -16,19 +16,19 @@
 
 
 using entity = std::uint16_t;
-using component_id = std::uint16_t;
+using component = std::uint16_t;
 using signature = std::bitset<MAX_COMPONENTS>;
 
 
 
-inline component_id get_new_id() {
-	static component_id new_id = 0;
+inline component get_new_id() {
+	static component new_id = 0;
 	return new_id++;
 }
 
 template <class T>
-inline component_id get_id() {
-	const static component_id id = get_new_id();
+inline component get_id() {
+	const static component id = get_new_id();
 	return id;
 }
 
