@@ -105,6 +105,4 @@ public:
 		comp_types { }, comp_arrs { }, next_comp_type(0) { }
 	~component_manager() { }
 
-	;
-
 };
