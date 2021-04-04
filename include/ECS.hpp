@@ -3,6 +3,7 @@
 
 
 #include <cstdint>
+#include <memory>
 #include <bitset>
 #include <array>
 #include <queue>
@@ -90,5 +91,20 @@ public:
 
 	entity create_entity();
 	void destroy_entity(const entity ent);
+
+};
+
+class component_manager {
+private:
+	std::unordered_map<const char*, component> comp_types
+	std::unordered_map<const char*, std::shared_ptr<i_component_array>> comp_arrs;
+	component next_comp_type;
+
+public:
+	component_manager() :
+		comp_types { }, comp_arrs { }, next_comp_type(0) { }
+	~component_manager() { }
+
+	;
 
 };
