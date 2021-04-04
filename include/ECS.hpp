@@ -22,19 +22,6 @@ using signature = std::bitset<MAX_COMPONENTS>;
 
 
 
-inline component get_new_id() {
-	static component new_id = 0;
-	return new_id++;
-}
-
-template <class T>
-inline component get_id() {
-	const static component id = get_new_id();
-	return id;
-}
-
-
-
 class i_component_array {
 public:
 	i_component_array() { }
