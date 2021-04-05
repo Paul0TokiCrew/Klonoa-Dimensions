@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <type_info>
 #include <bitset>
 #include <array>
 #include <queue>
@@ -86,6 +87,11 @@ private:
 	std::unordered_map<const char*, component> comp_types
 	std::unordered_map<const char*, std::shared_ptr<i_component_array>> comp_arrs;
 	component next_comp_type;
+	
+	template<class T>
+	std::shared_ptr<component_array<T>> get_component_array() {
+		return std::static_pointer_cast<component_array<T>>(this->comp_arrs[typeid(T).name()]);
+	}
 
 public:
 	component_manager() :
