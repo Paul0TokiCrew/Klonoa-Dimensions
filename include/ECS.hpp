@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <type_info>
+#include <utility>
 #include <bitset>
 #include <array>
 #include <queue>
@@ -97,5 +98,11 @@ public:
 	component_manager() :
 		comp_types { }, comp_arrs { }, next_comp_type(0) { }
 	~component_manager() { }
+
+	template <class T>
+	void register_component();
+
+	template <class T>
+	component get_comp_type() { return this->comp_types[typeid(T).name()]; }
 
 };
