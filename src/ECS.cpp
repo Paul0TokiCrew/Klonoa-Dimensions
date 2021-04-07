@@ -57,9 +57,23 @@ void entity_manager::destroy_entity(const entity ent) {
 	--(this->entity_count);
 }
 
+
+
 template <class T>
 void component_manager::register_component() {
 	const char* name = typeid(T).name();
 	this->comp_types.insert(std::make_pair(name, this->next_comp_type++) );
 	this->comp_arrs.insert(std::make_pair(name, std::make_shared<component_array<T>>() ) );
+}
+
+template <class T>
+void component_manager::entity_destroyed() {
+
+	for (const auto& i : this->comp_arrs) {
+
+		const auto& comp = i.second;
+		comp->entity_destroyed(ent);
+
+	}
+
 }

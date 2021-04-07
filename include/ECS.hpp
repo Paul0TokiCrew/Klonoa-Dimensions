@@ -48,7 +48,7 @@ public:
 		comp_arr { }, en_to_i { }, i_to_en { }, size(0) { }
 	~component_array() { }
 
-	T& get_data(const entity ent) { return this->comp_arr[this->en_to_i[ent]]; }
+	T& get_data(const entity ent) /* const */ { return this->comp_arr[this->en_to_i[ent]]; }
 
 	void add_data(const entity ent, const T data);
 	void remove_data(const entity ent);
@@ -83,12 +83,14 @@ public:
 
 };
 
+
+
 class component_manager {
 private:
 	std::unordered_map<const char*, component> comp_types;
 	std::unordered_map<const char*, std::shared_ptr<i_component_array>> comp_arrs;
 	component next_comp_type;
-	
+
 	template<class T>
 	std::shared_ptr<component_array<T>> get_component_array() {
 		return std::static_pointer_cast<component_array<T>>(this->comp_arrs[typeid(T).name()]);
@@ -103,6 +105,17 @@ public:
 	void register_component();
 
 	template <class T>
-	component get_comp_type() { return this->comp_types[typeid(T).name()]; }
+	component get_component_type() /* const */ { return this->comp_types[typeid(T).name()]; }
+
+	template <class T>
+	void add_component(entity ent, T comp) { this->get_component_array<T>()->add_data(ent, comp); }
+
+	template <class T>
+	void remove_component(entity ent) { this->get_component_array<T>()->remove_data(ent); }
+
+	template <class T>
+	T& get_component(entity ent) /* const */ { this->get_component_array<T>()->get_data(ent); }
+
+	void entity_destroyed(entity ent);
 
 };
