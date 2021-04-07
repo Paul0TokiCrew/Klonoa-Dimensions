@@ -4,7 +4,7 @@
 
 #include <cstdint>
 #include <memory>
-#include <type_info>
+#include <typeinfo>
 #include <utility>
 #include <bitset>
 #include <array>
@@ -85,7 +85,7 @@ public:
 
 class component_manager {
 private:
-	std::unordered_map<const char*, component> comp_types
+	std::unordered_map<const char*, component> comp_types;
 	std::unordered_map<const char*, std::shared_ptr<i_component_array>> comp_arrs;
 	component next_comp_type;
 	
