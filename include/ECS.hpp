@@ -10,6 +10,7 @@
 #include <array>
 #include <queue>
 #include <unordered_map>
+#include <set>
 
 
 
@@ -118,4 +119,10 @@ public:
 
 	void entity_destroyed(entity ent);
 
+};
+
+
+
+struct system {
+	std::set<entity> ents;
 };

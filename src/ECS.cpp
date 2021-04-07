@@ -66,8 +66,7 @@ void component_manager::register_component() {
 	this->comp_arrs.insert(std::make_pair(name, std::make_shared<component_array<T>>() ) );
 }
 
-template <class T>
-void component_manager::entity_destroyed() {
+void component_manager::entity_destroyed(entity ent) {
 
 	for (const auto& i : this->comp_arrs) {
 
