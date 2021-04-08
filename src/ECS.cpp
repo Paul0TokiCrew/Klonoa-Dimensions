@@ -88,3 +88,34 @@ std::shared_ptr<T> system_manager::register_system() {
 	this->sys.emplace(name, s);
 	return s;
 }
+
+void system_manager::entity_destroyed(entity ent) {
+
+	for (const auto& i : this->sys) {
+
+		const auto& s = i.second;
+		s->ents.erase(ent);
+
+	}
+
+}
+
+void system_manager::entity_sign_changed(entity ent, signature sign) {
+
+	for (const auto& i : this->sys) {
+
+		const auto& type = i.first;
+		const auto& s = i.second;
+		const auto& s_sign = this->sign[type];
+
+		if ((sign & s_sign) == s_sign) {
+			s->ents.insert(entity);
+
+		} else {
+			s->ents.erase(entity);
+
+		}
+
+	}
+
+}

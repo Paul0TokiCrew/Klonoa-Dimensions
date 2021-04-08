@@ -135,6 +135,7 @@ class system_manager {
 private:
 	std::unordered_map<const char*, signature> signs;
 	std::unordered_map<const char*, std::shared_ptr<system>> sys;
+
 public:
 	system_manager() { }
 	~system_manager() { }
@@ -144,5 +145,8 @@ public:
 
 	template <class T>
 	void set_sign(signature sign) { this->signs.emplace(typeid(T).name(), sign); }
+
+	void entity_destroyed(entity ent);
+	void entity_sign_changed(entity ent, signature sign);
 
 };
