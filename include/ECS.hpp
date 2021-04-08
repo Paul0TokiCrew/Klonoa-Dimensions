@@ -25,6 +25,13 @@ using signature = std::bitset<MAX_COMPONENTS>;
 
 
 
+struct system {
+	std::set<entity> ents;
+
+};
+
+
+
 class i_component_array {
 public:
 	i_component_array() { }
@@ -123,6 +130,19 @@ public:
 
 
 
-struct system {
-	std::set<entity> ents;
+
+class system_manager {
+private:
+	std::unordered_map<const char*, signature> signs;
+	std::unordered_map<const char*, std::shared_ptr<system>> sys;
+public:
+	system_manager() { }
+	~system_manager() { }
+
+	template <class T>
+	std::shared_ptr<T> register_system();
+
+	template <class T>
+	void set_sign(signature sign) { this->signs.emplace(typeid(T).name(), sign); }
+
 };

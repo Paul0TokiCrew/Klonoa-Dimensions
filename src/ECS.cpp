@@ -62,8 +62,8 @@ void entity_manager::destroy_entity(const entity ent) {
 template <class T>
 void component_manager::register_component() {
 	const char* name = typeid(T).name();
-	this->comp_types.insert(std::make_pair(name, this->next_comp_type++) );
-	this->comp_arrs.insert(std::make_pair(name, std::make_shared<component_array<T>>() ) );
+	this->comp_types.emplace(name, this->next_comp_type++);
+	this->comp_arrs.emplace(name, std::make_shared<component_array<T>>());
 }
 
 void component_manager::entity_destroyed(entity ent) {
@@ -75,4 +75,16 @@ void component_manager::entity_destroyed(entity ent) {
 
 	}
 
+}
+
+
+
+
+template <class T>
+std::shared_ptr<T> system_manager::register_system() {
+	const char name = typeid(T).name();
+	std::shared_ptr<T> s = std::make_shared<T>();
+
+	this->sys.emplace(name, s);
+	return s;
 }
