@@ -134,7 +134,7 @@ public:
 class system_manager {
 private:
 	std::unordered_map<const char*, signature> signs;
-	std::unordered_map<const char*, std::shared_ptr<system>> sys;
+	std::unordered_map<const char*, std::shared_ptr<struct system>> sys;
 
 public:
 	system_manager() { }

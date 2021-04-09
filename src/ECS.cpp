@@ -106,13 +106,13 @@ void system_manager::entity_sign_changed(entity ent, signature sign) {
 
 		const auto& type = i.first;
 		const auto& s = i.second;
-		const auto& s_sign = this->sign[type];
+		const auto& s_sign = this->signs[type];
 
 		if ((sign & s_sign) == s_sign) {
-			s->ents.insert(entity);
+			s->ents.insert(ent);
 
 		} else {
-			s->ents.erase(entity);
+			s->ents.erase(ent);
 
 		}
 
