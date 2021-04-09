@@ -137,7 +137,8 @@ private:
 	std::unordered_map<const char*, std::shared_ptr<struct system>> sys;
 
 public:
-	system_manager() { }
+	system_manager() :
+	signs { }, sys { } { }
 	~system_manager() { }
 
 	template <class T>
@@ -149,4 +150,22 @@ public:
 	void entity_destroyed(entity ent);
 	void entity_sign_changed(entity ent, signature sign);
 
+};
+
+
+
+
+class coordinator {
+private:
+	std::unique_ptr<entity_manager> ent_man;
+	std::unique_ptr<component_manager> comp_man;
+	std::unique_ptr<system_manager> sys_man;
+
+public:
+	coordinator() :
+	ent_man(nullptr), comp_man(nullptr), sys_man(nullptr) { }
+	~coordinator() { }
+
+	void init();
+	
 };

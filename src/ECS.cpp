@@ -119,3 +119,19 @@ void system_manager::entity_sign_changed(entity ent, signature sign) {
 	}
 
 }
+
+
+
+void coordinator::init() {
+	static bool initialized = false;
+
+	if (initialized)
+		return;
+
+	initialized = true;
+
+	this->ent_man = std::make_unique<entity_manager>();
+	this->comp_man = std::make_unique<component_manager>();
+	this->sys_man = std::make_unique<system_manager>();
+
+}
