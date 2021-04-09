@@ -135,3 +135,29 @@ void coordinator::init() {
 	this->sys_man = std::make_unique<system_manager>();
 
 }
+
+void coordinator::destroy_ent(entity ent) {
+	this->ent_man->destroy_entity(ent);
+	this->comp_man->entity_destroyed(ent);
+	this->sys_man->entity_destroyed(ent);
+}
+
+template <class T>
+void coordinator::add_comp(entity ent, T comp) {
+	signature sign = this->ent_man->get_signature(ent);
+	sign.set(this->comp_man->get_component_type<T>(), true);
+
+	this->comp_man->add_component<T>(ent, comp);
+	this->ent_man->set_signature(ent, sign);
+	this->sys_man->entity_sign_changed(ent, sign);
+}
+
+template <class T>
+void coordinator::remove_comp(entity ent) {
+	signature sign = this->ent_man->get_signature(ent);
+	sign.set(this->comp_man->get_component_type<T>(), false);
+
+	this->comp_man->remove_component<T>(ent);
+	this->ent_man->set_signature(ent, sign);
+	this->sys_man->entity_sign_changed(ent, sign);
+}
