@@ -1,3 +1,4 @@
+#define __COORDINATOR_OBJ__
 #include <ECS.hpp>
 
 

@@ -25,10 +25,7 @@ using signature = std::bitset<MAX_COMPONENTS>;
 
 
 
-struct system {
-	std::set<entity> ents;
-
-};
+struct system { std::set<entity> ents; };
 
 
 
@@ -122,7 +119,7 @@ public:
 	void remove_component(const entity ent) { this->get_component_array<T>()->remove_data(ent); }
 
 	template <class T>
-	T& get_component(const entity ent) { this->get_component_array<T>()->get_data(ent); }
+	T& get_component(const entity ent) { return this->get_component_array<T>()->get_data(ent); }
 
 	void entity_destroyed(const entity ent);
 
@@ -197,3 +194,9 @@ public:
 	void set_sys_signature(const signature sign) { this->sys_man->set_sign<T>(sign); }
 
 };
+
+#ifndef __COORDINATOR_OBJ__
+	extern coordinator crd;
+#else
+	coordinator crd;
+#endif
