@@ -66,7 +66,7 @@ void component_manager::register_component() {
 	this->comp_arrs.emplace(name, std::make_shared<component_array<T>>());
 }
 
-void component_manager::entity_destroyed(entity ent) {
+void component_manager::entity_destroyed(const entity ent) {
 
 	for (const auto& i : this->comp_arrs) {
 
@@ -82,14 +82,14 @@ void component_manager::entity_destroyed(entity ent) {
 
 template <class T>
 std::shared_ptr<T> system_manager::register_system() {
-	const char name = typeid(T).name();
+	const char* name = typeid(T).name();
 	std::shared_ptr<T> s = std::make_shared<T>();
 
 	this->sys.emplace(name, s);
 	return s;
 }
 
-void system_manager::entity_destroyed(entity ent) {
+void system_manager::entity_destroyed(const entity ent) {
 
 	for (const auto& i : this->sys) {
 
@@ -100,7 +100,7 @@ void system_manager::entity_destroyed(entity ent) {
 
 }
 
-void system_manager::entity_sign_changed(entity ent, signature sign) {
+void system_manager::entity_sign_changed(const entity ent, const signature sign) {
 
 	for (const auto& i : this->sys) {
 
@@ -136,14 +136,14 @@ void coordinator::init() {
 
 }
 
-void coordinator::destroy_ent(entity ent) {
+void coordinator::destroy_ent(const entity ent) {
 	this->ent_man->destroy_entity(ent);
 	this->comp_man->entity_destroyed(ent);
 	this->sys_man->entity_destroyed(ent);
 }
 
 template <class T>
-void coordinator::add_comp(entity ent, T comp) {
+void coordinator::add_comp(const entity ent, const T comp) {
 	signature sign = this->ent_man->get_signature(ent);
 	sign.set(this->comp_man->get_component_type<T>(), true);
 
@@ -153,7 +153,7 @@ void coordinator::add_comp(entity ent, T comp) {
 }
 
 template <class T>
-void coordinator::remove_comp(entity ent) {
+void coordinator::remove_comp(const entity ent) {
 	signature sign = this->ent_man->get_signature(ent);
 	sign.set(this->comp_man->get_component_type<T>(), false);
 

@@ -116,15 +116,15 @@ public:
 	component get_component_type() { return this->comp_types[typeid(T).name()]; }
 
 	template <class T>
-	void add_component(entity ent, T comp) { this->get_component_array<T>()->add_data(ent, comp); }
+	void add_component(const entity ent, const T comp) { this->get_component_array<T>()->add_data(ent, comp); }
 
 	template <class T>
-	void remove_component(entity ent) { this->get_component_array<T>()->remove_data(ent); }
+	void remove_component(const entity ent) { this->get_component_array<T>()->remove_data(ent); }
 
 	template <class T>
-	T& get_component(entity ent) { this->get_component_array<T>()->get_data(ent); }
+	T& get_component(const entity ent) { this->get_component_array<T>()->get_data(ent); }
 
-	void entity_destroyed(entity ent);
+	void entity_destroyed(const entity ent);
 
 };
 
@@ -145,10 +145,10 @@ public:
 	std::shared_ptr<T> register_system();
 
 	template <class T>
-	void set_sign(signature sign) { this->signs.emplace(typeid(T).name(), sign); }
+	void set_sign(const signature sign) { this->signs.emplace(typeid(T).name(), sign); }
 
-	void entity_destroyed(entity ent);
-	void entity_sign_changed(entity ent, signature sign);
+	void entity_destroyed(const entity ent);
+	void entity_sign_changed(const entity ent, const signature sign);
 
 };
 
@@ -169,7 +169,7 @@ public:
 	void init();
 
 	entity create_ent() { return this->ent_man->create_entity(); }
-	void destroy_ent(entity ent);
+	void destroy_ent(const entity ent);
 
 
 
@@ -177,13 +177,13 @@ public:
 	void register_comp() { this->comp_man->register_component<T>(); }
 
 	template <class T>
-	void add_comp(entity ent, T comp);
+	void add_comp(const entity ent, const T comp);
 
 	template <class T>
-	void remove_comp(entity ent);
+	void remove_comp(const entity ent);
 
 	template <class T>
-	T& get_comp(entity ent) { return this->comp_man->get_component<T>(ent); }
+	T& get_comp(const entity ent) { return this->comp_man->get_component<T>(ent); }
 
 	template <class T>
 	component get_comp_type() { return this->comp_man->get_component_type<T>(); }
@@ -194,6 +194,6 @@ public:
 	std::shared_ptr<T> register_sys() { return this->sys_man->register_system<T>(); }
 
 	template<typename T>
-	void set_sys_signature(signature sign) { this->sys_man->set_sign<T>(sign); }
+	void set_sys_signature(const signature sign) { this->sys_man->set_sign<T>(sign); }
 
 };
