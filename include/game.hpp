@@ -40,3 +40,7 @@ public:
 	static bool init();
 
 };
+
+#ifndef __COORDINATOR_OBJ__
+	extern coordinator crd;
+#endif

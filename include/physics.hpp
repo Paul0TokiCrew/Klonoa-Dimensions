@@ -4,5 +4,5 @@ class physics : public system {
 public:
 	physics() { }
 	~physics() { }
-	
+
 };

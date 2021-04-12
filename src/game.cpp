@@ -1,5 +1,10 @@
+#define __COORDINATOR_OBJ__
+
 #include <game.hpp>
 
+
+
+coordinator crd = coordinator();
 
 bool game::running = false;
 
