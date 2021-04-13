@@ -15,22 +15,13 @@
 
 
 
-#define GRAVITY 10000
-#define FRIC 400
-
-
-
 class game {
 private:
-	const window win;
+	const char* title;
 
 public:
-	game(const char* title = "Window", const int w = 720, const int h = 480, const int flags = SDL_WINDOW_SHOWN) :
-		win(window(title, w, h, flags)) { }
-	game(const char* title, const window& wnd) :
-		win(title, wnd) { }
-	game(const char* title, const window&& wnd) :
-		win(title, wnd) { }
+	game(const char* title)
+		title(title) { }
 	~game() { }
 
 	void play();

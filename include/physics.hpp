@@ -9,6 +9,11 @@
 
 
 
+#define GRAVITY 10000
+#define FRIC 400
+
+
+
 struct c_position { vec2f xy, wh; };
 
 struct c_movement { vec2f dir, vel, goal_vel; };

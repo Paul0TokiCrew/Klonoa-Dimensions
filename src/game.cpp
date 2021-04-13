@@ -9,11 +9,8 @@ bool game::running = false;
 float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 
 void game::play() {
-	if (!this->init()) {
+	if (this->init())
 		log_e();
-		return;
-
-	}
 
 	sprite r_sprites[] = {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16, 0, 10),
@@ -28,8 +25,8 @@ void game::play() {
 	character klonoa = character(vec2f(0), vec2f(64), vec2f(0, 1), vec2f(0), vec2f(140, GRAVITY), r_sprites, l_sprites);
 	camera klonoa_cam = camera(klonoa.get_xy());
 
-	image harold = image(this->win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
-	image putin = image(this->win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
+	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
+	image putin = image(win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
 
 	area_manager area_man = area_manager();
 
@@ -70,11 +67,11 @@ void game::play() {
 		klonoa_cam.update_cam(klonoa.get_xy());
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
 
-		log_m();
+		//log_m();
 
-		this->win.clear();
+		win.clear();
 		draw();
-		this->win.update();
+		win.update();
 
 	}
 
@@ -93,6 +90,8 @@ bool game::init() {
 
 	called = true;
 	bool initialized = true;
+
+	crd.init();
 
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		errors.push("ERROR: could not initialize SDL library");
