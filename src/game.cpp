@@ -12,6 +12,8 @@ void game::play() {
 	if (this->init())
 		log_e();
 
+	window win = window(this->title, 720, 480);
+
 	sprite r_sprites[] = {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16, 0, 10),
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 3, 16, 0, 10)

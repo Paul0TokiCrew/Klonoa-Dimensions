@@ -7,6 +7,7 @@
 #include <SDL2/SDL_image.h>
 #include <log.hpp>
 #include <ECS.hpp>
+#include <physics.hpp>
 #include <image.hpp>
 #include <area.hpp>
 #include <character.hpp>
@@ -20,7 +21,7 @@ private:
 	const char* title;
 
 public:
-	game(const char* title)
+	game(const char* title) :
 		title(title) { }
 	~game() { }
 
