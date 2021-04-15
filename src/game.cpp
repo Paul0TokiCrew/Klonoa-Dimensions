@@ -8,6 +8,23 @@ void game::play() {
 	if (this->init())
 		log_e();
 
+
+
+	crd.init();
+
+	crd.register_comp<c_position>();
+	crd.register_comp<c_movement>();
+
+	auto phy = crd.register_sys<physics>();
+
+	signature phy_sign;
+	phy_sign.set(crd.get_comp_type<c_position>());
+	phy_sign.set(crd.get_comp_type<c_movement>());
+
+	crd.set_sys_signature<physics>(phy_sign);
+
+
+
 	window win = window(this->title, 720, 480);
 
 	sprite r_sprites[] = {
@@ -32,7 +49,6 @@ void game::play() {
 	area_man.register_collision_area(vec2f(500, 280), vec2f(600, 380), &putin);
 
 	area_man.register_fric_area(vec2f(0, 0), vec2f(720, 480), FRIC);
-
 
 	auto draw = [&] () -> void {
 		win.render(area_man);
@@ -62,6 +78,8 @@ void game::play() {
 		klonoa.update_datas(key, area_man);
 		klonoa.update_sprites();
 		klonoa.update_pos(delta_time, area_man);
+		//phy->update(delta_time, area_man);
+
 		klonoa_cam.update_cam(klonoa.get_xy());
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
 
@@ -88,8 +106,6 @@ bool game::init() {
 
 	called = true;
 	bool initialized = true;
-
-	crd.init();
 
 	if (SDL_Init(SDL_INIT_VIDEO)) {
 		errors.push("ERROR: could not initialize SDL library");
