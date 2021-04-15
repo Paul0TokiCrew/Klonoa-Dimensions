@@ -2,10 +2,6 @@
 
 
 
-bool game::running = false;
-
-
-
 float get_current_time() { return SDL_GetTicks() / 1000.0f; }
 
 void game::play() {

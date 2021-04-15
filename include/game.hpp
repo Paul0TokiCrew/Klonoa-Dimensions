@@ -19,6 +19,9 @@
 class game {
 private:
 	const char* title;
+	bool running;
+
+	bool init();
 
 public:
 	game(const char* title) :
@@ -26,9 +29,5 @@ public:
 	~game() { }
 
 	void play();
-
-	static bool running;
-
-	static bool init();
 
 };
