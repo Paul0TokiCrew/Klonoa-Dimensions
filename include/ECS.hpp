@@ -56,9 +56,27 @@ public:
 	T& get_data(const entity ent) { return this->comp_arr[this->en_to_i[ent]]; }
 
 	void add_data(const entity ent, const T data);
-	void remove_data(const entity ent);
+	void remove_data(const entity ent) {
+		const std::uint32_t removed_i = this->en_to_i[ent];
+		const std::uint32_t last_i = this->size - 1;
+		const entity last_en = this->i_to_en[last_i];
 
-	void entity_destroyed(const entity ent) override;
+		this->comp_arr[removed_i] = this->comp_arr[last_i];
+
+		this->en_to_i[last_en] = removed_i;
+		this->i_to_en[removed_i] = last_en;
+
+		this->en_to_i.erase(ent);
+		this->i_to_en.erase(last_i);
+
+		--(this->size);
+	}
+
+	void entity_destroyed(const entity ent) override {
+		if (this->en_to_i.find(ent) != this->en_to_i.end())
+		this->remove_data(ent);
+
+	}
 
 };
 
@@ -107,7 +125,11 @@ public:
 	~component_manager() { }
 
 	template <class T>
-	void register_component();
+	void register_component() {
+		const char* name = typeid(T).name();
+		this->comp_types.emplace(name, this->next_comp_type++);
+		this->comp_arrs.emplace(name, std::make_shared<component_array<T>>());
+	}
 
 	template <class T>
 	component get_component_type() { return this->comp_types[typeid(T).name()]; }
@@ -139,7 +161,13 @@ public:
 	~system_manager() { }
 
 	template <class T>
-	std::shared_ptr<T> register_system();
+	std::shared_ptr<T> register_system() {
+		const char* name = typeid(T).name();
+		std::shared_ptr<T> s = std::make_shared<T>();
+
+		this->sys.emplace(name, s);
+		return s;
+	}
 
 	template <class T>
 	void set_sign(const signature sign) { this->signs.emplace(typeid(T).name(), sign); }
