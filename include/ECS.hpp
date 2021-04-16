@@ -61,7 +61,7 @@ public:
 		this->en_to_i[ent] = new_i;
 		this->i_to_en[new_i] = ent;
 
-		this->comp_arr = data;
+		this->comp_arr[new_i] = data;
 
 		++(this->size);
 
