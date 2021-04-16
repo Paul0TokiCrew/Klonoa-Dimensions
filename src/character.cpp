@@ -2,8 +2,6 @@
 
 
 
-extern std::queue<std::string> msgs;
-
 void character::switch_current_sprite(sprite& new_sprite) {
 	if (&new_sprite == this->current_sprite)
 		return;

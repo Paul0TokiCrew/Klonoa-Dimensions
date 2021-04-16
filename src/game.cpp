@@ -23,7 +23,12 @@ void game::play() {
 
 	crd.set_sys_signature<physics>(phy_sign);
 
+	entity klonoa_ent = crd.create_ent();
+	c_position klonoa_pos { vec2f(0), vec2f(64) };
+	c_movement klonoa_mov { vec2f(0, 1), vec2f(0), vec2f(0, 0), vec2f(140, GRAVITY) };
 
+	crd.add_comp(klonoa_ent, klonoa_pos);
+	crd.add_comp(klonoa_ent, klonoa_mov);
 
 	window win = window(this->title, 720, 480);
 
