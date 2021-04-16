@@ -55,7 +55,17 @@ public:
 
 	T& get_data(const entity ent) { return this->comp_arr[this->en_to_i[ent]]; }
 
-	void add_data(const entity ent, const T data);
+	void add_data(const entity ent, const T data) {
+		const std::uint32_t new_i = this->size;
+
+		this->en_to_i[ent] = new_i;
+		this->i_to_en[new_i] = ent;
+
+		this->comp_arr = data;
+
+		++(this->size);
+
+	}
 	void remove_data(const entity ent) {
 		const std::uint32_t removed_i = this->en_to_i[ent];
 		const std::uint32_t last_i = this->size - 1;
@@ -202,10 +212,24 @@ public:
 	void register_comp() { this->comp_man->register_component<T>(); }
 
 	template <class T>
-	void add_comp(const entity ent, const T comp);
+	void add_comp(const entity ent, const T comp) {
+		signature sign = this->ent_man->get_signature(ent);
+		sign.set(this->comp_man->get_component_type<T>(), true);
+
+		this->comp_man->add_component<T>(ent, comp);
+		this->ent_man->set_signature(ent, sign);
+		this->sys_man->entity_sign_changed(ent, sign);
+	}
 
 	template <class T>
-	void remove_comp(const entity ent);
+	void remove_comp(const entity ent) {
+		signature sign = this->ent_man->get_signature(ent);
+		sign.set(this->comp_man->get_component_type<T>(), false);
+
+		this->comp_man->remove_component<T>(ent);
+		this->ent_man->set_signature(ent, sign);
+		this->sys_man->entity_sign_changed(ent, sign);
+	}
 
 	template <class T>
 	T& get_comp(const entity ent) { return this->comp_man->get_component<T>(ent); }
