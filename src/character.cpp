@@ -10,22 +10,22 @@ void character::switch_current_sprite(sprite& new_sprite) {
 	current_sprite = &(new_sprite);
 }
 
-void character::update_sprites() {
+void character::update_sprites(const c_movement& movement) {
 	if (this->current_sprite != nullptr)
 		this->current_sprite->advance();
 
 
 
-	if (this->goal_vel != vec2f(0)) {
+	if (movement.goal_vel != vec2f(0)) {
 
-		if (this->dir.x > 0)
+		if (movement.dir.x > 0)
 			this->switch_current_sprite(this->r_sprites[WALK]);
 
 		else
 			this->switch_current_sprite(this->l_sprites[WALK]);
 
 	} else {
-		if (this->dir.x > 0)
+		if (movement.dir.x > 0)
 			this->switch_current_sprite(this->r_sprites[IDLE]);
 
 		else
@@ -147,4 +147,13 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 	if (this->counter)
 		--counter;
 
+}
+
+void character::update_(c_movement& movement) const {
+	movement = { this->dir, this->vel, this->goal_vel, this->max_vel };
+}
+
+void character::change_pos(const c_position& position) {
+	this->xy = position.xy;
+	this->wh = position.wh;
 }

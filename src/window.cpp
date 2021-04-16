@@ -46,7 +46,7 @@ void window::render(const character& chr) const {
 	sprite& spr = chr.get_current_sprite()[0];
 	SDL_Rect src = spr.get_src(),
 		des = spr.get_des();
-	SDL_RenderCopy(this->ren, spr.get_img(), &src, &des);;
+	SDL_RenderCopy(this->ren, spr.get_img(), &src, &des);
 }
 
 void window::update() const {

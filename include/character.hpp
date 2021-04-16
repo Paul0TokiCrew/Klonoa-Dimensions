@@ -3,6 +3,7 @@
 
 
 #include <SDL2/SDL.h>
+#include <physics.hpp>
 #include <vec2f.hpp>
 #include <log.hpp>
 #include <area.hpp>
@@ -51,8 +52,11 @@ public:
 	const area_manager* get_current_area() const { return this->current_area; }
 	short get_counter() const { return this->counter; }
 
-	void update_sprites();
+	void update_sprites(const c_movement& movement);
 	void update_pos(const float delta_time, const area_manager area_man);
 	void update_datas(const Uint8* key, const area_manager area_man);
+
+	void update_(c_movement& movement) const;
+	void change_pos(const c_position& position);
 
 };
