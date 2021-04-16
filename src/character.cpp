@@ -139,7 +139,7 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 
 
 	
-	if (key[SDL_SCANCODE_Z]) {
+	if (key[SDL_SCANCODE_SPACE]) {
 		this->vel.y = -100;
 		this->dir.y = -1;
 
