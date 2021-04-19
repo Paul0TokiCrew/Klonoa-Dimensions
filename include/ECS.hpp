@@ -252,4 +252,3 @@ public:
 #else
 	coordinator crd;
 #endif
-//busy day 2day
