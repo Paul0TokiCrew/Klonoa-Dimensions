@@ -25,6 +25,6 @@ public:
 	physics() { }
 	~physics() { }
 
-	void update(const float delta_time, const area_manager& area_man);
+	void update(const float delta_time, const area_manager& area_man) const;
 
 };

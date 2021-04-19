@@ -8,6 +8,7 @@
 #include <log.hpp>
 #include <ECS.hpp>
 #include <physics.hpp>
+#include <player.hpp>
 #include <image.hpp>
 #include <area.hpp>
 #include <character.hpp>

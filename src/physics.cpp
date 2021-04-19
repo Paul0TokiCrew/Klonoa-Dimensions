@@ -2,7 +2,7 @@
 
 
 
-void physics::update(const float delta_time, const area_manager& area_man) {
+void physics::update(const float delta_time, const area_manager& area_man) const {
 
 	for (const auto& ent : this->ents) {
 
