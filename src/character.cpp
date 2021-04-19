@@ -149,8 +149,9 @@ void character::update_datas(const Uint8* key, const area_manager area_man) {
 
 }
 
-void character::update_(c_movement& movement) const {
-	movement = { this->dir, this->vel, this->goal_vel, this->max_vel };
+void character::update_move(c_movement& movement) const {
+	movement.dir = this->dir;
+	movement.goal_vel = this->goal_vel;
 }
 
 void character::change_pos(const c_position& position) {

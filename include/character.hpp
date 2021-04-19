@@ -56,7 +56,7 @@ public:
 	void update_pos(const float delta_time, const area_manager area_man);
 	void update_datas(const Uint8* key, const area_manager area_man);
 
-	void update_(c_movement& movement) const;
+	void update_move(c_movement& movement) const;
 	void change_pos(const c_position& position);
 
 };

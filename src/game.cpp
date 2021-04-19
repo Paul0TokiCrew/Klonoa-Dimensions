@@ -30,6 +30,11 @@ void game::play() {
 	crd.add_comp(klonoa_ent, klonoa_pos);
 	crd.add_comp(klonoa_ent, klonoa_mov);
 
+	c_position& position = crd.get_comp<c_position>(klonoa_ent);
+	c_movement& movement = crd.get_comp<c_movement>(klonoa_ent);
+
+
+
 	window win = window(this->title, 720, 480);
 
 	sprite r_sprites[] = {
@@ -81,14 +86,12 @@ void game::play() {
 		const Uint8* key = SDL_GetKeyboardState(nullptr);
 
 		klonoa.update_datas(key, area_man);
-		phy->update(delta_time, area_man);
 
-		c_position& position = crd.get_comp<c_position>(klonoa_ent);
-		c_movement& movement = crd.get_comp<c_movement>(klonoa_ent);
+		klonoa.update_move(movement);
+		phy->update(delta_time, area_man);
+		klonoa.change_pos(position);
 
 		klonoa.update_sprites(movement);
-		klonoa.update_(movement);
-		klonoa.change_pos(position);
 		//klonoa.update_pos(delta_time, area_man);
 
 		klonoa_cam.update_cam(klonoa.get_xy());
