@@ -32,7 +32,7 @@ void game::play() {
 	entity klonoa_ent = crd.create_ent();
 	c_position klonoa_pos { vec2f(0), vec2f(64) };
 	c_movement klonoa_mov { vec2f(0, 1), vec2f(0), vec2f(0, 0), vec2f(140, GRAVITY) };
-	c_player_keys klonoa_keys { { SDL_SCANCODE_UP, SDL_SCANCODE_RIGHT, SDL_SCANCODE_LEFT } };
+	c_player_keys klonoa_keys { { SDL_SCANCODE_SPACE, SDL_SCANCODE_RIGHT, SDL_SCANCODE_LEFT } };
 
 	crd.add_comp(klonoa_ent, klonoa_pos);
 	crd.add_comp(klonoa_ent, klonoa_mov);
@@ -93,15 +93,10 @@ void game::play() {
 
 		const Uint8* key = SDL_GetKeyboardState(nullptr);
 
-		//klonoa.update_datas(key, area_man);
-
-		//klonoa.update_move(movement);
 		ply->update(key, area_man);
 		phy->update(delta_time, area_man);
-		//klonoa.change_pos(position);
 
 		klonoa.update_sprites(movement);
-		//klonoa.update_pos(delta_time, area_man);
 
 		klonoa_cam.update_cam(position.xy);
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
