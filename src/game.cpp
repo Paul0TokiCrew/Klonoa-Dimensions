@@ -30,7 +30,7 @@ void game::play() {
 
 
 	entity klonoa_ent = crd.create_ent();
-	c_position klonoa_pos { vec2f(720 / 2 - 32, 480 / 2 - 32), vec2f(64) };
+	c_position klonoa_pos { vec2f(W / 2 - 32, H / 2 - 32), vec2f(64) };
 	c_movement klonoa_mov { vec2f(0, 1), vec2f(0), vec2f(0, 0), vec2f(140, GRAVITY) };
 	c_player_keys klonoa_keys { { SDL_SCANCODE_SPACE, SDL_SCANCODE_RIGHT, SDL_SCANCODE_LEFT } };
 
@@ -43,7 +43,7 @@ void game::play() {
 
 
 
-	window win = window(this->title, 720, 480);
+	window win = window(this->title, W, H);
 
 	sprite r_sprites[] = {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 21, 16, 0, 10),

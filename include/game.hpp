@@ -17,6 +17,11 @@
 
 
 
+#define W 720
+#define H 480
+
+
+
 class game {
 private:
 	const char* title;
