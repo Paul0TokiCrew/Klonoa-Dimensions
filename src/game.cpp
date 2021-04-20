@@ -30,7 +30,7 @@ void game::play() {
 
 
 	entity klonoa_ent = crd.create_ent();
-	c_position klonoa_pos { vec2f(0), vec2f(64) };
+	c_position klonoa_pos { vec2f(720 / 2 - 32, 480 / 2 - 32), vec2f(64) };
 	c_movement klonoa_mov { vec2f(0, 1), vec2f(0), vec2f(0, 0), vec2f(140, GRAVITY) };
 	c_player_keys klonoa_keys { { SDL_SCANCODE_SPACE, SDL_SCANCODE_RIGHT, SDL_SCANCODE_LEFT } };
 
@@ -46,17 +46,17 @@ void game::play() {
 	window win = window(this->title, 720, 480);
 
 	sprite r_sprites[] = {
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16, 0, 10),
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 3, 16, 0, 10)
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 21, 16, 0, 10),
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 3, 16, 0, 10)
 	};
 
 	sprite l_sprites[] = {
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 21, 16, 0, 10),
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { 0, 0, 64, 64 }, 0, 3, 16, 0, 10)
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 21, 16, 0, 10),
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 3, 16, 0, 10)
 	};
 
 	character klonoa = character(vec2f(0), vec2f(64), vec2f(0, 1), vec2f(0), vec2f(140, GRAVITY), r_sprites, l_sprites);
-	camera klonoa_cam = camera(klonoa.get_xy());
+	camera klonoa_cam = camera(position.xy);
 
 	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
 	image putin = image(win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
