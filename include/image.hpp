@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <ECS.hpp>
 
 
 
@@ -44,11 +45,13 @@ public:
 
 
 
-struct c_image { image* img; }
+struct c_image { image* img; };
 
 class render : public system {
 public:
 	render() { }
 	~render() { }
+
+	std::vector<image*>::const_iterator get_images() const;
 
 };
