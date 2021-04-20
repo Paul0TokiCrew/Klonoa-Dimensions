@@ -41,3 +41,14 @@ public:
 	void change_size(const int w, const int h);
 
 };
+
+
+
+struct c_image { image* img; }
+
+class render : public system {
+public:
+	render() { }
+	~render() { }
+
+};

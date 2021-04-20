@@ -55,7 +55,7 @@ void game::play() {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 3, 16, 0, 10)
 	};
 
-	character klonoa = character(vec2f(0), vec2f(64), vec2f(0, 1), vec2f(0), vec2f(140, GRAVITY), r_sprites, l_sprites);
+	character klonoa = character(position.xy, position.wh, vec2f(0, 1), vec2f(0), vec2f(140, GRAVITY), r_sprites, l_sprites);
 	camera klonoa_cam = camera(position.xy);
 
 	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
