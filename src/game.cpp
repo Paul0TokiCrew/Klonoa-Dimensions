@@ -61,17 +61,12 @@ void game::play() {
 	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
 	image putin = image(win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
 
-	collision_area harold_area = { vec2f(0, 400), vec2f(720, 480), "Down" },
-		putin_area = { vec2f(500, 280), vec2f(600, 380), "Up Rigth Left" };
-
-	friction_area fric = { vec2f(0, 0), vec2f(720, 480), FRIC };
-
 	area_manager area_man = area_manager();
 
-	area_man.register_collision_area( harold_area, &harold);
-	area_man.register_collision_area( putin_area, &putin );
+	area_man.register_collision_area(collision_area(vec2f(0, 400), vec2f(720, 480), "Down"), &harold);
+	area_man.register_collision_area(collision_area(vec2f(500, 280), vec2f(600, 380), "Up Rigth Left"), &putin);
 
-	area_man.register_friction_area(fric);
+	area_man.register_friction_area(friction_area(vec2f(0, 0), vec2f(720, 480), FRIC));
 
 	auto draw = [&] () -> void {
 		win.render(area_man);

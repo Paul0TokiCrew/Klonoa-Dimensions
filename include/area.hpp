@@ -11,9 +11,35 @@
 
 
 
-struct area { vec2f xy1, xy2; };
-struct collision_area : area { char* collision; };
-struct friction_area : area { float friction; };
+class area {
+public:
+	area(const vec2f xy1 = vec2f(0, 0), const vec2f xy2 = vec2f(0, 0)) :
+		xy1(xy1), xy2(xy2) { }
+	~area() { }
+
+	vec2f xy1, xy2;
+
+};
+
+class collision_area : public area {
+public:
+	collision_area(const vec2f xy1 = vec2f(0, 0), const vec2f xy2 = vec2f(0, 0), char* collision = "UDRL") :
+		area(xy1, xy2), collision(collision) { }
+	~collision_area() { }
+
+	char* collision;
+
+};
+
+class friction_area : public area {
+public:
+	friction_area(const vec2f xy1 = vec2f(0, 0), const vec2f xy2 = vec2f(0, 0), const float friction = 0.0f) :
+		area(xy1, xy2), friction(friction) { }
+	~friction_area() { }
+
+	float friction;
+
+};
 
 
 
