@@ -9,8 +9,8 @@
 
 
 
-#define GRAVITY 10000
-#define FRIC 400
+#define GRAVITY 100000.f
+#define FRIC 400.0f
 
 
 
