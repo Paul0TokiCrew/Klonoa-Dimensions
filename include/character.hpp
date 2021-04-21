@@ -53,10 +53,5 @@ public:
 	short get_counter() const { return this->counter; }
 
 	void update_sprites(const c_movement& movement);
-	void update_pos(const float delta_time, const area_manager area_man);
-	void update_datas(const Uint8* key, const area_manager area_man);
-
-	void update_move(c_movement& movement) const;
-	void change_pos(const c_position& position);
 
 };
