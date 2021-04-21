@@ -55,18 +55,23 @@ void game::play() {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 3, 16, 0, 10)
 	};
 
-	character klonoa = character(position.xy, position.wh, vec2f(0, 1), vec2f(0), vec2f(140, GRAVITY), r_sprites, l_sprites);
+	character klonoa = character(r_sprites, l_sprites);
 	camera klonoa_cam = camera(position.xy);
 
 	image harold = image(win.get_ren(), "res/textures/hide the pain.jpg", { 0, 0, 1200, 800 }, { 0, 400, 720, 80 });
 	image putin = image(win.get_ren(), "res/textures/putin.jpg", { 0, 0, 1200, 1200 }, { 500, 280, 100, 100 });
 
+	collision_area harold_area = { vec2f(0, 400), vec2f(720, 480), "Down" },
+		putin_area = { vec2f(500, 280), vec2f(600, 380), "Up Rigth Left" };
+
+	friction_area fric = { vec2f(0, 0), vec2f(720, 480), FRIC };
+
 	area_manager area_man = area_manager();
 
-	area_man.register_collision_area(vec2f(0, 400), vec2f(720, 480), &harold, "Down");
-	area_man.register_collision_area(vec2f(500, 280), vec2f(600, 380), &putin);
+	area_man.register_collision_area( harold_area, &harold);
+	area_man.register_collision_area( putin_area, &putin );
 
-	area_man.register_fric_area(vec2f(0, 0), vec2f(720, 480), FRIC);
+	area_man.register_friction_area(fric);
 
 	auto draw = [&] () -> void {
 		win.render(area_man);

@@ -28,7 +28,7 @@ protected:
 
 public:
 	character(sprite* r_sprites, sprite* l_sprites) :
-		r_sprites(r_sprites), l_sprites(l_sprites), current_sprite(&(r_sprites[IDLE])),
+		r_sprites(r_sprites), l_sprites(l_sprites), current_sprite(&(r_sprites[IDLE])) { }
 	~character() { }
 
 	sprite* get_r_sprites() const { return this->r_sprites; }

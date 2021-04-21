@@ -18,7 +18,7 @@ void player::update(const Uint8* key, const area_manager& area_man) {
 
 		const vec2f xy2 = vec2f(position.xy - position.wh);
 
-		if (!area_man.check_down_collision(position.xy, xy2)) {
+		if (!area_man.check_down_collision( { position.xy, xy2 } )) {
 			movement.goal_vel.y = movement.max_vel.y;
 
 			if (std::ceil(movement.vel.y) >= 0)
