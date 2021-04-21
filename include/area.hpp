@@ -11,6 +11,12 @@
 
 
 
+struct area { vec2f xy1, xy2 };
+struct collision_area : area { const char* collision };
+struct friction_area : area { const float* collision };
+
+
+
 class area_manager {
 private:
 	std::vector<std::pair<image* const, const vec2f>> img_areas; 
