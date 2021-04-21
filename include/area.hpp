@@ -12,16 +12,16 @@
 
 
 struct area { vec2f xy1, xy2 };
-struct collision_area : area { const char* collision };
-struct friction_area : area { const float* collision };
+struct collision_area : area { char* collision };
+struct friction_area : area { float friction };
 
 
 
 class area_manager {
 private:
 	std::vector<std::pair<image* const, const vec2f>> img_areas; 
-	std::vector<std::tuple<vec2f, vec2f, const char*>> collision_areas;
-	std::vector<std::tuple<vec2f, vec2f, const float>> fric_areas;
+	std::vector<collision_area> coll_areas;
+	std::vector<friction_area> fric_areas;
 
 public:
 	area_manager() { }
@@ -33,23 +33,17 @@ public:
 	img_area get_img_area(const unsigned index = 0) const { return index <= this->img_areas.size() ?
 		this->img_areas[index] : std::make_pair(nullptr, vec2f(0, 0)); }
 
-	void register_collision_area(const vec2f xy1, const vec2f xy2,
-		image* const tex = nullptr, const char* coll = "UDRL");
-	void register_fric_area(const vec2f xy1, const vec2f xy2, const float fric = 1,
-		image* const tex = nullptr);
+	void register_collision_area(const collision_area ca, image* const tex = nullptr);
+	void register_friction_area(const friction_area fa, image* const tex = nullptr);
 
-	bool check_trigger(const vec2f other_xy1, const vec2f other_xy2) const;
+	bool check_trigger(const area a) const;
 
-	bool check_up_collision(const vec2f other_xy1, const vec2f other_xy2,
-		vec2f* const diff = nullptr) const;
-	bool check_down_collision(const vec2f other_xy1, const vec2f other_xy2,
-		vec2f* const diff = nullptr) const;
-	bool check_right_collision(const vec2f other_xy1, const vec2f other_xy2,
-		vec2f* const diff = nullptr) const;
-	bool check_left_collision(const vec2f other_xy1, const vec2f other_xy2,
-		vec2f* const diff = nullptr) const;
+	bool check_up_collision(const area a, vec2f* const diff = nullptr) const;
+	bool check_down_collision(const area a, vec2f* const diff = nullptr) const;
+	bool check_right_collision(const area a, vec2f* const diff = nullptr) const;
+	bool check_left_collision(const area a, vec2f* const diff = nullptr) const;
 
-	float get_fric(const vec2f other_xy1, const vec2f other_xy2) const;
+	float get_friction(const area a) const;
 
 	void change_areas_pos(const vec2f mod);
 
