@@ -15,11 +15,11 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 			move = vec2f(movement.vel * vec2f(delta_time)),
 			diff = vec2f(0, 0);
 
-		const float fric = area_man.get_fric(position.xy, xy2);
+		const float fric = area_man.get_friction( { position.xy, xy2 } );
 
 
 
-		if (area_man.check_up_collision(position.xy + move, xy2 + move, &diff)) {
+		if (area_man.check_up_collision( { position.xy + move, xy2 + move }, &diff)) {
 			msgs.push("up collision detected");
 
 			if (movement.vel.y < 0) {
@@ -30,7 +30,7 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 
 		}
 
-		if (area_man.check_down_collision(position.xy + move, xy2 + move, &diff)) {
+		if (area_man.check_down_collision( { position.xy + move, xy2 + move }, &diff)) {
 			msgs.push("down collision detected");
 
 			if (movement.vel.y > 0) {
@@ -41,7 +41,7 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 
 		}
 
-		if (area_man.check_right_collision(position.xy + move, xy2 + move, &diff)) {
+		if (area_man.check_right_collision( { position.xy + move, xy2 + move }, &diff)) {
 			msgs.push("right collision detected");
 
 			if (movement.vel.x > 0) {
@@ -52,7 +52,7 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 
 		}
 
-		if (area_man.check_left_collision(position.xy + move, xy2 + move, &diff)) {
+		if (area_man.check_left_collision( { position.xy + move, xy2 + move }, &diff)) {
 			msgs.push("left collision detected");
 
 			if (movement.vel.x < 0) {
