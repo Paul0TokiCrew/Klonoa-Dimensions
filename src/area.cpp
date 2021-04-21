@@ -2,7 +2,7 @@
 
 
 
-void area_manager::register_collision_area(const collision_area ca, image* const tex = nullptr) {
+void area_manager::register_collision_area(const collision_area ca, image* const tex) {
 	if (ca.xy1 == ca.xy2)
 		return;
 
@@ -14,7 +14,7 @@ void area_manager::register_collision_area(const collision_area ca, image* const
 }
 
 
-void area_manager::register_friction_area(const friction_area fa, image* const tex = nullptr) {
+void area_manager::register_friction_area(const friction_area fa, image* const tex) {
 	if (std::ceil(fa.friction) < 0)
 		return;
 
@@ -48,13 +48,13 @@ bool area_manager::check_up_collision(const area a, vec2f* const diff) const {
 
 		if (
 			std::strchr(i.collision, 'U') != nullptr &&
-			other_xy1.x < i.xy2.x &&
-			other_xy2.x > i.xy1.x &&
-			other_xy1.y <= i.xy2.y &&
-			other_xy2.y > i.xy2.y &&
-			other_xy1.y > i.xy1.y
+			a.xy1.x < i.xy2.x &&
+			a.xy2.x > i.xy1.x &&
+			a.xy1.y <= i.xy2.y &&
+			a.xy2.y > i.xy2.y &&
+			a.xy1.y > i.xy1.y
 		) {
-			diff->y = i.xy2.y - other_xy1.y;
+			diff->y = i.xy2.y - a.xy1.y;
 			return true;
 
 		}
@@ -70,13 +70,13 @@ bool area_manager::check_down_collision(const area a, vec2f* const diff) const {
 
 		if (
 			std::strchr(i.collision, 'D') != nullptr &&
-			other_xy1.x < i.xy2.x &&
-			other_xy2.x > i.xy1.x &&
-			other_xy1.y < i.xy1.y &&
-			other_xy2.y >= i.xy1.y &&
-			other_xy2.y < i.xy2.y 
+			a.xy1.x < i.xy2.x &&
+			a.xy2.x > i.xy1.x &&
+			a.xy1.y < i.xy1.y &&
+			a.xy2.y >= i.xy1.y &&
+			a.xy2.y < i.xy2.y 
 		) {
-			diff->y = i.xy1.y - other_xy2.y;
+			diff->y = i.xy1.y - a.xy2.y;
 			return true;
 
 		}
@@ -92,13 +92,13 @@ bool area_manager::check_right_collision(const area a, vec2f* const diff) const 
 
 		if (
 			std::strchr(i.collision, 'R') != nullptr &&
-			other_xy1.x < i.xy1.x &&
-			other_xy2.x >= i.xy1.x &&
-			other_xy1.y < i.xy2.y &&
-			other_xy2.y > i.xy1.y &&
-			other_xy2.x < i.xy2.x
+			a.xy1.x < i.xy1.x &&
+			a.xy2.x >= i.xy1.x &&
+			a.xy1.y < i.xy2.y &&
+			a.xy2.y > i.xy1.y &&
+			a.xy2.x < i.xy2.x
 		) {
-			diff->x = i.xy1.x - other_xy2.x;
+			diff->x = i.xy1.x - a.xy2.x;
 			return true;
 
 		}
@@ -114,13 +114,13 @@ bool area_manager::check_left_collision(const area a, vec2f* const diff) const {
 
 		if (
 			std::strchr(i.collision, 'L') != nullptr &&
-			other_xy1.x <= i.xy2.x &&
-			other_xy2.x > i.xy2.x &&
-			other_xy1.y < i.xy2.y &&
-			other_xy2.y > i.xy1.y &&
-			other_xy1.x > i.xy1.x
+			a.xy1.x <= i.xy2.x &&
+			a.xy2.x > i.xy2.x &&
+			a.xy1.y < i.xy2.y &&
+			a.xy2.y > i.xy1.y &&
+			a.xy1.x > i.xy1.x
 		) {
-			diff->x = i.xy1.x - other_xy1.x;
+			diff->x = i.xy1.x - a.xy1.x;
 			return true;
 
 		}
@@ -136,10 +136,10 @@ float area_manager::get_friction(const area a) const {
 	for (auto i : this->fric_areas) {
 
 		if (
-			other_xy1.x <= i.xy2.x &&
-			other_xy2.x >= i.xy1.x &&
-			other_xy1.y <= i.xy2.y &&
-			other_xy2.y >= i.xy1.y
+			a.xy1.x <= i.xy2.x &&
+			a.xy2.x >= i.xy1.x &&
+			a.xy1.y <= i.xy2.y &&
+			a.xy2.y >= i.xy1.y
 		)
 			fric.push(i.friction);
 

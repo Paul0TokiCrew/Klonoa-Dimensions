@@ -11,9 +11,9 @@
 
 
 
-struct area { vec2f xy1, xy2 };
-struct collision_area : area { char* collision };
-struct friction_area : area { float friction };
+struct area { vec2f xy1, xy2; };
+struct collision_area : area { char* collision; };
+struct friction_area : area { float friction; };
 
 
 
