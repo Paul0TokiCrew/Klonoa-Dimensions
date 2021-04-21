@@ -52,6 +52,6 @@ public:
 	render() { }
 	~render() { }
 
-	std::vector<image*>::const_iterator get_images() const;
+	std::vector<image*> get_images() const;
 
 };

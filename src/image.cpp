@@ -24,14 +24,11 @@ void image::change_size(int w, int h) {
 
 
 
-std::vector<image*>::const_iterator render::get_images() const {
+std::vector<image*> render::get_images() const {
 	std::vector<image*> imgs;
 
-	for (const auto& ent : this->ents) {
-
+	for (const auto& ent : this->ents)
 		imgs.push_back(&(crd.get_comp<image>(ent)));
 
-	}
-
-	return imgs.begin();
+	return imgs;
 }
