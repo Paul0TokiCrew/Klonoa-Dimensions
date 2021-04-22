@@ -2,6 +2,38 @@
 
 
 
+void area_manager::render(SDL_Renderer* ren) const {
+
+	SDL_Rect src, des;
+
+	for (auto i : this->fric_areas) {
+
+		image* img = i.img;
+		if (!img)
+			continue;
+
+		src = img->get_src(),
+		des = img->get_des();
+
+		SDL_RenderCopy(ren, img.get_img(), &src, &des);
+
+	}
+
+	for (auto i : this->coll_areas) {
+
+		image* img = i.img;
+		if (!img)
+			continue;
+
+		src = img->get_src(),
+		des = img->get_des();
+
+		SDL_RenderCopy(ren, img.get_img(), &src, &des);
+
+	}
+
+}
+
 void area_manager::register_collision_area(const collision_area ca, image* const tex) {
 	if (ca.xy1 == ca.xy2)
 		return;
