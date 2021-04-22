@@ -29,6 +29,8 @@ private:
 
 	bool init();
 
+	float get_current_time() const { return SDL_GetTicks() / 1000.0f; }
+
 public:
 	game(const char* title) :
 		title(title) { }
