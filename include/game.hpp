@@ -31,6 +31,8 @@ private:
 
 	float get_current_time() const { return SDL_GetTicks() / 1000.0f; }
 
+	SDL_Rect make_rect(const vec2f xy, const vec2f wh) const;
+
 public:
 	game(const char* title) :
 		title(title) { }

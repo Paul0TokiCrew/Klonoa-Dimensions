@@ -44,13 +44,17 @@ void game::play() {
 	window win = window(this->title, W, H);
 
 	sprite r_sprites[] = {
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 21, 16, 0, 10),
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Right.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 3, 16, 0, 10)
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png",
+			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10),
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Right.png",
+			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10)
 	};
 
 	sprite l_sprites[] = {
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Left.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 21, 16, 0, 10),
-		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png", { 0, 0, 16, 16 }, { position.xy.x, position.xy.y, position.wh.x, position.wh.y }, 0, 3, 16, 0, 10)
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Left.png",
+			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10),
+		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png",
+			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10)
 	};
 
 	character klonoa = character(r_sprites, l_sprites);
@@ -77,11 +81,11 @@ void game::play() {
 
 	SDL_Event evn;
 
-	float current_time = get_current_time();
+	float current_time = this->get_current_time();
 
 	while (this->running) {
 
-		float new_time = get_current_time();
+		float new_time = this->get_current_time();
 		float delta_time = new_time - current_time;
 		current_time = new_time;
 
@@ -139,4 +143,15 @@ bool game::init() {
 	    game::running = true;
 
 	return initialized;
+}
+
+SDL_Rect game::make_rect(const vec2f xy, const vec2f wh) const {
+	SDL_Rect rec;
+
+	rec.x = std::ceil(xy.x);
+	rec.y = std::ceil(xy.y);
+	rec.w = std::ceil(wh.x);
+	rec.h = std::ceil(wh.y);
+
+	return rec;
 }
