@@ -3,7 +3,6 @@
 
 
 void area_manager::render(SDL_Renderer* ren) const {
-
 	SDL_Rect src, des;
 
 	for (auto i : this->fric_areas) {
@@ -177,12 +176,29 @@ float area_manager::get_friction(const area a) const {
 }
 
 void area_manager::change_areas_pos(const vec2f mod) {
+	SDL_Rect des;
 
-	for (auto i : this->img_areas) {
+	for (auto i : this->fric_areas) {
 
-		image& img = *(i.first);
-		const vec2f& xy = i.second;
-		img.change_pos(xy.x - std::ceil(mod.x), xy.y - std::ceil(mod.y));
+		image* img = i.img;
+		if (!img)
+			continue;
+
+		des = img->get_des();
+
+		img->change_pos(des.x - std::ceil(mod.x), des.y - std::ceil(mod.y));
+
+	}
+
+	for (auto i : this->coll_areas) {
+
+		image* img = i.img;
+		if (!img)
+			continue;
+
+		des = img->get_des();
+
+		img->change_pos(des.x - std::ceil(mod.x), des.y - std::ceil(mod.y));
 
 	}
 
