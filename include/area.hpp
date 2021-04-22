@@ -25,11 +25,11 @@ public:
 class collision_area : public area {
 public:
 	collision_area(const vec2f xy1 = vec2f(0, 0), const vec2f xy2 = vec2f(0, 0), image* img = nullptr,
-		char* collision = "UDRL") :
+		const char* collision = "UDRL") :
 		area(xy1, xy2, img), collision(collision) { }
 	~collision_area() { }
 
-	char* collision;
+	const char* collision;
 
 };
 

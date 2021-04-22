@@ -63,10 +63,10 @@ void game::play() {
 
 	area_manager area_man = area_manager();
 
-	area_man.register_collision_area(collision_area(vec2f(0, 400), vec2f(720, 480), "Down"), &harold);
-	area_man.register_collision_area(collision_area(vec2f(500, 280), vec2f(600, 380), "Down Rigth Left"), &putin);
+	area_man.register_collision_area(collision_area(vec2f(0, 400), vec2f(720, 480), &harold, "Down"));
+	area_man.register_collision_area(collision_area(vec2f(500, 280), vec2f(600, 380), &putin, "Down Rigth Left"));
 
-	area_man.register_friction_area(friction_area(vec2f(0, 0), vec2f(720, 480), FRIC));
+	area_man.register_friction_area(friction_area(vec2f(0, 0), vec2f(720, 480), nullptr, FRIC));
 
 	auto draw = [&] () -> void {
 		win.render(area_man);
