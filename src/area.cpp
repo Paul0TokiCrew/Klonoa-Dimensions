@@ -14,7 +14,7 @@ void area_manager::render(SDL_Renderer* ren) const {
 		src = img->get_src(),
 		des = img->get_des();
 
-		SDL_RenderCopy(ren, img.get_img(), &src, &des);
+		SDL_RenderCopy(ren, img->get_img(), &src, &des);
 
 	}
 
@@ -27,7 +27,7 @@ void area_manager::render(SDL_Renderer* ren) const {
 		src = img->get_src(),
 		des = img->get_des();
 
-		SDL_RenderCopy(ren, img.get_img(), &src, &des);
+		SDL_RenderCopy(ren, img->get_img(), &src, &des);
 
 	}
 
@@ -176,7 +176,6 @@ float area_manager::get_friction(const area a) const {
 }
 
 void area_manager::change_areas_pos(const vec2f mod) {
-	SDL_Rect des;
 
 	for (auto i : this->fric_areas) {
 
@@ -184,9 +183,9 @@ void area_manager::change_areas_pos(const vec2f mod) {
 		if (!img)
 			continue;
 
-		des = img->get_des();
+		const vec2f xy = i.xy1;
 
-		img->change_pos(des.x - std::ceil(mod.x), des.y - std::ceil(mod.y));
+		img->change_pos(xy.x - std::ceil(mod.x), xy.y - std::ceil(mod.y));
 
 	}
 
@@ -196,9 +195,9 @@ void area_manager::change_areas_pos(const vec2f mod) {
 		if (!img)
 			continue;
 
-		des = img->get_des();
+		const vec2f xy = i.xy1;
 
-		img->change_pos(des.x - std::ceil(mod.x), des.y - std::ceil(mod.y));
+		img->change_pos(xy.x - std::ceil(mod.x), xy.y - std::ceil(mod.y));
 
 	}
 
