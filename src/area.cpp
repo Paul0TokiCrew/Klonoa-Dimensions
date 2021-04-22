@@ -34,27 +34,19 @@ void area_manager::render(SDL_Renderer* ren) const {
 
 }
 
-void area_manager::register_collision_area(const collision_area ca, image* const tex) {
+void area_manager::register_collision_area(const collision_area ca) {
 	if (ca.xy1 == ca.xy2)
 		return;
 
 	this->coll_areas.push_back(ca);
-
-	if (tex != nullptr)
-		this->img_areas.push_back(std::make_pair(tex, ca.xy1));
-
 }
 
 
-void area_manager::register_friction_area(const friction_area fa, image* const tex) {
+void area_manager::register_friction_area(const friction_area fa) {
 	if (std::ceil(fa.friction) < 0)
 		return;
 
 	this->fric_areas.push_back(fa);
-
-	if (tex != nullptr)
-		this->img_areas.push_back(std::make_pair(tex, fa.xy1));
-
 }
 
 bool area_manager::check_trigger(const area a) const {

@@ -57,8 +57,8 @@ public:
 
 	void render(SDL_Renderer* ren) const;
 
-	void register_collision_area(const collision_area ca, image* const tex = nullptr);
-	void register_friction_area(const friction_area fa, image* const tex = nullptr);
+	void register_collision_area(const collision_area ca);
+	void register_friction_area(const friction_area fa);
 
 	bool check_trigger(const area a) const;
 
