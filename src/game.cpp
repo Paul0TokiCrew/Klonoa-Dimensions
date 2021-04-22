@@ -47,14 +47,14 @@ void game::play() {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png",
 			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10),
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Right.png",
-			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10)
+			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 3, 16, 0, 10)
 	};
 
 	sprite l_sprites[] = {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Left.png",
 			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10),
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Walk Left.png",
-			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 21, 16, 0, 10)
+			this->make_rect(vec2f(0), vec2f(16)), this->make_rect(position.xy, position.wh), 0, 3, 16, 0, 10)
 	};
 
 	character klonoa = character(r_sprites, l_sprites);
