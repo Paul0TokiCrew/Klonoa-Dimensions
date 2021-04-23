@@ -103,7 +103,7 @@ void game::play() {
 		klonoa_cam.update_cam(position.xy);
 		area_man.change_areas_pos(klonoa_cam.get_cam_pos());
 
-		//log_m();
+		log_m();
 
 		win.clear();
 		draw();
