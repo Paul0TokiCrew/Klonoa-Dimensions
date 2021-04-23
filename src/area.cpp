@@ -71,8 +71,16 @@ bool area_manager::check_up_collision(const area a, vec2f* const diff) const {
 
 		if (
 			std::strchr(i.collision, 'U') != nullptr &&
-			a.xy1.x < i.xy2.x &&
-			a.xy2.x > i.xy1.x &&
+			(
+				(
+					a.xy1.x < i.xy2.x &&
+					a.xy1.x > i.xy1.x
+				) ||
+				(
+					a.xy2.x > i.xy1.x &&
+					a.xy2.x < i.xy2.x
+				)
+			) &&
 			a.xy1.y <= i.xy2.y &&
 			a.xy2.y > i.xy2.y &&
 			a.xy1.y > i.xy1.y
@@ -93,8 +101,16 @@ bool area_manager::check_down_collision(const area a, vec2f* const diff) const {
 
 		if (
 			std::strchr(i.collision, 'D') != nullptr &&
-			a.xy1.x < i.xy2.x &&
-			a.xy2.x > i.xy1.x &&
+			(
+				(
+					a.xy1.x < i.xy2.x &&
+					a.xy1.x > i.xy1.x
+				) ||
+				(
+					a.xy2.x > i.xy1.x &&
+					a.xy2.x < i.xy2.x
+				)
+			) &&
 			a.xy1.y < i.xy1.y &&
 			a.xy2.y >= i.xy1.y &&
 			a.xy2.y < i.xy2.y
@@ -117,8 +133,16 @@ bool area_manager::check_right_collision(const area a, vec2f* const diff) const 
 			std::strchr(i.collision, 'R') != nullptr &&
 			a.xy1.x < i.xy2.x &&
 			a.xy2.x >= i.xy1.x &&
-			a.xy1.y < i.xy2.y &&
-			a.xy2.y > i.xy1.y &&
+			(
+				(
+					a.xy1.y < i.xy2.y &&
+					a.xy1.y > i.xy1.y
+				) ||
+				(
+					a.xy2.y > i.xy1.y &&
+					a.xy2.y < i.xy2.y
+				)
+			) &&
 			a.xy2.x < i.xy2.x
 		) {
 			diff->x = i.xy1.x - a.xy2.x;
@@ -139,8 +163,16 @@ bool area_manager::check_left_collision(const area a, vec2f* const diff) const {
 			std::strchr(i.collision, 'L') != nullptr &&
 			a.xy1.x <= i.xy2.x &&
 			a.xy2.x > i.xy2.x &&
-			a.xy1.y < i.xy2.y &&
-			a.xy2.y > i.xy1.y &&
+			(
+				(
+					a.xy1.y < i.xy2.y &&
+					a.xy1.y > i.xy1.y
+				) ||
+				(
+					a.xy2.y > i.xy1.y &&
+					a.xy2.y < i.xy2.y
+				)
+			) &&
 			a.xy1.x > i.xy1.x
 		) {
 			diff->x = i.xy1.x - a.xy1.x;
