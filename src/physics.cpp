@@ -19,52 +19,6 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 
 
 
-		if (area_man.check_up_collision(area(position.xy + move, xy2 + move), &diff)) {
-			msgs.push("up collision detected");
-
-			if (movement.vel.y < 0) {
-				movement.vel.y = 0;
-				move.y += diff.y;
-
-			}
-
-		}
-
-		if (area_man.check_down_collision(area(position.xy + move, xy2 + move), &diff)) {
-			msgs.push("down collision detected");
-
-			if (movement.vel.y > 0) {
-				movement.vel.y = 0;
-				move.y += diff.y;
-
-			}
-
-		}
-
-		if (area_man.check_right_collision(area(position.xy + move, xy2 + move), &diff)) {
-			msgs.push("right collision detected");
-
-			if (movement.vel.x > 0) {
-				movement.vel.x = 0;
-				move.x += diff.x;
-
-			}
-
-		}
-
-		if (area_man.check_left_collision(area(position.xy + move, xy2 + move), &diff)) {
-			msgs.push("left collision detected");
-
-			if (movement.vel.x < 0) {
-				movement.vel.x = 0;
-				move.x += diff.x;
-
-			}
-
-		}
-
-
-
 		if (std::ceil(movement.vel.x))
 			position.xy.x += move.x;
 
@@ -87,6 +41,51 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 		else if (std::ceil(movement.vel.y) > std::ceil(movement.goal_vel.y))
 			movement.vel.y -= delta_time * fric;
 
+
+
+		if (area_man.check_up_collision(area(position.xy, xy2), &diff)) {
+			msgs.push("up collision detected");
+
+			if (movement.vel.y < 0) {
+				movement.vel.y = 0;
+				position.xy.y += diff.y;
+
+			}
+
+		}
+
+		if (area_man.check_down_collision(area(position.xy, xy2), &diff)) {
+			msgs.push("down collision detected");
+
+			if (movement.vel.y > 0) {
+				movement.vel.y = 0;
+				position.xy.y += diff.y;
+
+			}
+
+		}
+
+		if (area_man.check_right_collision(area(position.xy, xy2), &diff)) {
+			msgs.push("right collision detected");
+
+			if (movement.vel.x > 0) {
+				movement.vel.x = 0;
+				position.xy.x += diff.x;
+
+			}
+
+		}
+
+		if (area_man.check_left_collision(area(position.xy, xy2), &diff)) {
+			msgs.push("left collision detected");
+
+			if (movement.vel.x < 0) {
+				movement.vel.x = 0;
+				position.xy.x += diff.x;
+
+			}
+
+		}
 
 	}
 
