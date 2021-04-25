@@ -15,7 +15,7 @@ public:
 		lvl(lvl) { }
 	~map() { }
 
-	void get_lvl() const { return this->lvl; }
+	std::string get_lvl() const { return this->lvl; }
 	void set_lvl(const std::string lvl) { this->lvl = lvl; }
 
 };
