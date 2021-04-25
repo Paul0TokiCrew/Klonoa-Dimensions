@@ -3,15 +3,23 @@
 
 
 #include <string>
+#include <vector>
+#include <image.hpp>
 
 
+
+struct tile_id {
+	const char id;
+	image* tile;
+
+};
 
 class map {
 private:
 	std::string lvl;
 
 public:
-	map(std::string lvl = "") :
+	map(const std::string lvl = "") :
 		lvl(lvl) { }
 	~map() { }
 
