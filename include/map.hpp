@@ -17,10 +17,11 @@ struct tile_id {
 class map {
 private:
 	std::string lvl;
+	std::vector<tile_id> tiles;
 
 public:
 	map(const std::string lvl = "") :
-		lvl(lvl) { }
+		lvl(lvl), tiles { } { }
 	~map() { }
 
 	std::string get_lvl() const { return this->lvl; }
