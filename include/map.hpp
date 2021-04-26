@@ -27,4 +27,6 @@ public:
 	std::string get_lvl() const { return this->lvl; }
 	void set_lvl(const std::string lvl) { this->lvl = lvl; }
 
+	void register_tile_id(const tile_id t);
+
 };
