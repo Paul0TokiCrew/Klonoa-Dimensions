@@ -24,4 +24,21 @@ void image::change_size(int w, int h) {
 
 
 
-void render::render_images() const { }
+void render::render_images(SDL_Renderer* ren) const {
+	SDL_Rect src, des;
+
+	for (const auto ent : this->ents) {
+
+		const c_image& tex = crd.get_comp<c_image>(ent);
+
+		if (!tex.img)
+			continue;
+
+		src = tex.img->get_src();
+		des = tex.img->get_des();
+
+		SDL_RenderCopy(ren, tex.img->get_img(), &src, &des);
+
+	}
+
+}

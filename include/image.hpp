@@ -52,6 +52,6 @@ public:
 	render() { }
 	~render() { }
 
-	void render_images() const;
+	void render_images(SDL_Renderer* ren) const;
 
 };

@@ -11,7 +11,7 @@ void area_manager::render(SDL_Renderer* ren) const {
 		if (!img)
 			continue;
 
-		src = img->get_src(),
+		src = img->get_src();
 		des = img->get_des();
 
 		SDL_RenderCopy(ren, img->get_img(), &src, &des);
