@@ -2,9 +2,9 @@
 
 
 
-bool map::find_tile(const tile_id t) {
+bool map::find_tile(const tile_id t) const {
 
-	for (auto i : this->tiles)
+	for (const auto i : this->tiles)
 		if (i.id == t.id)
 			return true;
 

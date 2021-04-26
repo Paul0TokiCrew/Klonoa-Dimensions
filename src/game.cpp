@@ -27,10 +27,10 @@ void game::play() {
 
 
 
-	entity klonoa_ent = crd.create_ent();
-	c_position klonoa_pos { vec2f(W / 2 - 32, H / 2 - 32), vec2f(64) };
-	c_movement klonoa_mov { vec2f(0, 1), vec2f(0), vec2f(0, 0), vec2f(140, GRAVITY) };
-	c_player_keys klonoa_keys { { SDL_SCANCODE_SPACE, SDL_SCANCODE_RIGHT, SDL_SCANCODE_LEFT } };
+	const entity klonoa_ent = crd.create_ent();
+	const c_position klonoa_pos { vec2f(W / 2 - 32, H / 2 - 32), vec2f(64) };
+	const c_movement klonoa_mov { vec2f(0, 1), vec2f(0), vec2f(0, 0), vec2f(140, GRAVITY) };
+	const c_player_keys klonoa_keys { { SDL_SCANCODE_SPACE, SDL_SCANCODE_RIGHT, SDL_SCANCODE_LEFT } };
 
 	crd.add_comp(klonoa_ent, klonoa_pos);
 	crd.add_comp(klonoa_ent, klonoa_mov);
@@ -41,7 +41,7 @@ void game::play() {
 
 
 
-	window win = window(this->title, W, H);
+	const window win = window(this->title, W, H);
 
 	sprite r_sprites[] = {
 		sprite(win.get_ren(), "res/sprites/klonoa/character/Klonoa Idle Right.png",
@@ -85,8 +85,8 @@ void game::play() {
 
 	while (this->running) {
 
-		float new_time = this->get_current_time();
-		float delta_time = new_time - current_time;
+		const float new_time = this->get_current_time();
+		const float delta_time = new_time - current_time;
 		current_time = new_time;
 
 		while (SDL_PollEvent(&evn))

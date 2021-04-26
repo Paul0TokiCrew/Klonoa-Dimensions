@@ -5,9 +5,9 @@
 void area_manager::render(SDL_Renderer* ren) const {
 	SDL_Rect src, des;
 
-	for (auto i : this->fric_areas) {
+	for (const auto i : this->fric_areas) {
 
-		image* img = i.img;
+		const image* img = i.img;
 		if (!img)
 			continue;
 
@@ -18,9 +18,9 @@ void area_manager::render(SDL_Renderer* ren) const {
 
 	}
 
-	for (auto i : this->coll_areas) {
+	for (const auto i : this->coll_areas) {
 
-		image* img = i.img;
+		const image* img = i.img;
 		if (!img)
 			continue;
 
@@ -50,7 +50,7 @@ void area_manager::register_friction_area(const friction_area fa) {
 
 bool area_manager::check_trigger(const area a) const {
 
-	for (auto i : this->coll_areas) {
+	for (const auto i : this->coll_areas) {
 
 		if (
 			a.xy1.x <= i.xy2.x &&
@@ -67,7 +67,7 @@ bool area_manager::check_trigger(const area a) const {
 
 bool area_manager::check_up_collision(const area a, vec2f* const diff) const {
 
-	for (auto i : this->coll_areas) {
+	for (const auto i : this->coll_areas) {
 
 		if (
 			std::strchr(i.collision, 'U') != nullptr &&
@@ -97,7 +97,7 @@ bool area_manager::check_up_collision(const area a, vec2f* const diff) const {
 
 bool area_manager::check_down_collision(const area a, vec2f* const diff) const {
 
-	for (auto i : this->coll_areas) {
+	for (const auto i : this->coll_areas) {
 
 		if (
 			std::strchr(i.collision, 'D') != nullptr &&
@@ -127,7 +127,7 @@ bool area_manager::check_down_collision(const area a, vec2f* const diff) const {
 
 bool area_manager::check_right_collision(const area a, vec2f* const diff) const {
 
-	for (auto i : this->coll_areas) {
+	for (const auto i : this->coll_areas) {
 
 		if (
 			std::strchr(i.collision, 'R') != nullptr &&
@@ -188,7 +188,7 @@ bool area_manager::check_left_collision(const area a, vec2f* const diff) const {
 float area_manager::get_friction(const area a) const {
 	std::priority_queue<float, std::vector<float>, std::greater<float>> fric;
 
-	for (auto i : this->fric_areas) {
+	for (const auto i : this->fric_areas) {
 
 		if (
 			a.xy1.x <= i.xy2.x &&
@@ -209,7 +209,7 @@ float area_manager::get_friction(const area a) const {
 
 void area_manager::change_areas_pos(const vec2f mod) {
 
-	for (auto i : this->fric_areas) {
+	for (const auto i : this->fric_areas) {
 
 		image* img = i.img;
 		if (!img)
@@ -221,7 +221,7 @@ void area_manager::change_areas_pos(const vec2f mod) {
 
 	}
 
-	for (auto i : this->coll_areas) {
+	for (const auto i : this->coll_areas) {
 
 		image* img = i.img;
 		if (!img)
