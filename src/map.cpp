@@ -38,8 +38,8 @@ void map::render(SDL_Renderer* ren) const {
 					continue;
 
 				src = tile->get_src();
-				des.w = 64;
-				des.h = 64;
+				des.w = this->tw;
+				des.h = this->th;
 				des.x = this->x * des.w;
 				des.y = this->y * des.h;
 		
