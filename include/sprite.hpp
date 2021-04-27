@@ -10,13 +10,12 @@
 class sprite : public image {
 private:
 	int index, reset_index,
-		x_move, y_move,
-		count, max_count;
+		x_move, y_move;
 
 public:
-	sprite(SDL_Renderer* ren, const char* path, const SDL_Rect src, const SDL_Rect des, const int index = 0, const int reset_index = 0, const int x_move = 0, const int y_move = 0, const int max_count = 0) :
-		image(ren, path, src, des), index(index), reset_index(reset_index), x_move(x_move), y_move(y_move), count(0), max_count(max_count) { }
-
+	sprite(SDL_Renderer* ren, const char* path, const SDL_Rect src, const SDL_Rect des,
+		const int index = 0, const int reset_index = 0, const int x_move = 0, const int y_move = 0, const int max_count = 0) :
+		image(ren, path, src, des), index(index), reset_index(reset_index), x_move(x_move), y_move(y_move) { }
 	~sprite() { }
 
 	void set_x_move(const int x_move) { this->x_move = x_move; }
