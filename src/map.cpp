@@ -2,22 +2,22 @@
 
 
 
-bool map::find_tile(const tile_id t) const {
+image* map::find_tile(const tile_id t) const {
 
 	for (const auto i : this->tiles)
 		if (i.id == t.id)
-			return true;
+			return i.tile;
 
-	return false;
+	return nullptr;
 }
 
-bool map::find_tile(const char id) const {
+image* map::find_tile(const char id) const {
 
 	for (const auto i : this->tiles)
 		if (i.id == id)
-			return true;
+			return i.tile;
 
-	return false;
+	return nullptr;
 }
 
 void map::register_tile_id(const tile_id t) {

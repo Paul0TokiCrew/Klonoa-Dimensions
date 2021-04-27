@@ -27,9 +27,9 @@ public:
 	std::string get_lvl() const { return this->lvl; }
 	void set_lvl(const std::string lvl) { this->lvl = lvl; }
 
-	bool find_tile(const tile_id t) const;
-	bool find_tile(const char id) const;
 	void register_tile_id(const tile_id t);
+	image* find_tile(const tile_id t) const;
+	image* find_tile(const char id) const;
 
 	void render(SDL_Renderer* ren) const;
 
