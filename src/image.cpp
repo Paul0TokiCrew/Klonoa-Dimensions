@@ -31,13 +31,10 @@ void render::render_images(SDL_Renderer* ren) const {
 
 		const c_image& tex = crd.get_comp<c_image>(ent);
 
-		if (!tex.img)
-			continue;
+		src = tex.img.get_src();
+		des = tex.img.get_des();
 
-		src = tex.img->get_src();
-		des = tex.img->get_des();
-
-		SDL_RenderCopy(ren, tex.img->get_img(), &src, &des);
+		SDL_RenderCopy(ren, tex.img.get_img(), &src, &des);
 
 	}
 
