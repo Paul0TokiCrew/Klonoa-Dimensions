@@ -2,22 +2,22 @@
 
 
 
-void image::change_frame_pos(int x, int y) {
+void image::change_frame_pos(const int x, const int y) {
 	this->src.x = x;
 	this->src.y = y;
 }
 
-void image::change_frame_size(int w, int h) {
+void image::change_frame_size(const int w, const int h) {
 	this->src.w = w;
 	this->src.h = h;
 }
 
-void image::change_pos(int x, int y) {
+void image::change_pos(const int x, const int y) {
 	this->des.x = x;
 	this->des.y = y;
 }
 
-void image::change_size(int w, int h) {
+void image::change_size(const int w, const int h) {
 	this->des.w = w;
 	this->des.h = h;
 }
