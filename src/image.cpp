@@ -24,7 +24,7 @@ void image::change_size(const int w, const int h) {
 
 
 
-void render::render_images(SDL_Renderer* ren) const {
+void renderer::render(SDL_Renderer* ren) const {
 	SDL_Rect src, des;
 
 	for (const auto ent : this->ents) {

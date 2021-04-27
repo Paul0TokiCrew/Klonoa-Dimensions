@@ -47,11 +47,11 @@ public:
 
 struct c_image { image img; };
 
-class render : public system {
+class renderer : public system {
 public:
-	render() { }
-	~render() { }
+	renderer() { }
+	~renderer() { }
 
-	void render_images(SDL_Renderer* ren) const;
+	void render(SDL_Renderer* ren) const;
 
 };

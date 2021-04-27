@@ -50,7 +50,7 @@ public:
 	void render(const image& img) const;
 	void render(const sprite& spr) const;
 	void render(const area_manager& area_man) const { area_man.render(this->ren); }
-	void render(const render& rnd) const { rnd.render_images(this->ren); }
+	void render(const renderer& rnd) const { rnd.render(this->ren); }
 	void render(const character& chr) const;
 
 	void update() const;
