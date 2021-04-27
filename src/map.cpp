@@ -29,14 +29,24 @@ void map::register_tile_id(const tile_id t) {
 void map::render(SDL_Renderer* ren) const {
 	SDL_Rect src, des;
 
-	for (const auto i : lvl) {
+	for (int y = 0; y < this->h; ++y) {
 
-		image* tile = this->find_tile(i);
-		if (!tile)
-			continue;
+		for (int x = 0; x < this->w; ++x) {
+		
+				image* tile = this->find_tile(this->lvl[y * w + x]);
+				if (!tile)
+					continue;
 
-		SDL_RenderCopy(ren, tile->get_img(), &src, &des);
-
+				src = tile->get_src();
+				des.w = 64;
+				des.h = 64;
+				des.x = this->x * des.w;
+				des.y = this->y * des.h;
+		
+				SDL_RenderCopy(ren, tile->get_img(), &src, &des);
+		
+		}
+	
 	}
 
 }
