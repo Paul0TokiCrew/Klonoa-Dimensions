@@ -10,14 +10,20 @@ void game::play() {
 
 	crd.init();
 
+	crd.register_comp<c_image>();
 	crd.register_comp<c_position>();
 	crd.register_comp<c_movement>();
 	crd.register_comp<c_player_keys>();
 
+	auto rnd = crd.register_sys<renderer>();
 	auto phy = crd.register_sys<physics>();
 	auto ply = crd.register_sys<player>();
 
 	signature sign;
+	sign.set(crd.get_comp_type<c_image>());
+	crd.set_sys_signature<renderer>(sign);
+
+	sign.reset();
 	sign.set(crd.get_comp_type<c_position>());
 	sign.set(crd.get_comp_type<c_movement>());
 	crd.set_sys_signature<physics>(sign);
