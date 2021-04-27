@@ -45,7 +45,7 @@ public:
 
 
 
-struct c_image { image img; };
+struct c_image { image* img; };
 
 class renderer : public system {
 public:

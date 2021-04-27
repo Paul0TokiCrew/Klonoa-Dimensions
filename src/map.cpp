@@ -40,8 +40,8 @@ void map::render(SDL_Renderer* ren) const {
 				src = tile->get_src();
 				des.w = this->tw;
 				des.h = this->th;
-				des.x = this->x * des.w;
-				des.y = this->y * des.h;
+				des.x = x * des.w;
+				des.y = y * des.h;
 		
 				SDL_RenderCopy(ren, tile->get_img(), &src, &des);
 		
