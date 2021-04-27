@@ -10,10 +10,11 @@ void game::play() {
 
 	crd.init();
 
-	crd.register_comp<c_image>();
+		crd.register_comp<c_image>();
 	crd.register_comp<c_position>();
 	crd.register_comp<c_movement>();
 	crd.register_comp<c_player_keys>();
+
 
 	auto rnd = crd.register_sys<renderer>();
 	auto phy = crd.register_sys<physics>();
@@ -149,6 +150,13 @@ bool game::init() {
 	    game::running = true;
 
 	return initialized;
+}
+
+void game::register_components() const {
+	crd.register_comp<c_image>();
+	crd.register_comp<c_position>();
+	crd.register_comp<c_movement>();
+	crd.register_comp<c_player_keys>();
 }
 
 SDL_Rect game::make_rect(const vec2f xy, const vec2f wh) const {

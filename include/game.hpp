@@ -28,6 +28,7 @@ private:
 	bool running;
 
 	bool init();
+	void register_components() const;
 
 	float get_current_time() const { return SDL_GetTicks() / 1000.0f; }
 
