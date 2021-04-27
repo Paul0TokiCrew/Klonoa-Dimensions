@@ -16,3 +16,13 @@ void map::register_tile_id(const tile_id t) {
 		this->tiles.push_back(t);
 
 }
+
+void map::render(SDL_Renderer* ren) const {
+
+	for (const auto i : lvl) {
+
+		//if (this->find_tile(i))
+
+	}
+
+}

@@ -30,4 +30,6 @@ public:
 	bool find_tile(const tile_id t) const;
 	void register_tile_id(const tile_id t);
 
+	void render(SDL_Renderer* ren) const;
+
 };
