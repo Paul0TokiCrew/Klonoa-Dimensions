@@ -27,10 +27,15 @@ void map::register_tile_id(const tile_id t) {
 }
 
 void map::render(SDL_Renderer* ren) const {
+	SDL_Rect src, des;
 
 	for (const auto i : lvl) {
 
-		//if (this->find_tile(i))
+		image* tile = this->find_tile(i);
+		if (!tile)
+			continue;
+
+		SDL_RenderCopy(ren, tile->get_img(), &src, &des);
 
 	}
 
