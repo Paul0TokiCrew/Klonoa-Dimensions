@@ -29,7 +29,7 @@ void renderer::render(SDL_Renderer* ren) const {
 
 	for (const auto ent : this->ents) {
 
-		const c_image& tex = crd.get_comp<c_image>(ent);
+		const auto& tex = crd.get_comp<c_image>(ent);
 
 		src = tex.img->get_src();
 		des = tex.img->get_des();

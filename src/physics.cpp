@@ -6,8 +6,8 @@ void physics::update(const float delta_time, const area_manager& area_man) const
 
 	for (const auto& ent : this->ents) {
 
-		c_position& position = crd.get_comp<c_position>(ent);
-		c_movement& movement = crd.get_comp<c_movement>(ent);
+		auto& position = crd.get_comp<c_position>(ent);
+		auto& movement = crd.get_comp<c_movement>(ent);
 
 
 

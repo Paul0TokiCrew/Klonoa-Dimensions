@@ -43,8 +43,8 @@ void game::play() {
 	crd.add_comp(klonoa_ent, klonoa_mov);
 	crd.add_comp(klonoa_ent, klonoa_keys);
 
-	c_position& position = crd.get_comp<c_position>(klonoa_ent);
-	c_movement& movement = crd.get_comp<c_movement>(klonoa_ent);
+	auto& position = crd.get_comp<c_position>(klonoa_ent);
+	auto& movement = crd.get_comp<c_movement>(klonoa_ent);
 
 
 
