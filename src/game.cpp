@@ -1,7 +1,7 @@
 #include <game.hpp>
 
 
-
+bug
 void game::play() {
 	if (this->init())
 		log_e();
